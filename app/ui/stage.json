@@ -1,0 +1,205 @@
+{   
+    "type": "container",
+    "on":{"start":{"func":"start"},"end":{"func":"end"}},
+    "data": {
+        "width": "100%",
+        "height": "100%",
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "sprite",
+            "data": {
+                "url":"images/ui/stage.jpg",
+                "width": "100%",
+                "height": "100%",
+                "left": 0,
+                "top": 0
+            }
+        },
+
+        {   
+            "type": "container",
+            "data": {
+                "width": "100%",
+                "height": "100%",
+                "left": 600,
+                "top": 20
+            },
+            "children":[     
+            {
+                "type":"app-ui-button",
+                "props":{
+                    "on":{"tap":{"func":"manfood_number"}},
+                    "url": "images/ui/button_buy.png",
+                    "id":"button_time",
+                    "anchor":[0.5,0.5],
+                    "width": 214,
+                    "height": 100,
+                    "left": 0,
+                    "top": 0,
+                    "text": "",
+                    "size":30,
+                    "color":"#d9c6ad"
+                }
+            },
+            {
+                "type": "text",
+                "data": {
+                    "id":"year",
+                    "text":"",
+                    "left":20,
+                    "top": 20,
+                    "style":{
+                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    }
+                }
+            },
+            {
+                "type": "text",
+                "data": {
+                    "id":"day",
+                    "text":"时间",
+                    "left":20,
+                    "top": 50,
+                    "style":{
+                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    }
+                }
+            }
+           
+         ]
+        },
+        {   
+            "type": "container",
+            "data": {
+                "width": "100%",
+                "height": "100%",
+                "left": 0,
+                "top": 1234
+            },
+            "children":[
+                {
+                    "type": "rect",
+                    "on":{"tap":{"func":"changeFace","arg":[0]}},
+                    "data": {
+                        "width": 150,
+                        "height": 100,
+                        "left": 0,
+                        "top": 0,
+                        "background-color": "#d9c6ad"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "id":"button_autfood_number",
+                                "text": "科技",
+                                "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                                "left": 34,
+                                "top": 25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "rect",
+                    "on":{"tap":{"func":"changeFace","arg":[1]}},
+                    "data": {
+                        "width": 150,
+                        "height": 100,
+                        "left": 150,
+                        "top": 0,
+                        "background-color": "#d9c6ad"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "id":"button_autfood_number",
+                                "text": "人口",
+                                "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                                "left": 34,
+                                "top": 25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "rect",
+                    "on":{"tap":{"func":"changeFace","arg":[2]}},
+                    "data": {
+                        "width": 150,
+                        "height": 100,
+                        "left": 300,
+                        "top": 0,
+                        "background-color": "#d9c6ad"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "id":"button_autfood_number",
+                                "text": "建筑",
+                                "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                                "left": 34,
+                                "top": 25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "rect",
+                    "on":{"tap":{"func":"changeFace","arg":[3]}},
+                    "data": {
+                        "width": 150,
+                        "height": 100,
+                        "left": 450,
+                        "top": 0,
+                        "background-color": "#d9c6ad"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "id":"button_autfood_number",
+                                "text": "军队",
+                                "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                                "left": 34,
+                                "top": 25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "rect",
+                    "on":{"tap":{"func":"changeFace","arg":[4]}},
+                    "data": {
+                        "width": 150,
+                        "height": 100,
+                        "left": 600,
+                        "top": 0,
+                        "background-color": "#d9c6ad"
+                    },
+                    "children": [
+                        {
+                            "type": "text",
+                            "data": {
+                                "id":"button_autfood_number",
+                                "text": "地图",
+                                "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                                "left": 34,
+                                "top": 25
+                            }
+                        }
+                    ]
+                }
+                
+           
+            ]
+        }
+
+
+    ]
+}

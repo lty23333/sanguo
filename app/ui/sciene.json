@@ -1,0 +1,22 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 600,
+        "height": 600,
+        "left": 80,
+        "top": 330
+    },
+    "children":[
+        {
+            "type": "text",
+            "data": {
+                "text":"科技",
+                "left":0,
+                "top": 0,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }  
+    ]
+}

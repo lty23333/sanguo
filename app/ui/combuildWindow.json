@@ -1,0 +1,91 @@
+{   
+    "type": "container",
+    "data": {
+        "width": "400",
+        "height": "400",
+        "left": 350,
+        "top": 450
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 400,
+                "height": 400,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":140,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"effect",
+                "text":"效果：",
+                "left":30,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"消耗：",
+                "left":30,
+                "top": 200,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"levelup"}},
+                "url": "images/ui/button_buy.png",
+                "id":"button_levelup",
+                "anchor":[0.5,0.5],
+                "width": 214,
+                "height": 100,
+                "left": 100,
+                "top": 300,
+                "text": "建造",
+                "size":30,
+                "color":"#d9c6ad"
+            
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"remove"}},
+                "id":"button_remove",
+                "anchor":[0.5,0.5],
+                "url": "images/ui/button_buy.png",
+                "width": 159,
+                "height": 75,
+                "left": 235,
+                "top": 15,
+                "text": "关闭",
+                "size":30,
+                "color":"#d9c6ad"
+
+            }
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+{   
+    "type": "container",
+    "data": {
+        "width": "400",
+        "height": "400",
+        "left": 100,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 400,
+                "height": 400,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":140,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"effect",
+                "text":"描述：",
+                "left":30,
+                "top": 200,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

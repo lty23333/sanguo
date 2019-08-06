@@ -1,0 +1,35 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"remove"}},
+    "data": {
+        "width": "1500",
+        "height": "3000",
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 1500,
+                "height": 3000,
+                "left": -750,
+                "top": -1500,
+                "background-color": "#d9c6ad",
+                "alpha":0.5
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"点击空白处关闭",
+                "left":340,
+                "top": 1300,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

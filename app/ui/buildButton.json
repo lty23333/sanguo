@@ -1,0 +1,24 @@
+{
+    "type": "sprite",
+    "on":{"tap":{"func":"addBuild","arg":[1001]}},
+    "data": {
+        "id": "button_build",
+        "url": "images/ui/button_buy.png",
+        "width": 210,
+        "height": 100,
+        "left": 100,
+        "top": 770
+    },
+    "children": [
+        {
+            "type": "text",
+            "data": {
+                "id":"button_add",
+                "text": "button",
+                "style": {"fontSize":30,"fill":"#d9c6ad","strokeThickness":2},
+                "left": 34,
+                "top": 25
+            }
+        }
+    ]
+}

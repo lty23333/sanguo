@@ -1,0 +1,83 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 400,
+        "height": 60,
+        "left": 30,
+        "top": 30
+    },
+    "children":[     
+    {
+        "type": "text",
+        "data": {
+            "id":"number_name",
+            "text":"",
+            "left":0,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"number",
+            "text":"",
+            "left":75,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"max_name",
+            "text":"/",
+            "left":200,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"max",
+            "text":"",
+            "left":210,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"change",
+            "text":"",
+            "left":350,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    },       
+    {
+        "type": "text",
+        "data": {
+            "id":"addtion",
+            "text":"",
+            "left":500,
+            "top": 0,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+            }
+        }
+    }
+  ]
+}
