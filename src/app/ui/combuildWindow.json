@@ -69,23 +69,6 @@
                 "color":"#d9c6ad"
             
             }
-        },
-        {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"remove"}},
-                "id":"button_remove",
-                "anchor":[0.5,0.5],
-                "url": "images/ui/button_buy.png",
-                "width": 159,
-                "height": 75,
-                "left": 235,
-                "top": 15,
-                "text": "关闭",
-                "size":30,
-                "color":"#d9c6ad"
-
-            }
         }
     ]
 }

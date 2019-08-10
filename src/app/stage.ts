@@ -60,15 +60,35 @@ class Stage {
     static res_name = ["food","wood","sci","gold"] 
     static work_name = ["total","food","wood","sci","gold"]  //资源名
     static five = ["金","木","水","火","土"]
-    static res_Cname = ["粮食","木材","黄金","科技"]
+    static res_Cname = ["粮食","木材","科技","黄金"]
     static season_Cname = ["春","夏","秋","冬"] 
     static face_name =["sceince","people","build","army","map"]
     static dayTime = 1500
     static nextDay = 0
+    static resNode = []
+    static messageList = []
 
     static time 
     static timeInterval =  500; //增加资源的时间间隔
     static newsNode =[]; //新闻节点
+
+
+    //更新消息显示
+    static updateMessage(message){
+        let MNode = Scene.open("app-ui-message", Scene.root,null,{text:message});
+        Stage.messageList.push(MNode);
+        setTimeout(() => {
+            Stage.messageList.splice(Stage.messageList.indexOf(MNode),1);
+            Scene.remove(MNode);
+        }, 500);
+    }
+
+    static runMessage(){
+        for(let i=0;i<Stage.messageList.length;i++){
+            Stage.messageList[i].x += 2
+            Stage.messageList[i].alpha -= 0.04
+        }
+    }
 
 
     //更新消息显示
@@ -92,8 +112,8 @@ class Stage {
             mun = res[idType],
             people = DB.data.people[name]
         //解锁新资源
-        if(idType ==0 && DB.data.res[name][0]>0){
-            Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+        if(idType ==0 && DB.data.res[name][0]>0 && !Stage.newsNode[res_nameID]){
+            Stage.newsNode[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
         }
           
         if((idType ==1 || idType == 2|| idType == 4)&&( Stage.res[name][idType]!= undefined) ){
@@ -182,6 +202,9 @@ class Stage {
             }  
             Stage.time +=Stage.timeInterval;
         }
+        //处理弹出消息
+        Stage.runMessage();
+
 //时间变化
         if(Date.now()>Stage.nextDay){
             let season
@@ -208,10 +231,6 @@ class Stage {
     }
 
    
-    static clear(){
-
-        Stage.id = 1;
-    }
 }
 /**
  * @description  关卡界面组件
@@ -297,6 +316,9 @@ class WStage extends Widget{
             Scene.remove(Global.mainFace.node);
 
             //
+            if(faceid ==0){
+                AppEmitter.emit("intoScience");
+           }
             if(faceid ==1){
                 AppEmitter.emit("intoPeople");
            }
@@ -350,7 +372,7 @@ const openStart = () => {
 
 /****************** 立即执行 ******************/
 //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
-DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,0,0,0,0,0],gold:[0,0,0,0,0,0,0]});
+DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[0,0,600,0,0,0,0]});
 DB.init("date",{unlock:[0,0],day:[0]});
 //主界面解锁
 DB.init("face",{"unlock":[0,0,1,0,0]});
@@ -410,4 +432,8 @@ for(let i = 1; i <5; i++){
 //注册新闻监听
 DB.emitter.add(`news`, () => {
     Stage.updateNews()
+});
+//注册消息监听
+DB.emitter.add(`message`, (str) => {
+    Stage.updateMessage(str);
 });

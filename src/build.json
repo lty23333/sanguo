@@ -29,7 +29,7 @@
     },
     {
         "name": "browser",
-        "dist": "../back/htdocs/static/sanguo",
+        "dist": "../../back/htdocs/static/sanguo",
         "ignore":["/README.md","/build.json","/config.ts","/game.json","/game.ts","/project.config.json","/pc.html","pc.js"],
         "plugins":{
             "ts":{
@@ -61,7 +61,7 @@
     },
     {
         "name": "pc",
-        "dist": "../pack-pc/src/yldj",
+        "dist": "../../pack-pc/src/yldj",
         "ignore":["/README.md","/build.json","/config.ts","/game.json","/game.ts","/project.config.json","/index.html","/init.js"],
         "plugins":{
             "ts":{

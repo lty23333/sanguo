@@ -2,6 +2,7 @@
 import Connect from "../libs/ni/connect";
 import CfgMgr from "../libs/ni/cfgmrg";
 import {table} from "./formula";
+import {AppEmitter} from './appEmitter';
 
 /**
  * @description 模拟后台测试
@@ -14,17 +15,17 @@ const saveDb = (key,data) => {
     localStorage.setItem(key,JSON.stringify(data));
 }
 
-let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,0,0,0,0,0],gold:[0,0,0,0,0,0,0]},
-build:[],
+let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[0,0,600,0,0,0,0]},
+build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
 face:{"unlock":[0,0,1,0,0]},
-sciene:[]}
+science:[[1,0]]}
 
-const initSciene = () => {
-    let bcfg = CfgMgr.getOne("app/cfg/sciene.json@sciene")
+const initScience = () => {
+    let bcfg = CfgMgr.getOne("app/cfg/science.json@science")
     for(let k in bcfg){
-        DB.sciene.push([0,0]);
+        DB.science.push([0,0]);
     }   
 };
 
@@ -34,8 +35,12 @@ const initBuild = () => {
         DB.build.push([0,0]);
     }   
 };
-initSciene();
-initBuild();
+
+const initDB = () => {
+    initScience();
+    initBuild();
+}
+
 
 //权重
 class Weight{
@@ -248,6 +253,50 @@ const levelup = (id: any, callback) => {
 
 Connect.setTest("app/build@read",readBuild);
 Connect.setTest("app/build@levelup",levelup);
+/****************** science ******************/
+
+//读取玩家信息
+const readScience = (param: any, callback) => {
+    let d:any = localStorage.getItem("science");
+    if(d){
+        d = JSON.parse(d);
+        DB.science = d;
+    }else{
+        d = DB.science;
+    }
+    callback({ok:d});
+}
+//解锁科技
+const unlock = (id: any, callback) => {
+    let  bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
+         cost = bcfg[id][`cost`],  
+         effect = bcfg[id]["effect_type"],
+         effect_num = bcfg[id]["effect_number"],
+         len = effect.length,
+         num =DB.res.sci[1],
+         //返回的效果结果
+         effect_end =[]
+    
+    if (DB.res.sci[1] >= cost ){
+            num -= cost;
+            DB.science[id-101][1] = 1;
+            DB.res.sci[1] = num;
+            //判断数据表
+            for(let i=0;i<effect_num.length;i++){
+               DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+               effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+        }                      
+         saveDb("science",DB.science);
+         saveDb("res",DB.res);
+         callback({ok:[DB.science[id-101][1],num,effect_end]}); 
+    }else{
+        callback({err:1}); 
+    }
+          
+}
+
+Connect.setTest("app/science@read",readScience);
+Connect.setTest("app/science@unlock",unlock);
 /****************** people ******************/
 
 //读取玩家信息
@@ -330,3 +379,7 @@ const readStage = (param: any,callback: Function) => {
 Connect.setTest("app/stage@read",readStage);
 
 
+//注册页面打开事件
+AppEmitter.add("initDB",(node)=>{
+    initDB();
+});

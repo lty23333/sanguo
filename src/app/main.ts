@@ -4,7 +4,7 @@ import './stage';
 import  './net';
 import  './build';
 import  './people';
-import  './sciene';
+import  './science';
 
 //ui
 import './widget/button';
@@ -16,6 +16,7 @@ import Connect from "../libs/ni/connect";
 import '../libs/ni/music';
 import Scene from '../libs/ni/scene';
 import Loader from '../libs/ni/loader';
+import {AppEmitter} from './appEmitter';
 
 /****************** 导出 ******************/
 /**
@@ -36,6 +37,10 @@ export default class Main {
             Connect.open(cfg,()=>{
                 User.init();
                 Process.clear();
+                //初始化数据库
+                AppEmitter.emit("initDB");
+                AppEmitter.emit("initBuild");
+                AppEmitter.emit("initScience");
             });
         },Process.add());
         // console.log(wx.env.USER_DATA_PATH);

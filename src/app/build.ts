@@ -23,7 +23,7 @@ class Build {
     static  com_name // 通用窗口名字节点
     static  com_effect // 通用窗口效果节点
     static  com_cost// 通用窗口消耗节点
-    static res_name = ["food","wood",]  //资源名
+    static res_name = ["food","wood","sci","gold"]  //资源名
     static res_Cname = ["粮食","木材","黄金","科技"]
     static build_sprite =[]
     static cur_buildId = 0
@@ -56,6 +56,7 @@ class Build {
  * @description  建筑按钮组件
  */
 class WbuildButton extends Widget{
+    backNode:any
     setProps(props){
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
@@ -69,10 +70,12 @@ class WbuildButton extends Widget{
     }
 
     addBuild(type){
-        Scene.open(`app-ui-combuildWindow`,Global.mainFace.node, null, {id:type});
+        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        Scene.open(`app-ui-combuildWindow`,this.backNode, null, {id:type,backNode:this.backNode});
     }
 
     added(node){   
+        Build.build[node.widget.props.id-1001] =[];
         Build.build[node.widget.props.id-1001][0] = this.elements.get("button_add");    
     }
 }
@@ -139,14 +142,15 @@ class WcomWindow extends Widget{
         }
             Connect.request({type:"app/build@levelup",arg:id},(data) => {
                 if(data.err){
-                    let MNode = Scene.open("app-ui-message", Scene.root,null,{text:"资源不足！"});
-                    setTimeout(() => {
-                        Scene.remove(MNode);
-                    }, 500);
+                    AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
                 }
                 for(let i=0;i<effect.length;i++){
-                    DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
+
+                    }else{
+                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                    }
                 }   
                 DB.data.build[id-1001][1] = data.ok[0];
                 DB.data.res[cost_name][1] = data.ok[1];
@@ -167,7 +171,7 @@ class WcomWindow extends Widget{
         Scene.remove(this.node);   
     }  
     added(node){
-        this.node = node;
+        this.node = this.props.backNode;;
         Build.com_name = this.elements.get("name");
         Build.com_effect = this.elements.get("effect");
         Build.com_cost = this.elements.get("cost");
@@ -197,30 +201,33 @@ Widget.registW("app-ui-build",WBuild);
 Widget.registW("app-ui-combuildWindow",WcomWindow);
 Widget.registW("app-ui-buildButton",WbuildButton);
 //初始化建筑数据库 [是否解锁，等级]
-DB.init("build",[[1,0],[0,0]]);
+
 const initBuild = () => {
     let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
-    tempDB = []
+    tempDB = [[1,0]]
     for(let k in bcfg){
         tempDB.push([0,0]);
     }
     
     DB.init("build", tempDB);
 };
-initBuild();
 //注册页面打开事件
 AppEmitter.add("intoBuild",(node)=>{
     open();
 });
-
+AppEmitter.add("initBuild",(node)=>{
+    initBuild();
+    emtBuild();
+});
 //建筑注册监听
-
-for(let i = DB.data.build.length - 1; i >= 0; i--){
-    for(let j =0;j<2;j++){
-        DB.emitter.add(`build.${i}.${j}`, ((x,y) => {
-            return ()=>{
-                Build.updateBuild(x,y)
-            }
-        })(i,j));
-    }
-}   
+const emtBuild = () => {
+    for(let i = DB.data.build.length - 1; i >= 0; i--){
+        for(let j =0;j<2;j++){
+            DB.emitter.add(`build.${i}.${j}`, ((x,y) => {
+                return ()=>{
+                    Build.updateBuild(x,y)
+                }
+            })(i,j));
+        }
+    } 
+}  
