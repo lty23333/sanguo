@@ -141,12 +141,7 @@ class WcomWindow extends Widget {
       arg: id
     }, data => {
       if (data.err) {
-        let MNode = Scene.open("app-ui-message", Scene.root, null, {
-          text: "科技不足！"
-        });
-        setTimeout(() => {
-          Scene.remove(MNode);
-        }, 500);
+        AppEmitter.emit("message", "科技不足！");
         return console.log(data.err.reson);
       }
 
