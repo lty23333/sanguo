@@ -3,6 +3,7 @@ import Connect from "../libs/ni/connect";
 import CfgMgr from "../libs/ni/cfgmrg";
 import {table} from "./formula";
 import {AppEmitter} from './appEmitter';
+import {rand} from './global';
 
 /**
  * @description 模拟后台测试
@@ -20,7 +21,10 @@ build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
 face:{"unlock":[0,0,1,0,0]},
-science:[[1,0]]}
+science:[[1,0]],
+hero:{own:[[]],left:[],choose:[],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hotel:{date:0,price:10}
+}
 
 const initScience = () => {
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science")
@@ -36,9 +40,17 @@ const initBuild = () => {
     }   
 };
 
+const initHero = () => {
+    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+    for(let i in bcfg ){
+        DB.hero.left.push(i);
+    }
+}
+
 const initDB = () => {
     initScience();
     initBuild();
+    initHero();
 }
 
 
@@ -346,6 +358,35 @@ const eventtrigger = (eventId: any, callback) => {
 }
 
 Connect.setTest("app/event@eventtrigger",eventtrigger);
+/****************** hero ******************/
+const hero_choose = (param: any, callback) => {   
+    let now =Math.floor(DB.date.day[0]/400);
+    if(DB.hotel.date < now ){
+        DB.hotel.date = now;
+        let choose =[]
+        for(let i=0;i<3;i++){
+            let num = 0,
+            rnd = rand(100),
+            v = 0;
+            for(let j=0;j<6;j++){
+                num += DB.hero.p[j];
+                if( rnd<num){
+                    v = j;
+                    break;
+                }
+            }
+            let heroId =Math.floor(rand(DB.hero.left[v].length))
+            choose.push(DB.hero.left[v][heroId]);
+            DB.hero.left[v].splice(heroId,1);
+        } 
+        
+
+    }    
+
+    saveDb("hero",DB.hero);
+    callback({ok:[choose]}); 
+}
+Connect.setTest("app/hero@choose",hero_choose);
 /****************** stage ******************/
 
 let dataStage = {level:1,fightCount:0,lastFightTime:0};

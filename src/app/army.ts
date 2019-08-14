@@ -8,7 +8,7 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import {Global,rand} from './global';
+import {Global} from './global';
 
 
 /****************** 导出 ******************/
@@ -27,6 +27,7 @@ class People {
     static work_name  =["total","food","wood","sci","gold"]
     static work_top =[0,250,50,150,350]
     static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1科技/秒","每个矿工+2黄金/秒"]
+
 
 
     static eatFood(){
@@ -183,8 +184,16 @@ const open = () => {
 Widget.registW("app-ui-people",WPeople);
 Widget.registW("app-ui-peopleWork",WWork);
 Widget.registW("app-ui-workDis",WworkDis);
-//初始化人口数据库 [解锁，数量，提供单位资源量，效率提升百分比]
-DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[1,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]});
+
+let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+    leftHero =[[],[],[],[],[],[]]
+for(let i in bcfg ){
+    leftHero[bcfg[i]["color"]].push(i);
+}
+//初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
+DB.init("hero",{own:[[]],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
+
+
 //注册人口监听
 
 for(let i = 0; i <2; i++){
@@ -215,6 +224,7 @@ DB.emitter.add(`people.total.0`, () => {
 });
 
 //注册页面打开事件
-AppEmitter.add("intoPeople",(node)=>{
+AppEmitter.add("intoArmy",(node)=>{
     open();
 });
+

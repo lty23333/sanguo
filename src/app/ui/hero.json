@@ -1,0 +1,70 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"buyhero","arg":[1001]}},
+    "data": {
+        "width": "400",
+        "height": "400",
+        "left": 350,
+        "top": 450
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 220,
+                "height": 350,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":95,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"attribute1",
+                "text":"统帅：",
+                "left":30,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"attribute2",
+                "text":"兵种：",
+                "left":30,
+                "top": 150,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"1 黄金",
+                "left":30,
+                "top": 150,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

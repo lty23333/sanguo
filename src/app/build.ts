@@ -8,7 +8,8 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import Global from './global';
+import {Global,rand} from './global';
+
 
 /****************** 导出 ******************/
 
@@ -27,7 +28,7 @@ class Build {
     static res_Cname = ["粮食","木材","黄金","科技"]
     static build_sprite =[]
     static cur_buildId = 0
-
+    static phero = [80,15,4,0.8,0.2,0]
 
     static clear(){
 
@@ -52,6 +53,12 @@ class Build {
     }
         
 }
+//随机数生成
+function rnd( seed ){
+    seed = ( seed * 9301 + 49297 ) % 233280; 
+    return seed / ( 233280.0 );
+};
+
 /**
  * @description  建筑按钮组件
  */
@@ -71,7 +78,22 @@ class WbuildButton extends Widget{
 
     addBuild(type){
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
-        Scene.open(`app-ui-combuildWindow`,this.backNode, null, {id:type,backNode:this.backNode});
+        //如果是酒馆，则特殊处理
+        if(type==1009){
+            Connect.request({type:"app/hero@choose",arg:[]},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }else{
+                    Scene.open(`app-ui-hotel`,this.backNode);
+                    for(let i=0;i<3;i++){
+                        Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[i],backNode:this.backNode});
+                    }
+                }  
+            })         
+        }else{
+            Scene.open(`app-ui-combuildWindow`,this.backNode, null, {id:type,backNode:this.backNode});
+        }
+        
     }
 
     added(node){   
@@ -100,7 +122,124 @@ class WBuild extends Widget{
 
     }
 }
+//英雄弹窗
+class Whero extends Widget{
+    node: any
 
+    setProps(props){
+        super.setProps(props);
+        let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+            id = props.id
+
+
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
+        this.cfg.children[1].data.style.fill = `${Global.color[bcfg[id]["color"]]}`;
+        this.cfg.children[2].data.text = `统帅：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+        this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+
+        Build.cur_buildId = id
+       
+    }
+    levelup(){
+        let id = Build.cur_buildId,
+            bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+            bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
+            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
+            cost_name = bcfg[id]["cost_type1"],
+            effect = bcfg[id]["effect_type"]
+   
+            Connect.request({type:"app/build@levelup",arg:id},(data) => {
+                if(data.err){
+                    AppEmitter.emit("message","资源不足！");
+                    return console.log(data.err.reson);
+                }
+                for(let i=0;i<effect.length;i++){
+                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
+
+                    }else{
+                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                    }
+                }   
+                DB.data.build[id-1001][1] = data.ok[0];
+                DB.data.res[cost_name][1] = data.ok[1];
+   
+                //更新窗口信息
+                Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+                Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+            })    
+        
+    } 
+    remove(){
+        Scene.remove(this.node);   
+    }  
+    added(node){
+        this.node = this.props.backNode;;
+        Build.com_name = this.elements.get("name");
+        Build.com_effect = this.elements.get("effect");
+        Build.com_cost = this.elements.get("cost");
+    }
+} 
+//酒馆弹窗
+class Whotel extends Widget{
+    node: any
+
+    setProps(props){
+        super.setProps(props);
+        let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+            id = 1009,
+            bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
+            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
+            cost_name = bcfg[id]["cost_type1"],
+            effect = bcfg[id]["effect_type"]
+
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+        this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+
+        Build.cur_buildId = id
+       
+    }
+    levelup(){
+        let id = Build.cur_buildId,
+            bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+            bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
+            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
+            cost_name = bcfg[id]["cost_type1"],
+            effect = bcfg[id]["effect_type"]
+   
+            Connect.request({type:"app/build@levelup",arg:id},(data) => {
+                if(data.err){
+                    AppEmitter.emit("message","资源不足！");
+                    return console.log(data.err.reson);
+                }
+                for(let i=0;i<effect.length;i++){
+                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
+
+                    }else{
+                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                    }
+                }   
+                DB.data.build[id-1001][1] = data.ok[0];
+                DB.data.res[cost_name][1] = data.ok[1];
+   
+                //更新窗口信息
+                Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+                Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+            })    
+        
+    } 
+    remove(){
+        Scene.remove(this.node);   
+    }  
+    added(node){
+        this.node = this.props.backNode;;
+        Build.com_name = this.elements.get("name");
+        Build.com_effect = this.elements.get("effect");
+        Build.com_cost = this.elements.get("cost");
+    }
+} 
 //建筑弹窗
 class WcomWindow extends Widget{
     node: any
@@ -200,6 +339,8 @@ const open = () => {
 Widget.registW("app-ui-build",WBuild);
 Widget.registW("app-ui-combuildWindow",WcomWindow);
 Widget.registW("app-ui-buildButton",WbuildButton);
+Widget.registW("app-ui-hotel",Whotel);
+Widget.registW("app-ui-hero",Whero);
 //初始化建筑数据库 [是否解锁，等级]
 
 const initBuild = () => {
