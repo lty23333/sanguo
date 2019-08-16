@@ -26,6 +26,7 @@ class Build {
     static  com_cost// 通用窗口消耗节点
     static res_name = ["food","wood","sci","gold"]  //资源名
     static res_Cname = ["粮食","木材","黄金","科技"]
+    static army_Cname = ["步兵","骑兵","弓兵"]
     static build_sprite =[]
     static cur_buildId = 0
     static phero = [80,15,4,0.8,0.2,0]
@@ -86,7 +87,7 @@ class WbuildButton extends Widget{
                 }else{
                     Scene.open(`app-ui-hotel`,this.backNode);
                     for(let i=0;i<3;i++){
-                        Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[i],backNode:this.backNode});
+                        Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode});
                     }
                 }  
             })         
@@ -134,39 +135,31 @@ class Whero extends Widget{
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         this.cfg.children[1].data.style.fill = `${Global.color[bcfg[id]["color"]]}`;
-        this.cfg.children[2].data.text = `统帅：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-        this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+        this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}`;
+        this.cfg.children[3].data.text = `${bcfg[id][Build.army_Cname[bcfg[id]["arms"]]]}:${bcfg[id]["number"]}`;
+        this.cfg.children[3].data.text = `${bcfg[id]["gold"]}黄金`
 
-        Build.cur_buildId = id
+        this.cfg.on={"tap":{"func":"buy","arg":id}};
        
     }
-    levelup(){
-        let id = Build.cur_buildId,
+    buy(id){
+        let 
             bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
             cost_name = bcfg[id]["cost_type1"],
             effect = bcfg[id]["effect_type"]
    
-            Connect.request({type:"app/build@levelup",arg:id},(data) => {
+            Connect.request({type:"app/hero@buy",arg:id},(data) => {
                 if(data.err){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
+                }else{
+                    DB.data.res.gold = data.ok[0]
+                    DB.data.hero.choose = data.ok[1];
+                    DB.data.hero.own = data.ok[2];
+                    this.remove();
                 }
-                for(let i=0;i<effect.length;i++){
-                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
-
-                    }else{
-                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                    }
-                }   
-                DB.data.build[id-1001][1] = data.ok[0];
-                DB.data.res[cost_name][1] = data.ok[1];
-   
-                //更新窗口信息
-                Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-                Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-                Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
             })    
         
     } 
@@ -174,7 +167,7 @@ class Whero extends Widget{
         Scene.remove(this.node);   
     }  
     added(node){
-        this.node = this.props.backNode;;
+        this.node = node;
         Build.com_name = this.elements.get("name");
         Build.com_effect = this.elements.get("effect");
         Build.com_cost = this.elements.get("cost");
@@ -230,6 +223,21 @@ class Whotel extends Widget{
             })    
         
     } 
+    update(){
+        
+        Connect.request({type:"app/hero@choose",arg:1},(data) => {
+            if(data.err){
+                AppEmitter.emit("message","黄金不足！");
+                return console.log(data.err.reson);
+            }
+                for(let i=0;i<3;i++){
+                    Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node});
+                }
+                DB.data.res.gold[1] = data.ok[1];
+                DB.data.hotel.price = data.ok[2];
+
+        } 
+    }
     remove(){
         Scene.remove(this.node);   
     }  

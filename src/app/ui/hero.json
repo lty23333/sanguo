@@ -1,6 +1,6 @@
 {   
     "type": "container",
-    "on":{"tap":{"func":"buyhero","arg":[1001]}},
+    "on":{"tap":{"func":"buy","arg":[1001]}},
     "data": {
         "width": "400",
         "height": "400",

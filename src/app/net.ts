@@ -360,10 +360,16 @@ const eventtrigger = (eventId: any, callback) => {
 Connect.setTest("app/event@eventtrigger",eventtrigger);
 /****************** hero ******************/
 const hero_choose = (param: any, callback) => {   
-    let now =Math.floor(DB.date.day[0]/400);
-    if(DB.hotel.date < now ){
+    let now =Math.floor(DB.date.day[0]/400),
+        bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
+    if(DB.hotel.price  <= DB.res.gold[1] && param ==1){
+        DB.res.gold[1] -= DB.hotel.price;
+        DB.hotel.price = 2* DB.hotel.price;
+        param = 2;
+    } 
+
+    if(DB.hotel.date < now || param == 2){
         DB.hotel.date = now;
-        let choose =[]
         for(let i=0;i<3;i++){
             let num = 0,
             rnd = rand(100),
@@ -375,18 +381,39 @@ const hero_choose = (param: any, callback) => {
                     break;
                 }
             }
-            let heroId =Math.floor(rand(DB.hero.left[v].length))
-            choose.push(DB.hero.left[v][heroId]);
+            let heroId =Math.floor(rand(DB.hero.left[v].length))           
+            DB.hero.choose.push(DB.hero.left[v][heroId]);
             DB.hero.left[v].splice(heroId,1);
-        } 
-        
-
+            let c = bcfg[DB.hero.choose[0]]["color"]
+            DB.hero.left[c].push(DB.hero.choose[0]);
+            DB.hero.choose.splice(0,1);
+        }         
     }    
 
     saveDb("hero",DB.hero);
-    callback({ok:[choose]}); 
+    saveDb("hotel",DB.hotel);
+    saveDb("res",DB.res);
+    callback({ok:[DB.hero.choose,DB.res.gold[1],DB.hotel.price]}); 
 }
+const hero_buy = (id: any, callback) => { 
+    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        gold = bcfg[id]["gold"];
+
+        if(gold<=DB.res.gold[1]){
+            DB.res.gold[1] = DB.res.gold[1] -gold;
+            DB.hero.choose.splice(DB.hero.choose.indexOf(id),1);
+            DB.hero.own.push([id,0,0]);
+            saveDb("hero",DB.hero);     
+            saveDb("res",DB.res);
+            callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own]});
+        }else{
+        callback({err:1}); 
+    }
+
+}
+
 Connect.setTest("app/hero@choose",hero_choose);
+Connect.setTest("app/hero@buy",hero_buy);
 /****************** stage ******************/
 
 let dataStage = {level:1,fightCount:0,lastFightTime:0};
