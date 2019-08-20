@@ -8,7 +8,7 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import Global from './global';
+import {Global} from './global';
 import people from './people';
 
 
@@ -372,7 +372,7 @@ const openStart = () => {
 
 /****************** 立即执行 ******************/
 //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
-DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[0,0,600,0,0,0,0]});
+DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0]});
 DB.init("date",{unlock:[0,0],day:[0]});
 //主界面解锁
 DB.init("face",{"unlock":[0,0,1,0,0]});

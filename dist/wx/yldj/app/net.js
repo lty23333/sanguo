@@ -2,6 +2,7 @@
 import Connect from "../libs/ni/connect";
 import CfgMgr from "../libs/ni/cfgmrg";
 import { AppEmitter } from './appEmitter';
+import { rand } from './global';
 /**
  * @description 模拟后台测试
  */
@@ -19,7 +20,7 @@ let DB = {
     food: [1, 0, 5000, 0, 0, 0, 0],
     wood: [0, 0, 600, 0, 0, 0, 0],
     sci: [0, 0, 100, 0, 0, 0, 0],
-    gold: [0, 0, 600, 0, 0, 0, 0]
+    gold: [1, 600, 600, 0, 0, 0, 0]
   },
   build: [[1, 0]],
   date: {
@@ -36,7 +37,18 @@ let DB = {
   face: {
     "unlock": [0, 0, 1, 0, 0]
   },
-  science: [[1, 0]]
+  science: [[1, 0]],
+  hero: {
+    own: [[]],
+    left: [[], [], [], [], [], []],
+    choose: [0, 0, 0],
+    add: [0, 0, 0, 0],
+    p: [80, 15, 4, 0.8, 0.2, 0]
+  },
+  hotel: {
+    date: 0,
+    price: 10
+  }
 };
 
 const initScience = () => {
@@ -55,9 +67,18 @@ const initBuild = () => {
   }
 };
 
+const initHero = () => {
+  let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero");
+
+  for (let i in bcfg) {
+    DB.hero.left[bcfg[i]["color"]].push(i);
+  }
+};
+
 const initDB = () => {
   initScience();
   initBuild();
+  initHero();
 }; //权重
 
 
@@ -433,6 +454,79 @@ const eventtrigger = (eventId, callback) => {
 };
 
 Connect.setTest("app/event@eventtrigger", eventtrigger);
+/****************** hero ******************/
+//param:（1给钱刷新，2时间刷新）
+
+const hero_choose = (param, callback) => {
+  let now = Math.ceil(DB.date.day[0] / 400),
+      bcfg = CfgMgr.getOne("app/cfg/hero.json@hero");
+
+  if (DB.hotel.price <= DB.res.gold[1] && param == 1) {
+    DB.res.gold[1] -= DB.hotel.price;
+    DB.hotel.price = 2 * DB.hotel.price;
+    param = 2;
+  }
+
+  if (DB.hotel.date < now || param == 2) {
+    DB.hotel.date = now;
+
+    for (let i = 0; i < 3; i++) {
+      let num = 0,
+          rnd = rand(10000),
+          v = 0;
+
+      for (let j = 0; j < 6; j++) {
+        num += 100 * DB.hero.p[j];
+
+        if (rnd < num) {
+          v = j;
+          break;
+        }
+      }
+
+      let heroId = Math.floor(rand(DB.hero.left[v].length)) - 1;
+      DB.hero.choose.push(DB.hero.left[v][heroId]);
+      DB.hero.left[v].splice(heroId, 1);
+
+      if (DB.hero.choose[0]) {
+        let c = bcfg[DB.hero.choose[0]]["color"];
+        DB.hero.left[c].push(DB.hero.choose[0]);
+      }
+
+      DB.hero.choose.splice(0, 1);
+    }
+  }
+
+  saveDb("hero", DB.hero);
+  saveDb("hotel", DB.hotel);
+  saveDb("res", DB.res);
+  callback({
+    ok: [DB.hero.choose, DB.res.gold[1], DB.hotel.price]
+  });
+};
+
+const hero_buy = (id, callback) => {
+  let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+      gold = bcfg[id]["gold"];
+
+  if (gold <= DB.res.gold[1]) {
+    DB.res.gold[1] = DB.res.gold[1] - gold;
+    DB.hero.choose.splice(DB.hero.choose.indexOf(id), 1);
+    DB.hero.own.push([id, 0, 0]);
+    saveDb("hero", DB.hero);
+    saveDb("res", DB.res);
+    callback({
+      ok: [DB.res.gold[1], DB.hero.choose, DB.hero.own]
+    });
+  } else {
+    callback({
+      err: 1
+    });
+  }
+};
+
+Connect.setTest("app/hero@choose", hero_choose);
+Connect.setTest("app/hero@buy", hero_buy);
 /****************** stage ******************/
 
 let dataStage = {

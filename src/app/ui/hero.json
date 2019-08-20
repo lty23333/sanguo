@@ -4,8 +4,8 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 350,
-        "top": 450
+        "left": 300,
+        "top": 560
     },
     "children":[
         {
@@ -59,8 +59,8 @@
             "data": {
                 "id":"cost",
                 "text":"1 黄金",
-                "left":30,
-                "top": 150,
+                "left":70,
+                "top": 200,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

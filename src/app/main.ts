@@ -5,6 +5,8 @@ import  './net';
 import  './build';
 import  './people';
 import  './science';
+import  './army';
+
 
 //ui
 import './widget/button';

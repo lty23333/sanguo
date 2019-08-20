@@ -16,13 +16,13 @@ const saveDb = (key,data) => {
     localStorage.setItem(key,JSON.stringify(data));
 }
 
-let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[0,0,600,0,0,0,0]},
+let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0]},
 build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
 face:{"unlock":[0,0,1,0,0]},
 science:[[1,0]],
-hero:{own:[[]],left:[],choose:[],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hero:{own:[[]],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:0,price:10}
 }
 
@@ -40,10 +40,11 @@ const initBuild = () => {
     }   
 };
 
+
 const initHero = () => {
-    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
     for(let i in bcfg ){
-        DB.hero.left.push(i);
+        DB.hero.left[bcfg[i]["color"]].push(i);
     }
 }
 
@@ -359,8 +360,9 @@ const eventtrigger = (eventId: any, callback) => {
 
 Connect.setTest("app/event@eventtrigger",eventtrigger);
 /****************** hero ******************/
+//param:（1给钱刷新，2时间刷新）
 const hero_choose = (param: any, callback) => {   
-    let now =Math.floor(DB.date.day[0]/400),
+    let now =Math.ceil(DB.date.day[0]/400),
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
     if(DB.hotel.price  <= DB.res.gold[1] && param ==1){
         DB.res.gold[1] -= DB.hotel.price;
@@ -372,20 +374,22 @@ const hero_choose = (param: any, callback) => {
         DB.hotel.date = now;
         for(let i=0;i<3;i++){
             let num = 0,
-            rnd = rand(100),
+            rnd = rand(10000),
             v = 0;
             for(let j=0;j<6;j++){
-                num += DB.hero.p[j];
+                num += 100*DB.hero.p[j];
                 if( rnd<num){
                     v = j;
                     break;
                 }
             }
-            let heroId =Math.floor(rand(DB.hero.left[v].length))           
+            let heroId =Math.floor(rand(DB.hero.left[v].length))-1           
             DB.hero.choose.push(DB.hero.left[v][heroId]);
             DB.hero.left[v].splice(heroId,1);
-            let c = bcfg[DB.hero.choose[0]]["color"]
-            DB.hero.left[c].push(DB.hero.choose[0]);
+            if (DB.hero.choose[0]){
+                let c = bcfg[DB.hero.choose[0]]["color"]
+                DB.hero.left[c].push(DB.hero.choose[0]);
+            }
             DB.hero.choose.splice(0,1);
         }         
     }    

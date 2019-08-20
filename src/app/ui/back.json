@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"remove"}},
     "data": {
-        "width": "1500",
-        "height": "3000",
+        "width": "2000",
+        "height": "4000",
         "left": 0,
         "top": 0
     },
@@ -11,8 +11,8 @@
         {
             "type": "rect",
             "data": {
-                "width": 1500,
-                "height": 3000,
+                "width": 2000,
+                "height": 4000,
                 "left": -750,
                 "top": -1500,
                 "background-color": "#d9c6ad",

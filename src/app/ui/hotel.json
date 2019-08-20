@@ -3,7 +3,7 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 350,
+        "left": 100,
         "top": 450
     },
     "children":[
@@ -68,6 +68,22 @@
                 "size":30,
                 "color":"#d9c6ad"
             
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"update"}},
+                "url": "images/ui/button_buy.png",
+                "id":"button_update",
+                "anchor":[0.5,0.5],
+                "width": 214,
+                "height": 100,
+                "left": 300,
+                "top": 600,
+                "text": "刷新",
+                "size":30,
+                "color":"#d9c6ad"
             }
         }
     ]

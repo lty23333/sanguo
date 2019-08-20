@@ -30,6 +30,7 @@ class Build {
     static build_sprite =[]
     static cur_buildId = 0
     static phero = [80,15,4,0.8,0.2,0]
+    static heroNode = []
 
     static clear(){
 
@@ -81,13 +82,13 @@ class WbuildButton extends Widget{
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         //如果是酒馆，则特殊处理
         if(type==1009){
-            Connect.request({type:"app/hero@choose",arg:[]},(data) => {
+            Connect.request({type:"app/hero@choose",arg:2},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
                 }else{
-                    Scene.open(`app-ui-hotel`,this.backNode);
-                    for(let i=0;i<3;i++){
-                        Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode});
+                    Scene.open(`app-ui-hotel`,this.backNode,null, {id:1009,backNode:this.backNode});
+                    for(let i=0;i<data.ok[0].length;i++){
+                        Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:90+i*230});
                     }
                 }  
             })         
@@ -136,26 +137,24 @@ class Whero extends Widget{
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         this.cfg.children[1].data.style.fill = `${Global.color[bcfg[id]["color"]]}`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}`;
-        this.cfg.children[3].data.text = `${bcfg[id][Build.army_Cname[bcfg[id]["arms"]]]}:${bcfg[id]["number"]}`;
-        this.cfg.children[3].data.text = `${bcfg[id]["gold"]}黄金`
+        this.cfg.children[3].data.text = `${Build.army_Cname[bcfg[id]["arms"]]}:${bcfg[id]["number"]}`;
+        this.cfg.children[4].data.text = `${bcfg[id]["gold"]}黄金`;
+        this.cfg.data.left = props.left;
 
-        this.cfg.on={"tap":{"func":"buy","arg":id}};
+        this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
        
     }
     buy(id){
         let 
-            bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
-            bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
-            cost_name = bcfg[id]["cost_type1"],
-            effect = bcfg[id]["effect_type"]
+            bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+            cost = bcfg[id]["gold"]
    
             Connect.request({type:"app/hero@buy",arg:id},(data) => {
                 if(data.err){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
                 }else{
-                    DB.data.res.gold = data.ok[0]
+                    DB.data.res.gold[1] = data.ok[0]
                     DB.data.hero.choose = data.ok[1];
                     DB.data.hero.own = data.ok[2];
                     this.remove();
@@ -229,14 +228,17 @@ class Whotel extends Widget{
             if(data.err){
                 AppEmitter.emit("message","黄金不足！");
                 return console.log(data.err.reson);
-            }
+            }else{
                 for(let i=0;i<3;i++){
-                    Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node});
+                    if(Build.heroNode[i]!= undefined){
+                        Scene.remove(Build.heroNode[i]);
+                    }
+                    Build.heroNode[i] = Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node,left:90+i*230});
                 }
                 DB.data.res.gold[1] = data.ok[1];
                 DB.data.hotel.price = data.ok[2];
-
-        } 
+            }
+        }) 
     }
     remove(){
         Scene.remove(this.node);   
@@ -331,6 +333,7 @@ class WcomWindow extends Widget{
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-build", Scene.root);
     Global.mainFace.id = 2;
+    DB.data.build[8][0]=1;
     //显示解锁的建筑按钮
     for(let i=0; i<DB.data.build.length;i++ ){
         if(DB.data.build[i][0]){
@@ -360,6 +363,7 @@ const initBuild = () => {
     
     DB.init("build", tempDB);
 };
+DB.init("hotel",{date:0,price:10});
 //注册页面打开事件
 AppEmitter.add("intoBuild",(node)=>{
     open();

@@ -6,7 +6,7 @@ import Widget from '../libs/ni/widget';
 import CfgMgr from '../libs/ni/cfgmrg';
 import { AppEmitter } from './appEmitter';
 import Connect from "../libs/ni/connect";
-import Global from './global';
+import { Global } from './global';
 
 /****************** 导出 ******************/
 export const addNews = news => {
@@ -411,7 +411,7 @@ DB.init("res", {
   food: [1, 0, 5000, 0, 0, 0, 0],
   wood: [0, 0, 600, 0, 0, 0, 0],
   sci: [0, 0, 100, 0, 0, 0, 0],
-  gold: [0, 0, 600, 0, 0, 0, 0]
+  gold: [1, 600, 600, 0, 0, 0, 0]
 });
 DB.init("date", {
   unlock: [0, 0],

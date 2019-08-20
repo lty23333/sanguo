@@ -4,7 +4,8 @@ import './stage';
 import './net';
 import './build';
 import './people';
-import './science'; //ui
+import './science';
+import './army'; //ui
 
 import './widget/button';
 import './widget/ani'; //local use
