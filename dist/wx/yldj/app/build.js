@@ -185,6 +185,7 @@ class Whero extends Widget {
         DB.data.res.gold[1] = data.ok[0];
         DB.data.hero.choose = data.ok[1];
         DB.data.hero.own = data.ok[2];
+        Build.heroNode.splice(data.ok[3], 1);
         this.remove();
       }
     });

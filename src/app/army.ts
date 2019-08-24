@@ -14,13 +14,13 @@ import {Global} from './global';
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
-let workNode = [];
-let peopleNode = [];
+let heroNode = [];
+let armyNode = [];
 
     
 
 
-class People {
+class Army {
     
     static people_sprite =[]
     static work_Cname =["空闲人口","农民","樵夫","学者","矿工"]
@@ -30,30 +30,38 @@ class People {
 
 
 
-    static eatFood(){
-        Connect.request({type:"app/res@eatFood",arg:{}},(data) => {
+    static eatGold(){
+        Connect.request({type:"app/res@eatGold",arg:{}},(data) => {
             if(data.err){
                 return console.log(data.err.reson);
             }
-            DB.data.res.food[5] = data.ok;
+            DB.data.res.gold[5] = data.ok;
         })
     }
-    static updatePeople(id){ 
-           let p =DB.data.people,
-               work = 0
-            if(peopleNode[id]!= undefined && Global.mainFace.id == 1){
-                if(id ==0){
-                    for(let i=1;i<5;i++){
-                        if(p[People.work_name[i]][0]){
-                            work += p[People.work_name[i]][1]
-                        } 
-                    }
-                    peopleNode[id].text = `${p.total[id]-work}`;
-                }else{
-                    peopleNode[id].text = `${DB.data.people.total[id]}`
-                }
-            }
+    static updateArmy(){
+        if(armyNode[0]!= undefined && Global.mainFace.id == 3){
+          armyNode[0].text = `${DB.data.army.cur}`;
+          for(let i=0;i<DB.data.hero.own.length;i++){
+
+          }
+        }
     }
+    static updateArmy1(id){ 
+        let p =DB.data.people,
+            work = 0
+         if(armyNode[id]!= undefined && Global.mainFace.id == 1){
+             if(id ==0){
+                 for(let i=1;i<5;i++){
+                     if(p[People.work_name[i]][0]){
+                         work += p[People.work_name[i]][1]
+                     } 
+                 }
+                 armyNode[0].text = `${p.total[id]-work}`;
+             }else{
+                 peopleNode[id].text = `${DB.data.people.total[id]}`
+             }
+         }
+ }
     static updateWork(id){    
             if(workNode[id] != undefined && Global.mainFace.id == 1){
                 workNode[id].text = `${People.work_Cname[id]}（${DB.data.people[People.work_name[id]][1]}）`
@@ -123,7 +131,7 @@ class WWork extends Widget{
 /**
  * @description  人口界面组件
  */
-class WPeople extends Widget{
+class WArmy extends Widget{
     setProps(props){
         super.setProps(props);
         let work = 0,
@@ -139,8 +147,10 @@ class WPeople extends Widget{
 
     }
     added(node){
-        peopleNode[0] = this.elements.get("people_number");
-        peopleNode[1] = this.elements.get("people_max");
+        armyNode[0] = this.elements.get("army_number");
+    }
+    army_buy(){
+
     }
 
 }
@@ -161,15 +171,15 @@ class WworkDis extends Widget{
 
 
 /**
- * @description 打开人口界面
+ * @description 打开军队界面
  */
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-people", Scene.root);
     Global.mainFace.id = 1;
     //显示解锁的工作按钮
-    for(let i=1; i<5;i++ ){
-        if(DB.data.people[People.work_name[i]][0]){
-            People.people_sprite = Scene.open("app-ui-peopleWork", Global.mainFace.node,null, {id:i});
+    for(let i=1; i<DB.data.hero.own.length;i++ ){
+        if(DB.data.hero.own[i][0]){
+            heroNode[i] = Scene.open("app-ui-armyButton", Global.mainFace.node,null, {id:i});
         }
     }
 
@@ -192,17 +202,16 @@ for(let i in bcfg ){
 }
 //初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
 DB.init("hero",{own:[[]],left:leftHero,choose:[],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
-
+DB.init("army",{cur:0,total:0,price:50});
 
 //注册人口监听
 
-for(let i = 0; i <2; i++){
-    DB.emitter.add(`people.total.${i}`, ((x) => {
-        return ()=>{
-            People.updatePeople(x)
-        }
-    })(i));
-}   
+
+    DB.emitter.add(`army.total`, () => {
+            Army.updateArmy();
+     
+    });
+
 //注册工作监听
 for(let i = 1; i <5; i++){
     DB.emitter.add(`people.${People.work_name[i]}.1`, ((x) => {
@@ -219,8 +228,8 @@ for(let i = 1; i <5; i++){
             }
         })(i));
 }   
-DB.emitter.add(`people.total.0`, () => {
-    People.eatFood()
+DB.emitter.add(`army.total.1`, () => {
+    People.eatGold()
 });
 
 //注册页面打开事件

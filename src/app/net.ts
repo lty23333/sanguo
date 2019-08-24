@@ -23,7 +23,8 @@ people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
 face:{"unlock":[0,0,1,0,0]},
 science:[[1,0]],
 hero:{own:[[]],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
-hotel:{date:0,price:10}
+hotel:{date:0,price:10},
+army:{cur:0,total:0,price:50}
 }
 
 const initScience = () => {
@@ -54,41 +55,12 @@ const initDB = () => {
     initHero();
 }
 
-
-//权重
-class Weight{
-    /**
-     * @description 初始化权重
-     * @param wTable 权重表 [10,2,3,...]
-     */
-    constructor(wTable){
-        let w = [];
-        for(let i = 0, len = wTable.length;i < len; i ++){
-            w.push(this.all);
-            this.all += wTable[i];
-            w.push(this.all);
-            this.table[i] = w;
-            w = [];
-        }
-    }
-    private all = 0
-    private table = []
-    /**
-     * @description 计算权重是否通过
-     * @returns index 第几个权重，0开始, 对应 table
-     */
-    public cacl():number{
-        let p = Math.random(),l,r;
-        for(let i = 0, len = this.table.length; i < len; i++){
-            l = this.table[i][0]/this.all;
-            r = this.table[i][1]/this.all;
-            if(p >= l && p < r){
-                return i;
-            }
-        }
-        return -1;
-    }
+const read_all = (param: any, callback) => {
+    let d:any = localStorage;
+    callback({ok:d});
 }
+
+Connect.setTest("app/all@read",read_all);
 /****************** date ******************/
 const update_date = (param: any, callback) => {   
      DB.date.day[0] += 1;
@@ -105,17 +77,6 @@ const update_date = (param: any, callback) => {
 
 /****************** res ******************/
 
-//读取资源信息
-const read_res = (param: any, callback) => {
-    let d:any = localStorage.getItem("res");
-    if(d){
-        d = JSON.parse(d);
-        DB.res = d;
-    }else{
-        d = DB.res;
-    }
-    callback({ok:d});
-}
 //自动更新资源数据
 const add_res = (param: any, callback) => {
    
@@ -199,9 +160,14 @@ const manadd_food = (param: any, callback) => {
      callback({ok:DB.res.food[5]});  
 
  }
+ const eat_gold = (param: any, callback) => {
+    DB.res.gold[5] = DB.army.total[0] *6;
+    saveDb("res",DB.res);
+    callback({ok:DB.res.food[5]});  
+
+}
 
 
-Connect.setTest("app/res@read",read_res);
 Connect.setTest("app/res@add",add_res);
 Connect.setTest("app/res@manfood",manadd_food);
 Connect.setTest("app/people@changepeople",change_people);
@@ -209,18 +175,6 @@ Connect.setTest("app/res@eatFood",eat_food);
 
 /****************** build ******************/
 
-let  res_name = ["food","wood","sic","gold"];
-//读取玩家信息
-const readBuild = (param: any, callback) => {
-    let d:any = localStorage.getItem("build");
-    if(d){
-        d = JSON.parse(d);
-        DB.build = d;
-    }else{
-        d = DB.build;
-    }
-    callback({ok:d});
-}
 //建筑升级
 const levelup = (id: any, callback) => {
     let  bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
@@ -264,21 +218,9 @@ const levelup = (id: any, callback) => {
           
 }
 
-Connect.setTest("app/build@read",readBuild);
 Connect.setTest("app/build@levelup",levelup);
 /****************** science ******************/
 
-//读取玩家信息
-const readScience = (param: any, callback) => {
-    let d:any = localStorage.getItem("science");
-    if(d){
-        d = JSON.parse(d);
-        DB.science = d;
-    }else{
-        d = DB.science;
-    }
-    callback({ok:d});
-}
 //解锁科技
 const unlock = (id: any, callback) => {
     let  bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -308,21 +250,9 @@ const unlock = (id: any, callback) => {
           
 }
 
-Connect.setTest("app/science@read",readScience);
 Connect.setTest("app/science@unlock",unlock);
 /****************** people ******************/
 
-//读取玩家信息
-const readPeople = (param: any, callback) => {
-    let d:any = localStorage.getItem("people");
-    if(d){
-        d = JSON.parse(d);
-        DB.people = d;
-    }else{
-        d = DB.people;
-    }
-    callback({ok:d});
-}
 //添加工作人
 const people_plus = (id: any, callback) => { 
     let p = DB.people      
@@ -346,7 +276,6 @@ const people_zero = (id: any, callback) => {
     callback({ok:[DB.people[id][1]]}); 
 }
 
-    Connect.setTest("app/people@read",readPeople);
     Connect.setTest("app/people@people_plus",people_plus);
     Connect.setTest("app/people@people_minus",people_minus);
     Connect.setTest("app/people@people_zero",people_zero);
@@ -401,15 +330,16 @@ const hero_choose = (param: any, callback) => {
 }
 const hero_buy = (id: any, callback) => { 
     let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        gold = bcfg[id]["gold"];
+        gold = bcfg[id]["gold"],
+        choose_id = DB.hero.choose.indexOf(id)
 
         if(gold<=DB.res.gold[1]){
             DB.res.gold[1] = DB.res.gold[1] -gold;
-            DB.hero.choose.splice(DB.hero.choose.indexOf(id),1);
+            DB.hero.choose.splice(choose_id,1);
             DB.hero.own.push([id,0,0]);
             saveDb("hero",DB.hero);     
             saveDb("res",DB.res);
-            callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own]});
+            callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
         }else{
         callback({err:1}); 
     }
@@ -418,6 +348,64 @@ const hero_buy = (id: any, callback) => {
 
 Connect.setTest("app/hero@choose",hero_choose);
 Connect.setTest("app/hero@buy",hero_buy);
+/****************** army ******************/
+const army_buy = (id: any, callback) => { 
+    let cost = DB.army.price
+
+        if(cost<=DB.res.gold[1]){
+            DB.res.gold[1] = DB.res.gold[1] -cost;
+            DB.army.total += 1;
+            DB.army.cur +=1;
+            saveDb("army",DB.hero);     
+            saveDb("res",DB.res);
+            callback({ok:[DB.res.gold[1],DB.army.total,DB.army.cur]});
+        }else{
+        callback({err:1}); 
+    }
+
+}
+//添加军人
+const army_plus = (id: any, callback) => { 
+    let a = DB.army,
+        bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        max_army = bcfg[id]["command"] + DB.hero.add[0]
+
+    if (a.cur >0 ){
+        if(max_army > DB.hero.own[1]){
+            DB.hero.own[id][1] += 1;
+            a.cur -=1;
+            saveDb("army",DB.army);
+            saveDb("hero",DB.hero); 
+            callback({ok:[DB.hero.own[id][1],a.cur]}); 
+        }else{
+            callback({err:2}); 
+        }
+    }else{
+        callback({err:1}); 
+    }               
+}
+//减少军人
+const army_minus = (id: any, callback) => {       
+    if (DB.hero.own[id][1] >0 ){
+         DB.hero.own[id][1]  -= 1;
+         DB.army.cur +=1; 
+         saveDb("army",DB.army);
+         saveDb("hero",DB.hero);
+    }               
+    callback({ok:[DB.hero.own[id][1],DB.army.cur]}); 
+}
+const army_zero = (id: any, callback) => {
+    DB.army.cur += DB.hero.own[id][1];       
+    DB.army[id][1] = 0;
+    saveDb("army",DB.army);  
+    saveDb("hero",DB.hero);           
+    callback({ok:[DB.hero.own[id][1],DB.army.cur]});
+}
+
+    Connect.setTest("app/army@army_buy",army_buy);
+    Connect.setTest("app/army@army_plus",army_plus);
+    Connect.setTest("app/army@army_minus",army_minus);
+    Connect.setTest("app/army@army_zero",army_zero);
 /****************** stage ******************/
 
 let dataStage = {level:1,fightCount:0,lastFightTime:0};

@@ -10,7 +10,7 @@
         {
             "type": "text",
             "data": {
-                "text":"空闲人口：",
+                "text":"空闲士兵：",
                 "left":0,
                 "top": 0,
                 "style":{
@@ -21,7 +21,7 @@
         {
             "type": "text",
             "data": {
-                "id":"people_number",
+                "id":"army_number",
                 "text":"0",
                 "left":140,
                 "top": 0,
@@ -31,23 +31,27 @@
             }
         },
         {
-            "type": "text",
-            "data": {
-                "id":"people_/",
-                "text":"/",
-                "left":165,
-                "top": 0,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"army_buy"}},
+                "url": "images/ui/button_buy.png",
+                "id":"army_buy",
+                "anchor":[0.5,0.5],
+                "width": 214,
+                "height": 100,
+                "left": 100,
+                "top": 400,
+                "text": "招募",
+                "size":30,
+                "color":"#d9c6ad"
             }
         },
         {
             "type": "text",
             "data": {
-                "id":"people_max",
-                "text":"0",
-                "left":180,
+                "id":"army_price",
+                "text":"50黄金",
+                "left":350,
                 "top": 0,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"

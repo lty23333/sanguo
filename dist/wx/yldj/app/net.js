@@ -507,16 +507,17 @@ const hero_choose = (param, callback) => {
 
 const hero_buy = (id, callback) => {
   let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-      gold = bcfg[id]["gold"];
+      gold = bcfg[id]["gold"],
+      choose_id = DB.hero.choose.indexOf(id);
 
   if (gold <= DB.res.gold[1]) {
     DB.res.gold[1] = DB.res.gold[1] - gold;
-    DB.hero.choose.splice(DB.hero.choose.indexOf(id), 1);
+    DB.hero.choose.splice(choose_id, 1);
     DB.hero.own.push([id, 0, 0]);
     saveDb("hero", DB.hero);
     saveDb("res", DB.res);
     callback({
-      ok: [DB.res.gold[1], DB.hero.choose, DB.hero.own]
+      ok: [DB.res.gold[1], DB.hero.choose, DB.hero.own, choose_id]
     });
   } else {
     callback({
@@ -527,6 +528,45 @@ const hero_buy = (id, callback) => {
 
 Connect.setTest("app/hero@choose", hero_choose);
 Connect.setTest("app/hero@buy", hero_buy);
+/****************** army ******************/
+//添加工作人
+
+const army_plus = (id, callback) => {
+  let p = DB.army;
+
+  if (p.total[0] - p.food[1] - p.wood[1] - p.sci[1] - p.gold[1] > 0) {
+    DB.army[id][1] += 1;
+    saveDb("army", DB.army);
+  }
+
+  callback({
+    ok: [DB.army[id][1]]
+  });
+}; //减少工作人
+
+
+const army_minus = (id, callback) => {
+  if (DB.army[id][1] > 0) {
+    DB.army[id][1] -= 1;
+    saveDb("army", DB.army);
+  }
+
+  callback({
+    ok: [DB.army[id][1]]
+  });
+};
+
+const army_zero = (id, callback) => {
+  DB.army[id][1] = 0;
+  saveDb("army", DB.army);
+  callback({
+    ok: [DB.army[id][1]]
+  });
+};
+
+Connect.setTest("app/army@army_plus", army_plus);
+Connect.setTest("app/army@army_minus", army_minus);
+Connect.setTest("app/army@army_zero", army_zero);
 /****************** stage ******************/
 
 let dataStage = {

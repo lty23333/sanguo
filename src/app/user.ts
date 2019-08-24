@@ -154,6 +154,13 @@ const loginCallback = (err) => {
     if(err){
         return console.log(err);
     }
+    Connect.request({type:"app/all@read",arg:[]},(data) => {
+        let d = JSON.parse(data.ok);
+        for(let i in d){
+            DB.data[i] = d[i];
+        }
+    })
+
     AppEmitter.emit("intoMain");
     AppEmitter.emit("intoBuild");
     Scene.remove(User.show);
