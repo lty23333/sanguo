@@ -163,7 +163,7 @@ const manadd_food = (param: any, callback) => {
  const eat_gold = (param: any, callback) => {
     DB.res.gold[5] = DB.army.total[0] *6;
     saveDb("res",DB.res);
-    callback({ok:DB.res.food[5]});  
+    callback({ok:DB.res.gold[5]});  
 
 }
 
@@ -336,7 +336,7 @@ const hero_buy = (id: any, callback) => {
         if(gold<=DB.res.gold[1]){
             DB.res.gold[1] = DB.res.gold[1] -gold;
             DB.hero.choose.splice(choose_id,1);
-            DB.hero.own.push([id,0,0]);
+            DB.hero.own.push([id,0,0,DB.hero.own.length]);
             saveDb("hero",DB.hero);     
             saveDb("res",DB.res);
             callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
@@ -406,37 +406,7 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_plus",army_plus);
     Connect.setTest("app/army@army_minus",army_minus);
     Connect.setTest("app/army@army_zero",army_zero);
-/****************** stage ******************/
 
-let dataStage = {level:1,fightCount:0,lastFightTime:0};
-//获取当前关卡怪物属性[attack,hp,attackSpeed,attackDistance,speed]
-const findMonster = (type) => {
-    let a = ["attack","hp","attackSpeed","attackDistance","speed"],
-        cfg = CfgMgr.getOne("app/cfg/pve.json@stage")[dataStage.level],
-        scale = cfg[`attr${type+1}`],
-        attr = CfgMgr.getOne("app/cfg/pve.json@attribute")[cfg[`level${type+1}`]],
-        r = [];
-    for(let i = 0, len = a.length; i < len; i++){
-        r[i] = scale[i] * attr[a[i]];
-    }
-    // console.log(cfg,attr);
-    return {module:cfg[`id${type+1}`],attr:r};
-}
-
-//模拟后台读取接口
-const readStage = (param: any,callback: Function) => {
-    let d:any = localStorage.getItem("stage");
-    if(d){
-        d = JSON.parse(d);
-        dataStage = d;
-    }else{
-        d = dataStage;
-    }
-    callback({ok:d});
-}
-
-
-Connect.setTest("app/stage@read",readStage);
 
 
 //注册页面打开事件
