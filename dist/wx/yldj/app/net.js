@@ -46,8 +46,13 @@ let DB = {
     p: [80, 15, 4, 0.8, 0.2, 0]
   },
   hotel: {
-    date: 0,
-    price: 10
+    date: [0],
+    price: [10]
+  },
+  army: {
+    cur: [0],
+    total: [0],
+    price: [50]
   }
 };
 
@@ -79,53 +84,22 @@ const initDB = () => {
   initScience();
   initBuild();
   initHero();
-}; //权重
+};
 
+const read_all = (param, callback) => {
+  let r = "";
 
-class Weight {
-  /**
-   * @description 初始化权重
-   * @param wTable 权重表 [10,2,3,...]
-   */
-  constructor(wTable) {
-    let w = [];
-
-    for (let i = 0, len = wTable.length; i < len; i++) {
-      w.push(this.all);
-      this.all += wTable[i];
-      w.push(this.all);
-      this.table[i] = w;
-      w = [];
-    }
+  for (let k in DB) {
+    r = `${r}${r ? "," : ""}"${k}":${localStorage[k] || JSON.stringify(DB[k])}`;
   }
 
-  all = 0;
-  table = [];
-  /**
-   * @description 计算权重是否通过
-   * @returns index 第几个权重，0开始, 对应 table
-   */
+  callback({
+    ok: `{${r}}`
+  });
+};
 
-  cacl() {
-    let p = Math.random(),
-        l,
-        r;
-
-    for (let i = 0, len = this.table.length; i < len; i++) {
-      l = this.table[i][0] / this.all;
-      r = this.table[i][1] / this.all;
-
-      if (p >= l && p < r) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-}
+Connect.setTest("app/all@read", read_all);
 /****************** date ******************/
-
 
 const update_date = (param, callback) => {
   DB.date.day[0] += 1;
@@ -145,23 +119,7 @@ const update_date = (param, callback) => {
 
 Connect.setTest("app/date@update", update_date);
 /****************** res ******************/
-//读取资源信息
-
-const read_res = (param, callback) => {
-  let d = localStorage.getItem("res");
-
-  if (d) {
-    d = JSON.parse(d);
-    DB.res = d;
-  } else {
-    d = DB.res;
-  }
-
-  callback({
-    ok: d
-  });
-}; //自动更新资源数据
-
+//自动更新资源数据
 
 const add_res = (param, callback) => {
   let number = DB.res[param][1],
@@ -259,30 +217,20 @@ const eat_food = (param, callback) => {
   });
 };
 
-Connect.setTest("app/res@read", read_res);
+const eat_gold = (param, callback) => {
+  DB.res.gold[5] = DB.army.total[0] * 6;
+  saveDb("res", DB.res);
+  callback({
+    ok: DB.res.gold[5]
+  });
+};
+
 Connect.setTest("app/res@add", add_res);
 Connect.setTest("app/res@manfood", manadd_food);
 Connect.setTest("app/people@changepeople", change_people);
 Connect.setTest("app/res@eatFood", eat_food);
 /****************** build ******************/
-
-let res_name = ["food", "wood", "sic", "gold"]; //读取玩家信息
-
-const readBuild = (param, callback) => {
-  let d = localStorage.getItem("build");
-
-  if (d) {
-    d = JSON.parse(d);
-    DB.build = d;
-  } else {
-    d = DB.build;
-  }
-
-  callback({
-    ok: d
-  });
-}; //建筑升级
-
+//建筑升级
 
 const levelup = (id, callback) => {
   let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
@@ -332,26 +280,9 @@ const levelup = (id, callback) => {
   }
 };
 
-Connect.setTest("app/build@read", readBuild);
 Connect.setTest("app/build@levelup", levelup);
 /****************** science ******************/
-//读取玩家信息
-
-const readScience = (param, callback) => {
-  let d = localStorage.getItem("science");
-
-  if (d) {
-    d = JSON.parse(d);
-    DB.science = d;
-  } else {
-    d = DB.science;
-  }
-
-  callback({
-    ok: d
-  });
-}; //解锁科技
-
+//解锁科技
 
 const unlock = (id, callback) => {
   let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -385,26 +316,9 @@ const unlock = (id, callback) => {
   }
 };
 
-Connect.setTest("app/science@read", readScience);
 Connect.setTest("app/science@unlock", unlock);
 /****************** people ******************/
-//读取玩家信息
-
-const readPeople = (param, callback) => {
-  let d = localStorage.getItem("people");
-
-  if (d) {
-    d = JSON.parse(d);
-    DB.people = d;
-  } else {
-    d = DB.people;
-  }
-
-  callback({
-    ok: d
-  });
-}; //添加工作人
-
+//添加工作人
 
 const people_plus = (id, callback) => {
   let p = DB.people;
@@ -439,7 +353,6 @@ const people_zero = (id, callback) => {
   });
 };
 
-Connect.setTest("app/people@read", readPeople);
 Connect.setTest("app/people@people_plus", people_plus);
 Connect.setTest("app/people@people_minus", people_minus);
 Connect.setTest("app/people@people_zero", people_zero);
@@ -461,14 +374,14 @@ const hero_choose = (param, callback) => {
   let now = Math.ceil(DB.date.day[0] / 400),
       bcfg = CfgMgr.getOne("app/cfg/hero.json@hero");
 
-  if (DB.hotel.price <= DB.res.gold[1] && param == 1) {
-    DB.res.gold[1] -= DB.hotel.price;
-    DB.hotel.price = 2 * DB.hotel.price;
+  if (DB.hotel.price[0] <= DB.res.gold[1] && param == 1) {
+    DB.res.gold[1] -= DB.hotel.price[0];
+    DB.hotel.price[0] = 2 * DB.hotel.price[0];
     param = 2;
   }
 
-  if (DB.hotel.date < now || param == 2) {
-    DB.hotel.date = now;
+  if (DB.hotel.date[0] < now || param == 2) {
+    DB.hotel.date[0] = now;
 
     for (let i = 0; i < 3; i++) {
       let num = 0,
@@ -488,12 +401,14 @@ const hero_choose = (param, callback) => {
       DB.hero.choose.push(DB.hero.left[v][heroId]);
       DB.hero.left[v].splice(heroId, 1);
 
-      if (DB.hero.choose[0]) {
+      if (DB.hero.choose[0] && DB.hero.choose.length > 3) {
         let c = bcfg[DB.hero.choose[0]]["color"];
         DB.hero.left[c].push(DB.hero.choose[0]);
       }
 
-      DB.hero.choose.splice(0, 1);
+      if (DB.hero.choose.length > 3) {
+        DB.hero.choose.splice(0, 1);
+      }
     }
   }
 
@@ -513,7 +428,7 @@ const hero_buy = (id, callback) => {
   if (gold <= DB.res.gold[1]) {
     DB.res.gold[1] = DB.res.gold[1] - gold;
     DB.hero.choose.splice(choose_id, 1);
-    DB.hero.own.push([id, 0, 0]);
+    DB.hero.own.push([id, 0, 0, DB.hero.own.length]);
     saveDb("hero", DB.hero);
     saveDb("res", DB.res);
     callback({
@@ -529,87 +444,81 @@ const hero_buy = (id, callback) => {
 Connect.setTest("app/hero@choose", hero_choose);
 Connect.setTest("app/hero@buy", hero_buy);
 /****************** army ******************/
-//添加工作人
+
+const army_buy = (id, callback) => {
+  let cost = DB.army.price[0];
+
+  if (cost <= DB.res.gold[1]) {
+    DB.res.gold[1] = DB.res.gold[1] - cost;
+    DB.army.total[0] += 1;
+    DB.army.cur[0] += 1;
+    saveDb("army", DB.hero);
+    saveDb("res", DB.res);
+    callback({
+      ok: [DB.res.gold[1], DB.army.total, DB.army.cur]
+    });
+  } else {
+    callback({
+      err: 1
+    });
+  }
+}; //添加军人
+
 
 const army_plus = (id, callback) => {
-  let p = DB.army;
+  let a = DB.army,
+      bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+      max_army = bcfg[id]["command"] + DB.hero.add[0];
 
-  if (p.total[0] - p.food[1] - p.wood[1] - p.sci[1] - p.gold[1] > 0) {
-    DB.army[id][1] += 1;
-    saveDb("army", DB.army);
+  if (a.cur[0] > 0) {
+    if (max_army > DB.hero.own[1]) {
+      DB.hero.own[id][1] += 1;
+      a.cur[0] -= 1;
+      saveDb("army", DB.army);
+      saveDb("hero", DB.hero);
+      callback({
+        ok: [DB.hero.own[id][1], a.cur]
+      });
+    } else {
+      callback({
+        err: 2
+      });
+    }
+  } else {
+    callback({
+      err: 1
+    });
   }
-
-  callback({
-    ok: [DB.army[id][1]]
-  });
-}; //减少工作人
+}; //减少军人
 
 
 const army_minus = (id, callback) => {
-  if (DB.army[id][1] > 0) {
-    DB.army[id][1] -= 1;
+  if (DB.hero.own[id][1] > 0) {
+    DB.hero.own[id][1] -= 1;
+    DB.army.cur[0] += 1;
     saveDb("army", DB.army);
+    saveDb("hero", DB.hero);
   }
 
   callback({
-    ok: [DB.army[id][1]]
+    ok: [DB.hero.own[id][1], DB.army.cur]
   });
 };
 
 const army_zero = (id, callback) => {
+  DB.army.cur += DB.hero.own[id][1];
   DB.army[id][1] = 0;
   saveDb("army", DB.army);
+  saveDb("hero", DB.hero);
   callback({
-    ok: [DB.army[id][1]]
+    ok: [DB.hero.own[id][1], DB.army.cur]
   });
 };
 
+Connect.setTest("app/army@army_buy", army_buy);
 Connect.setTest("app/army@army_plus", army_plus);
 Connect.setTest("app/army@army_minus", army_minus);
-Connect.setTest("app/army@army_zero", army_zero);
-/****************** stage ******************/
-
-let dataStage = {
-  level: 1,
-  fightCount: 0,
-  lastFightTime: 0
-}; //获取当前关卡怪物属性[attack,hp,attackSpeed,attackDistance,speed]
-
-const findMonster = type => {
-  let a = ["attack", "hp", "attackSpeed", "attackDistance", "speed"],
-      cfg = CfgMgr.getOne("app/cfg/pve.json@stage")[dataStage.level],
-      scale = cfg[`attr${type + 1}`],
-      attr = CfgMgr.getOne("app/cfg/pve.json@attribute")[cfg[`level${type + 1}`]],
-      r = [];
-
-  for (let i = 0, len = a.length; i < len; i++) {
-    r[i] = scale[i] * attr[a[i]];
-  } // console.log(cfg,attr);
-
-
-  return {
-    module: cfg[`id${type + 1}`],
-    attr: r
-  };
-}; //模拟后台读取接口
-
-
-const readStage = (param, callback) => {
-  let d = localStorage.getItem("stage");
-
-  if (d) {
-    d = JSON.parse(d);
-    dataStage = d;
-  } else {
-    d = dataStage;
-  }
-
-  callback({
-    ok: d
-  });
-};
-
-Connect.setTest("app/stage@read", readStage); //注册页面打开事件
+Connect.setTest("app/army@army_zero", army_zero); //注册页面打开事件
 
 AppEmitter.add("initDB", node => {
   initDB();

@@ -361,6 +361,10 @@ class WStage extends Widget {
       if (faceid == 2) {
         AppEmitter.emit("intoBuild");
       }
+
+      if (faceid == 3) {
+        AppEmitter.emit("intoArmy");
+      }
     }
   }
 
@@ -445,7 +449,7 @@ AppEmitter.add("intoMain", node => {
   openStart();
 }); //资源注册监听
 
-for (let i = 0; i < Stage.res_name.length; i++) {
+for (let i = 0; i < 4; i++) {
   for (let j = 0; j < 7; j++) {
     DB.emitter.add(`res.${Stage.res_name[i]}.${j}`, ((x, y) => {
       return () => {
@@ -453,8 +457,11 @@ for (let i = 0; i < Stage.res_name.length; i++) {
       };
     })(i, j));
   }
-} //注册日期监听
+}
 
+DB.emitter.add(`res.gold.1`, () => {
+  Stage.updateRes(3, 1);
+}); //注册日期监听
 
 DB.emitter.add(`date.day.0`, () => {
   Stage.eventTrigger();

@@ -8,7 +8,7 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import Global from './global';
+import {Global} from './global';
 
 /****************** 导出 ******************/
 

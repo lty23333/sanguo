@@ -37,7 +37,7 @@ class Army {
     }
     static updateArmy(){
         if(armyNode[0]!= undefined && Global.mainFace.id == 3){
-          armyNode[0].text = `${DB.data.army.cur}`;
+          armyNode[0].text = `${DB.data.army.cur[0]}`;
         }
     }
     static updateHero(){
@@ -84,7 +84,7 @@ class WHero extends Widget{
                 return console.log(data.err.reson);
             }
             DB.data.hero.own[id][1] = data.ok[0];
-            DB.data.army.cur = data.ok[1];
+            DB.data.army.cur[0] = data.ok[1];
         })
   
     }
@@ -95,7 +95,7 @@ class WHero extends Widget{
                 return console.log(data.err.reson);
             }
             DB.data.hero.own[id][1] = data.ok[0];
-            DB.data.army.cur = data.ok[1];
+            DB.data.army.cur[0] = data.ok[1];
         })
     }
     //人数清0
@@ -105,7 +105,7 @@ class WHero extends Widget{
                 return console.log(data.err.reson);
             }
             DB.data.hero.own[id][1] = data.ok[0];
-            DB.data.army.cur = data.ok[1];
+            DB.data.army.cur[0] = data.ok[1];
         })
     }
     added(node){   
@@ -134,8 +134,8 @@ class WArmy extends Widget{
                 return console.log(data.err.reson);
             }
             DB.data.res.gold[1] = data.ok[0];
-            DB.data.army.total = data.ok[1];
-            DB.data.army.cur = data.ok[2];
+            DB.data.army.total[0] = data.ok[1];
+            DB.data.army.cur[0] = data.ok[2];
         })
     }
 
@@ -202,16 +202,16 @@ for(let i in bcfg ){
 }
 //初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
 DB.init("hero",{own:[[]],left:leftHero,choose:[],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
-DB.init("army",{cur:0,total:0,price:50});
+DB.init("army",{cur:[0],total:[0],price:[50]});
 
 //注册军队人口监听
-    DB.emitter.add(`army.total`, () => {
+    DB.emitter.add(`army.total.0`, () => {
             Army.updateArmy();
             Army.updateHero(); 
     });
 
 
-DB.emitter.add(`army.total`, () => {
+DB.emitter.add(`army.total.0`, () => {
     Army.eatGold()
 });
 

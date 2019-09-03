@@ -190,6 +190,8 @@ class Whotel extends Widget{
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
         this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+        this.cfg.children[6].data.text = `刷新：${DB.data.hotel.price[0]}黄金`;
+
 
         Build.cur_buildId = id
        
@@ -238,7 +240,8 @@ class Whotel extends Widget{
                     Build.heroNode[i] = Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node,left:90+i*230});
                 }
                 DB.data.res.gold[1] = data.ok[1];
-                DB.data.hotel.price = data.ok[2];
+                DB.data.hotel.price[0] = data.ok[2];
+                this.cfg.children[6].data.text = `刷新：${DB.data.hotel.price[0]}黄金`;
             }
         }) 
     }
@@ -365,7 +368,7 @@ const initBuild = () => {
     
     DB.init("build", tempDB);
 };
-DB.init("hotel",{date:0,price:10});
+DB.init("hotel",{date:[0],price:[10]});
 //注册页面打开事件
 AppEmitter.add("intoBuild",(node)=>{
     open();

@@ -5,7 +5,7 @@ import Widget from '../libs/ni/widget';
 import CfgMgr from '../libs/ni/cfgmrg';
 import { AppEmitter } from './appEmitter';
 import Connect from "../libs/ni/connect";
-import Global from './global';
+import { Global } from './global';
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/

@@ -199,6 +199,24 @@ const loginCallback = err => {
     return console.log(err);
   }
 
+  Connect.request({
+    type: "app/all@read",
+    arg: []
+  }, data => {
+    let d = JSON.parse(data.ok);
+
+    for (let i in d) {
+      for (let j in d[i]) {
+        if (j == "own" || j == "left") {
+          DB.data.hero[j] = d[i][j];
+        } else {
+          for (let k in d[i][j]) {
+            DB.data[i][j][k] = d[i][j][k];
+          }
+        }
+      }
+    }
+  });
   AppEmitter.emit("intoMain");
   AppEmitter.emit("intoBuild");
   Scene.remove(User.show);

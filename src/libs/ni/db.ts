@@ -28,7 +28,7 @@ const cache = {};
  * @param k 绑定的属性key
  * @param v 绑定的值，如果为对象，则遍历层层绑定
  */
-const addGetterSetter = (o: any,k: string,v: any) => {
+const addGetterSetter = (o: any,k: any,v: any) => {
     let _o = {},path = o[DB.attrPrefix] || [];
     if(typeof v == "object"){
         if(v.length != undefined){

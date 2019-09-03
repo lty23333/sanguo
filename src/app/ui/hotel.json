@@ -85,6 +85,18 @@
                 "size":30,
                 "color":"#d9c6ad"
             }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"刷新：",
+                "left":330,
+                "top": 550,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
         }
     ]
 }

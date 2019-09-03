@@ -36,12 +36,12 @@ export default class Main {
     }, cfg);
     Loader.add(["app/ui/", "app/cfg/", "audio/", "images/"], function (res) {
       Connect.open(cfg, () => {
-        User.init();
-        Process.clear(); //初始化数据库
-
+        //初始化数据库
         AppEmitter.emit("initDB");
         AppEmitter.emit("initBuild");
         AppEmitter.emit("initScience");
+        User.init();
+        Process.clear();
       });
     }, Process.add()); // console.log(wx.env.USER_DATA_PATH);
   }

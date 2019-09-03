@@ -23,8 +23,8 @@ people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
 face:{"unlock":[0,0,1,0,0]},
 science:[[1,0]],
 hero:{own:[[]],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
-hotel:{date:0,price:10},
-army:{cur:0,total:0,price:50}
+hotel:{date:[0],price:[10]},
+army:{cur:[0],total:[0],price:[50]}
 }
 
 const initScience = () => {
@@ -56,8 +56,11 @@ const initDB = () => {
 }
 
 const read_all = (param: any, callback) => {
-    let d:any = localStorage;
-    callback({ok:d});
+    let r = ""
+    for (let k in DB){
+        r = `${r}${r?",":""}"${k}":${localStorage[k]||JSON.stringify(DB[k])}`
+    }
+    callback({ok:`{${r}}`});
 }
 
 Connect.setTest("app/all@read",read_all);
@@ -293,14 +296,14 @@ Connect.setTest("app/event@eventtrigger",eventtrigger);
 const hero_choose = (param: any, callback) => {   
     let now =Math.ceil(DB.date.day[0]/400),
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
-    if(DB.hotel.price  <= DB.res.gold[1] && param ==1){
-        DB.res.gold[1] -= DB.hotel.price;
-        DB.hotel.price = 2* DB.hotel.price;
+    if(DB.hotel.price[0]  <= DB.res.gold[1] && param ==1){
+        DB.res.gold[1] -= DB.hotel.price[0];
+        DB.hotel.price[0] = 2* DB.hotel.price[0];
         param = 2;
     } 
 
-    if(DB.hotel.date < now || param == 2){
-        DB.hotel.date = now;
+    if(DB.hotel.date[0] < now || param == 2){
+        DB.hotel.date[0] = now;
         for(let i=0;i<3;i++){
             let num = 0,
             rnd = rand(10000),
@@ -315,11 +318,13 @@ const hero_choose = (param: any, callback) => {
             let heroId =Math.floor(rand(DB.hero.left[v].length))-1           
             DB.hero.choose.push(DB.hero.left[v][heroId]);
             DB.hero.left[v].splice(heroId,1);
-            if (DB.hero.choose[0]){
+            if (DB.hero.choose[0] && DB.hero.choose.length>3){
                 let c = bcfg[DB.hero.choose[0]]["color"]
                 DB.hero.left[c].push(DB.hero.choose[0]);
             }
-            DB.hero.choose.splice(0,1);
+            if(DB.hero.choose.length>3){
+                DB.hero.choose.splice(0,1);
+            }
         }         
     }    
 
@@ -337,7 +342,7 @@ const hero_buy = (id: any, callback) => {
             DB.res.gold[1] = DB.res.gold[1] -gold;
             DB.hero.choose.splice(choose_id,1);
             DB.hero.own.push([id,0,0,DB.hero.own.length]);
-            saveDb("hero",DB.hero);     
+            saveDb("hero",DB.hero);   
             saveDb("res",DB.res);
             callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
         }else{
@@ -350,12 +355,12 @@ Connect.setTest("app/hero@choose",hero_choose);
 Connect.setTest("app/hero@buy",hero_buy);
 /****************** army ******************/
 const army_buy = (id: any, callback) => { 
-    let cost = DB.army.price
+    let cost = DB.army.price[0]
 
         if(cost<=DB.res.gold[1]){
             DB.res.gold[1] = DB.res.gold[1] -cost;
-            DB.army.total += 1;
-            DB.army.cur +=1;
+            DB.army.total[0] += 1;
+            DB.army.cur[0] +=1;
             saveDb("army",DB.hero);     
             saveDb("res",DB.res);
             callback({ok:[DB.res.gold[1],DB.army.total,DB.army.cur]});
@@ -370,11 +375,11 @@ const army_plus = (id: any, callback) => {
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         max_army = bcfg[id]["command"] + DB.hero.add[0]
 
-    if (a.cur >0 ){
+    if (a.cur[0] >0 ){
         if(max_army > DB.hero.own[1]){
             DB.hero.own[id][1] += 1;
-            a.cur -=1;
-            saveDb("army",DB.army);
+            a.cur[0] -=1;
+            saveDb("army",DB.army); 
             saveDb("hero",DB.hero); 
             callback({ok:[DB.hero.own[id][1],a.cur]}); 
         }else{
@@ -388,9 +393,10 @@ const army_plus = (id: any, callback) => {
 const army_minus = (id: any, callback) => {       
     if (DB.hero.own[id][1] >0 ){
          DB.hero.own[id][1]  -= 1;
-         DB.army.cur +=1; 
+         DB.army.cur[0] +=1; 
          saveDb("army",DB.army);
          saveDb("hero",DB.hero);
+
     }               
     callback({ok:[DB.hero.own[id][1],DB.army.cur]}); 
 }
@@ -398,7 +404,7 @@ const army_zero = (id: any, callback) => {
     DB.army.cur += DB.hero.own[id][1];       
     DB.army[id][1] = 0;
     saveDb("army",DB.army);  
-    saveDb("hero",DB.hero);           
+    saveDb("hero",DB.hero);          
     callback({ok:[DB.hero.own[id][1],DB.army.cur]});
 }
 
@@ -406,6 +412,8 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_plus",army_plus);
     Connect.setTest("app/army@army_minus",army_minus);
     Connect.setTest("app/army@army_zero",army_zero);
+
+
 
 
 
