@@ -45,7 +45,7 @@ class Army {
         if(Global.mainFace.id == 3){
             for(let i=0;i<heroList.length;i++){
                 if(heroNode[i]!= undefined){
-                    heroNode[i].text = `${bcfg[heroList[i][0]]["name"]}(${heroList[i][1]})`
+                    heroNode[i].text = `${bcfg[heroList[i][0]]["name"]}(${heroList[i][1]}/${Math.floor((bcfg[heroList[i][0]]["command"] + DB.data.hero.add[0])/10)})`
                 }
             }
         }
@@ -62,9 +62,10 @@ class WHero extends Widget{
         let i = props.id,
             id = heroList[i][0],
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+            max = Math.floor((bcfg[id]["command"] + DB.data.hero.add[0])/10),
             name = bcfg[id]["name"];
         super.setProps(props);
-        this.cfg.children[0].children[0].data.text = `${name}(${heroList[i][1]})`;
+        this.cfg.children[0].children[0].data.text = `${name}(${heroList[i][1]}/${max})`;
         this.cfg.data.top =  Army.hero_top[i+1];
         this.cfg.children[0].on = {"tap":{"func":"dis_hero","arg":[i]}};
         this.cfg.children[1].props.on = {"tap":{"func":"army_plus","arg":[heroList[i][3]]}};
@@ -75,7 +76,7 @@ class WHero extends Widget{
 
     dis_hero(type){
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
-        Scene.open(`app-ui-heorDis`,this.backNode, null, {id:type});
+        Scene.open(`app-ui-heroDis`,this.backNode, null, {id:type});
     }
     //加1个人
     army_plus (id){
@@ -151,12 +152,13 @@ class WheroDis extends Widget{
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             id = heroList[i][0],
             armsId = bcfg[id]["arms"],
+            max = Math.floor((bcfg[id]["command"] + DB.data.hero.add[0])/10),
             name = bcfg[id]["name"];
         
-        this.cfg.children[1].data.text = `${name}(${heroList[i][1]})`;
+        this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
         this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2]}（+${DB.data.hero.add[armsId]}）`;
-        this.cfg.children[4].data.text = `战斗力：${(bcfg[id]["command"]+DB.data.hero.add[0])*(1+(bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2]+DB.data.hero.add[armsId]))/100}`
+        this.cfg.children[4].data.text = `战斗力：${(bcfg[id]["command"]+DB.data.hero.add[0])*(1+(bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2]+DB.data.hero.add[armsId]))/10}`
     }
 } 
 
@@ -181,7 +183,7 @@ const open = () => {
         }
     }
     for(let i=0; i<heroList.length;i++ ){
-      heroNode[i] = Scene.open("app-ui-armyButton", Global.mainFace.node,null, {id:i});
+      Scene.open("app-ui-armyButton", Global.mainFace.node,null, {id:i});
     }
 }
 
@@ -201,11 +203,11 @@ for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
 //初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
-DB.init("hero",{own:[[]],left:leftHero,choose:[],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
+DB.init("hero",{own:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
 DB.init("army",{cur:[0],total:[0],price:[50]});
 
 //注册军队人口监听
-    DB.emitter.add(`army.total.0`, () => {
+    DB.emitter.add(`army.cur.0`, () => {
             Army.updateArmy();
             Army.updateHero(); 
     });

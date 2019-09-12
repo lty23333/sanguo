@@ -1,0 +1,59 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"choose","arg":[1001]}},
+    "data": {
+        "width": "400",
+        "height": "400",
+        "left": 300,
+        "top": 560
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 220,
+                "height": 350,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":10,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"army",
+                "text":"驻守：",
+                "left":30,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+
+        {
+            "type": "text",
+            "data": {
+                "id":"reward",
+                "text":"奖励：",
+                "left":70,
+                "top": 200,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

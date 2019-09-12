@@ -379,7 +379,7 @@ const openStart = () => {
 DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0]});
 DB.init("date",{unlock:[0,0],day:[0]});
 //主界面解锁
-DB.init("face",{"unlock":[0,0,1,0,0]});
+DB.init("face",{"unlock":[0,0,1,1,0]});
 DB.init("event",{"next":[2001]});
 
 DB.init("news",[]);//新闻

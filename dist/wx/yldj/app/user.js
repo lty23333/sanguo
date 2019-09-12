@@ -207,7 +207,7 @@ const loginCallback = err => {
 
     for (let i in d) {
       for (let j in d[i]) {
-        if (j == "own" || j == "left") {
+        if (j == "own" || j == "left" || j == "choose") {
           DB.data.hero[j] = d[i][j];
         } else {
           for (let k in d[i][j]) {

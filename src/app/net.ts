@@ -20,9 +20,9 @@ let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,
 build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
-face:{"unlock":[0,0,1,0,0]},
+face:{"unlock":[0,0,1,1,0]},
 science:[[1,0]],
-hero:{own:[[]],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hero:{own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
 army:{cur:[0],total:[0],price:[50]}
 }
@@ -56,9 +56,13 @@ const initDB = () => {
 }
 
 const read_all = (param: any, callback) => {
-    let r = ""
+    let r = "",rs;
     for (let k in DB){
-        r = `${r}${r?",":""}"${k}":${localStorage[k]||JSON.stringify(DB[k])}`
+        rs = localStorage[k];
+        if(rs){
+            DB[k] = JSON.parse(rs);
+        }
+        r = `${r}${r?",":""}"${k}":${rs||JSON.stringify(DB[k])}`
     }
     callback({ok:`{${r}}`});
 }
@@ -331,7 +335,7 @@ const hero_choose = (param: any, callback) => {
     saveDb("hero",DB.hero);
     saveDb("hotel",DB.hotel);
     saveDb("res",DB.res);
-    callback({ok:[DB.hero.choose,DB.res.gold[1],DB.hotel.price]}); 
+    callback({ok:[DB.hero.choose,DB.res.gold[1],DB.hotel.price[0]]}); 
 }
 const hero_buy = (id: any, callback) => { 
     let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
@@ -361,7 +365,7 @@ const army_buy = (id: any, callback) => {
             DB.res.gold[1] = DB.res.gold[1] -cost;
             DB.army.total[0] += 1;
             DB.army.cur[0] +=1;
-            saveDb("army",DB.hero);     
+            saveDb("army",DB.army);     
             saveDb("res",DB.res);
             callback({ok:[DB.res.gold[1],DB.army.total,DB.army.cur]});
         }else{
@@ -373,15 +377,15 @@ const army_buy = (id: any, callback) => {
 const army_plus = (id: any, callback) => { 
     let a = DB.army,
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        max_army = bcfg[id]["command"] + DB.hero.add[0]
+        max_army = Math.floor(bcfg[DB.hero.own[id][0]]["command"]/10) + DB.hero.add[0]
 
     if (a.cur[0] >0 ){
-        if(max_army > DB.hero.own[1]){
+        if(max_army > DB.hero.own[id][1]){
             DB.hero.own[id][1] += 1;
             a.cur[0] -=1;
             saveDb("army",DB.army); 
             saveDb("hero",DB.hero); 
-            callback({ok:[DB.hero.own[id][1],a.cur]}); 
+            callback({ok:[DB.hero.own[id][1],a.cur[0]]}); 
         }else{
             callback({err:2}); 
         }
@@ -398,14 +402,14 @@ const army_minus = (id: any, callback) => {
          saveDb("hero",DB.hero);
 
     }               
-    callback({ok:[DB.hero.own[id][1],DB.army.cur]}); 
+    callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]}); 
 }
 const army_zero = (id: any, callback) => {
-    DB.army.cur += DB.hero.own[id][1];       
-    DB.army[id][1] = 0;
+    DB.army.cur[0] += DB.hero.own[id][1]; 
+    DB.hero.own[id][1] = 0;
     saveDb("army",DB.army);  
     saveDb("hero",DB.hero);          
-    callback({ok:[DB.hero.own[id][1],DB.army.cur]});
+    callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]});
 }
 
     Connect.setTest("app/army@army_buy",army_buy);
@@ -414,6 +418,75 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_zero",army_zero);
 
 
+/****************** fight ******************/
+//fighter:[id,num,add+1,位置,兵种]
+const fight = (fighter: any, callback) => {
+    let num = [],
+        group_num = [fighter[0].length,fighter[1].length,fighter[0].length+fighter[1].length],
+        oder = [],      //出手顺序
+        dead = [0,0],   //死亡数量
+        cur = fighter,  //存活的角色
+        mess =[],  //战斗报文
+        isvic = 0, //是否胜利
+        army_dead = [0,0]
+    
+    for(let i= 0;i<group_num[2];i++){
+        num.push([1,group_num[0]-i?0:1,group_num[0]-i?i:i-group_num[0]]);
+    }
+    
+    //出手顺序确定
+    for(let i= 0;i<group_num[2];i++){
+        let rnd = rand(num.length-1)
+        oder.push(num[rnd]);
+        num.splice(rnd,1);
+    }
+    
+    while( dead[0] == group_num[0] || dead[1] == group_num[1] ){
+        for(let i = 0;i< oder.length;i++){
+            if(oder[i][0]){
+                let group = Math.abs(oder[i][1]-1),
+                    enemyId = fighter[group].indexOf(cur[group][rand(cur[group].length-1)][0]),
+                    damage = fighter[oder[i][1]][oder[i][2]][1] *  fighter[oder[i][1]][oder[i][2]][2] /5 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0))
+
+                //打死了    
+                if(fighter[group][enemyId][1] <= damage/fighter[group][enemyId][2]){
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],fighter[group][enemyId][0],group,fighter[group][enemyId][1]);
+                    fighter[group][enemyId][1] = 0;
+                    dead[group] += 1;
+                //没打死
+                }else{
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],fighter[group][enemyId][0],group,damage)
+                    fighter[group][enemyId][1] -= damage/fighter[group][enemyId][2]
+                }    
+            }
+        }
+    }
+    //判断是否胜利
+    if(dead[1] == group_num[1]){
+        isvic = 1;
+    }
+    // 军队数量保存
+    for(let i = 0;i < group_num[0]; i++){
+        army_dead[0] += DB.hero.own[fighter[0][i][3]][1] - fighter[0][i][1];
+        DB.hero.own[fighter[0][i][3]][1] = fighter[0][i][1];
+    }
+    for(let i = 0;i < group_num[1]; i++){
+        army_dead[1] += DB.hero.enemy[fighter[1][i][3]][1] - fighter[1][i][1];
+        DB.hero.enemy[fighter[1][i][3]][1] = fighter[1][i][1];
+    }
+    for(let i =  group_num[1]-1;i >= 0; i--){
+        if(DB.hero.enemy[fighter[1][i][3]][1] <=0){
+            DB.hero.enemy.splice(fighter[1][i][3],1);
+        }
+    }
+
+    DB.army.total[0] -= army_dead[0]
+    saveDb("hero",DB.hero);
+    saveDb("army",DB.army);
+
+    callback({ok:[isvic,mess,DB.hero.own,DB.hero.enemy,DB.army.total[0]]});
+
+}
 
 
 

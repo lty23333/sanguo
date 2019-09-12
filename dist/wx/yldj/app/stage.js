@@ -423,7 +423,7 @@ DB.init("date", {
 }); //主界面解锁
 
 DB.init("face", {
-  "unlock": [0, 0, 1, 0, 0]
+  "unlock": [0, 0, 1, 1, 0]
 });
 DB.init("event", {
   "next": [2001]

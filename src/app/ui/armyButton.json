@@ -22,10 +22,10 @@
                     {
                         "type": "text",
                         "data": {
-                            "id":"button_hero",
+                            "id":"button_army",
                             "text": "英雄",
                             "style": {"fontSize":30,"fill":"#d9c6ad","strokeThickness":2},
-                            "left": 34,
+                            "left": 20,
                             "top": 25
                         }
                     }

@@ -35,11 +35,11 @@ let DB = {
     gold: [0, 0, 2, 0]
   },
   face: {
-    "unlock": [0, 0, 1, 0, 0]
+    "unlock": [0, 0, 1, 1, 0]
   },
   science: [[1, 0]],
   hero: {
-    own: [[]],
+    own: [],
     left: [[], [], [], [], [], []],
     choose: [0, 0, 0],
     add: [0, 0, 0, 0],
@@ -87,10 +87,17 @@ const initDB = () => {
 };
 
 const read_all = (param, callback) => {
-  let r = "";
+  let r = "",
+      rs;
 
   for (let k in DB) {
-    r = `${r}${r ? "," : ""}"${k}":${localStorage[k] || JSON.stringify(DB[k])}`;
+    rs = localStorage[k];
+
+    if (rs) {
+      DB[k] = JSON.parse(rs);
+    }
+
+    r = `${r}${r ? "," : ""}"${k}":${rs || JSON.stringify(DB[k])}`;
   }
 
   callback({
@@ -416,7 +423,7 @@ const hero_choose = (param, callback) => {
   saveDb("hotel", DB.hotel);
   saveDb("res", DB.res);
   callback({
-    ok: [DB.hero.choose, DB.res.gold[1], DB.hotel.price]
+    ok: [DB.hero.choose, DB.res.gold[1], DB.hotel.price[0]]
   });
 };
 
@@ -452,7 +459,7 @@ const army_buy = (id, callback) => {
     DB.res.gold[1] = DB.res.gold[1] - cost;
     DB.army.total[0] += 1;
     DB.army.cur[0] += 1;
-    saveDb("army", DB.hero);
+    saveDb("army", DB.army);
     saveDb("res", DB.res);
     callback({
       ok: [DB.res.gold[1], DB.army.total, DB.army.cur]
@@ -468,16 +475,16 @@ const army_buy = (id, callback) => {
 const army_plus = (id, callback) => {
   let a = DB.army,
       bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-      max_army = bcfg[id]["command"] + DB.hero.add[0];
+      max_army = Math.floor(bcfg[DB.hero.own[id][0]]["command"] / 10) + DB.hero.add[0];
 
   if (a.cur[0] > 0) {
-    if (max_army > DB.hero.own[1]) {
+    if (max_army > DB.hero.own[id][1]) {
       DB.hero.own[id][1] += 1;
       a.cur[0] -= 1;
       saveDb("army", DB.army);
       saveDb("hero", DB.hero);
       callback({
-        ok: [DB.hero.own[id][1], a.cur]
+        ok: [DB.hero.own[id][1], a.cur[0]]
       });
     } else {
       callback({
@@ -501,17 +508,17 @@ const army_minus = (id, callback) => {
   }
 
   callback({
-    ok: [DB.hero.own[id][1], DB.army.cur]
+    ok: [DB.hero.own[id][1], DB.army.cur[0]]
   });
 };
 
 const army_zero = (id, callback) => {
-  DB.army.cur += DB.hero.own[id][1];
-  DB.army[id][1] = 0;
+  DB.army.cur[0] += DB.hero.own[id][1];
+  DB.hero.own[id][1] = 0;
   saveDb("army", DB.army);
   saveDb("hero", DB.hero);
   callback({
-    ok: [DB.hero.own[id][1], DB.army.cur]
+    ok: [DB.hero.own[id][1], DB.army.cur[0]]
   });
 };
 

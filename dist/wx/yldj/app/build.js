@@ -24,7 +24,7 @@ class Build {
     gold: [] // 资源节点
 
   };
-  // 通用窗口消耗节点
+  //酒馆刷新费用节点
   static res_name = ["food", "wood", "sci", "gold"]; //资源名
 
   static res_Cname = ["粮食", "木材", "黄金", "科技"];
@@ -275,7 +275,7 @@ class Whotel extends Widget {
 
         DB.data.res.gold[1] = data.ok[1];
         DB.data.hotel.price[0] = data.ok[2];
-        this.cfg.children[6].data.text = `刷新：${DB.data.hotel.price[0]}黄金`;
+        Build.hotel_update.text = `刷新：${DB.data.hotel.price[0]}黄金`;
       }
     });
   }
@@ -290,6 +290,7 @@ class Whotel extends Widget {
     Build.com_name = this.elements.get("name");
     Build.com_effect = this.elements.get("effect");
     Build.com_cost = this.elements.get("cost");
+    Build.hotel_update = this.elements.get("update");
   }
 
 } //建筑弹窗

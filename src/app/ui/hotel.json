@@ -89,7 +89,7 @@
         {
             "type": "text",
             "data": {
-                "id":"cost",
+                "id":"update",
                 "text":"刷新：",
                 "left":330,
                 "top": 550,
