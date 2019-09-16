@@ -33,6 +33,18 @@
         {
             "type": "text",
             "data": {
+                "id":"belong",
+                "text":"归属",
+                "left":10,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
                 "id":"army",
                 "text":"驻守：",
                 "left":30,

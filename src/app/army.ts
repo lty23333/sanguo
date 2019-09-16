@@ -203,7 +203,7 @@ for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
 //初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
-DB.init("hero",{own:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
+DB.init("hero",{own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
 DB.init("army",{cur:[0],total:[0],price:[50]});
 
 //注册军队人口监听
