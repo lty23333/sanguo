@@ -11,12 +11,14 @@ import {rand} from './global';
 
 //存储
 let work_name  =["total","food","wood","sci","gold"],
-    season =[0.5,0,0,-0.75]
+    season =[0.5,0,0,-0.75],
+    five_res = [[0,0,0,0.5],[0,0.5,0,0],[0,0,0.5,0],[-0.25,0,0,0],[0.5,0,0,0]]
+    
 const saveDb = (key,data) => {
     localStorage.setItem(key,JSON.stringify(data));
 }
 
-let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0]},
+let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
 build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
@@ -91,8 +93,20 @@ const add_res = (param: any, callback) => {
         max = DB.res[param][2],
         res = DB.res[param],
         people = DB.people[param],
-        change =  ((res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6]))/2;
-    
+        change =  ((res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6]))/2,
+        times = 1 
+        
+        
+    if(param < 4 ){
+        if(DB.res.win[1] >0){
+            times += 0.5;
+        }
+        if(DB.res.fail[1] >0){
+            times += -0.25;
+        }
+        times += five_res[Math.ceil(DB.date.day[0]/400) % 5][param]
+        change = change * times;
+    }
      
     if(number!=max){
         if(change+number>max){
@@ -430,6 +444,12 @@ const fight = (fighter: any, callback) => {
         isvic = 0, //是否胜利
         army_dead = [0,0]
     
+    for(let i= 0;i<2;i++){
+        for(let j= 0;j<group_num[i];j++){
+          fighter[i][j][5] = fighter[i][j][1] * fighter[i][j][2] ;
+        }
+    }
+    
     for(let i= 0;i<group_num[2];i++){
         num.push([1,group_num[0]-i?0:1,group_num[0]-i?i:i-group_num[0]]);
     }
@@ -446,17 +466,17 @@ const fight = (fighter: any, callback) => {
             if(oder[i][0]){
                 let group = Math.abs(oder[i][1]-1),
                     enemyId = fighter[group].indexOf(cur[group][rand(cur[group].length-1)][0]),
-                    damage = fighter[oder[i][1]][oder[i][2]][1] *  fighter[oder[i][1]][oder[i][2]][2] /5 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0))
+                    damage = fighter[oder[i][1]][oder[i][2]][5] /4 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0))
 
                 //打死了    
-                if(fighter[group][enemyId][1] <= damage/fighter[group][enemyId][2]){
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],fighter[group][enemyId][0],group,fighter[group][enemyId][1]);
+                if(fighter[group][enemyId][1] <= Math.ceil(damage/fighter[group][enemyId][2])){
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,fighter[group][enemyId][1]);
                     fighter[group][enemyId][1] = 0;
                     dead[group] += 1;
                 //没打死
                 }else{
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],fighter[group][enemyId][0],group,damage)
-                    fighter[group][enemyId][1] -= damage/fighter[group][enemyId][2]
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,damage)
+                    fighter[group][enemyId][1] -= Math.ceil(damage/fighter[group][enemyId][2])
                 }    
             }
         }
@@ -487,7 +507,7 @@ const fight = (fighter: any, callback) => {
     callback({ok:[isvic,mess,DB.hero.own,DB.hero.enemy,DB.army.total[0]]});
 
 }
-
+Connect.setTest("app/fight@fight",fight);
 
 
 //注册页面打开事件

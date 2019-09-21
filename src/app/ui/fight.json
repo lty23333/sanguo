@@ -1,0 +1,21 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 600,
+        "height": 600,
+        "left": 80,
+        "top": 330
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 400,
+                "height": 400,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        }
+    ]
+}

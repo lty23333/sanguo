@@ -1,0 +1,67 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"buy","arg":[1001]}},
+    "data": {
+        "width": "400",
+        "height": "400",
+        "left": 50,
+        "top": 20
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 104,
+                "height": 204,
+                "left": 0,
+                "top": 0,
+                "background-color": "#FA8072"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 100,
+                "height": 200,
+                "left": 2,
+                "top": 2,
+                "background-color": "#FFFFFF"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "id":"hp",
+                "width": 100,
+                "height": 0,
+                "left": 2,
+                "top": 2,
+                "background-color": "#CFCFCF"
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":20,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 60, "fill" : "0xffffff", "align" : "center","wordWrapWidth":30,"wordWrap":true
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"number",
+                "text":"",
+                "left":20,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

@@ -33,7 +33,7 @@
         {
             "type": "text",
             "data": {
-                "id":"army",
+                "id":"army1",
                 "text":"攻",
                 "left":50,
                 "top": 100,
@@ -45,7 +45,7 @@
         {
             "type": "text",
             "data": {
-                "id":"army",
+                "id":"army2",
                 "text":"防",
                 "left":280,
                 "top": 100,
@@ -69,7 +69,7 @@
 
         {
             "type": "sprite",
-            "on":{"tap":{"func":"fight","arg":[1]}},
+            "on":{"tap":{"func":"fight"}},
             "data": {
                 "url": "images/ui/button_buy.png",
                 "width": 210,
