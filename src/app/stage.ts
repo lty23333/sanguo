@@ -392,8 +392,12 @@ const openStart = () => {
     startNode = Scene.open("app-ui-start",Scene.root);
 }
 
-    
-
+const pause = () => {
+    Stage.pause = 1;
+}    
+const start = () => {
+    Stage.pause = 0;
+} 
 
 
 /****************** 立即执行 ******************/
@@ -423,6 +427,14 @@ Frame.add(()=>{
         Stage.run();
     }
 
+});
+//注册暂停事件
+AppEmitter.add("stagePause",(node)=>{
+    pause();
+});
+//注册开始事件
+AppEmitter.add("stageStart",(node)=>{
+    start();
 });
 //注册页面打开事件
 AppEmitter.add("intoMain",(node)=>{

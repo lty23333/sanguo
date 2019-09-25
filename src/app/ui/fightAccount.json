@@ -10,10 +10,60 @@
         {
             "type": "rect",
             "data": {
-                "width": 400,
-                "height": 400,
+                "width": 340,
+                "height": 430,
                 "left": 0,
                 "top": 0,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 315,
+                "height": 30,
+                "left": 15,
+                "top": 50,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 315,
+                "height": 30,
+                "left": 15,
+                "top": 90,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 315,
+                "height": 30,
+                "left": 15,
+                "top": 130,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 315,
+                "height": 30,
+                "left": 15,
+                "top": 170,
+                "background-color": "#d9c6ad"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 315,
+                "height": 30,
+                "left": 15,
+                "top": 210,
                 "background-color": "#d9c6ad"
             }
         },
@@ -21,7 +71,7 @@
             "type": "text",
             "data": {
                 "id":"name",
-                "text":"名字",
+                "text":"大胜",
                 "left":140,
                 "top": 20,
                 "style":{
@@ -32,27 +82,181 @@
         {
             "type": "text",
             "data": {
-                "id":"effect",
-                "text":"效果：",
-                "left":30,
-                "top": 100,
+                "id":"hero",
+                "text":"将领",
+                "left":20,
+                "top": 50,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
             }
-        },
-        {
+        }, {
             "type": "text",
             "data": {
-                "id":"cost",
-                "text":"消耗：",
-                "left":30,
-                "top": 200,
+                "id":"hero1",
+                "text":"名字",
+                "left":20,
+                "top": 90,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"hero2",
+                "text":"名字",
+                "left":20,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"hero3",
+                "text":"名字",
+                "left":20,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"hero4",
+                "text":"总计",
+                "left":20,
+                "top": 210,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },  {
+            "type": "text",
+            "data": {
+                "id":"kill",
+                "text":"杀敌",
+                "left":150,
+                "top": 50,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"kill1",
+                "text":"11",
+                "left":150,
+                "top": 90,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"kill2",
+                "text":"11",
+                "left":150,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"kill3",
+                "text":"11",
+                "left":150,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"kill4",
+                "text":"11",
+                "left":150,
+                "top": 210,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"die",
+                "text":"损失",
+                "left":280,
+                "top": 50,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"die1",
+                "text":"11",
+                "left":280,
+                "top": 90,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"die2",
+                "text":"11",
+                "left":140,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"die3",
+                "text":"11",
+                "left":140,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, {
+            "type": "text",
+            "data": {
+                "id":"die4",
+                "text":"11",
+                "left":140,
+                "top": 210,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
+         {
+            "type": "text",
+            "data": {
+                "id":"reward",
+                "text":"奖励",
+                "left":50,
+                "top": 270,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }, 
         {
             "type":"app-ui-button",
             "props":{
@@ -62,8 +266,8 @@
                 "anchor":[0.5,0.5],
                 "width": 214,
                 "height": 100,
-                "left": 100,
-                "top": 300,
+                "left": 63,
+                "top": 310,
                 "text": "建造",
                 "size":30,
                 "color":"#d9c6ad"

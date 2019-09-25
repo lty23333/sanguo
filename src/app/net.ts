@@ -442,7 +442,8 @@ const fight = (fighter: any, callback) => {
         cur = fighter,  //存活的角色
         mess =[],  //战斗报文
         isvic = 0, //是否胜利
-        army_dead = [0,0]
+        army_dead = [0,0],
+        kill_die = [[0,0,0,0],[0,0,0,0]]    //我军将领得杀敌与损伤
     
     for(let i= 0;i<2;i++){
         for(let j= 0;j<group_num[i];j++){
@@ -466,18 +467,26 @@ const fight = (fighter: any, callback) => {
             if(oder[i][0]){
                 let group = Math.abs(oder[i][1]-1),
                     enemyId = fighter[group].indexOf(cur[group][rand(cur[group].length-1)][0]),
-                    damage = fighter[oder[i][1]][oder[i][2]][5] /4 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0))
+                    damage = fighter[oder[i][1]][oder[i][2]][5] /4 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0)),
+                    die = 0
 
                 //打死了    
                 if(fighter[group][enemyId][1] <= Math.ceil(damage/fighter[group][enemyId][2])){
                     mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,fighter[group][enemyId][1]);
+                    die = fighter[group][enemyId][1];
                     fighter[group][enemyId][1] = 0;
                     dead[group] += 1;
                 //没打死
                 }else{
                     mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,damage)
-                    fighter[group][enemyId][1] -= Math.ceil(damage/fighter[group][enemyId][2])
-                }    
+                    die = Math.ceil(damage/fighter[group][enemyId][2]);
+                    fighter[group][enemyId][1] -= die
+                }
+                if(oder[i][1]){
+                    kill_die[1][enemyId] += die
+                }else{
+                    kill_die[0][oder[i][2]] += die
+                }
             }
         }
     }
@@ -504,7 +513,7 @@ const fight = (fighter: any, callback) => {
     saveDb("hero",DB.hero);
     saveDb("army",DB.army);
 
-    callback({ok:[isvic,mess,DB.hero.own,DB.hero.enemy,DB.army.total[0]]});
+    callback({ok:[isvic,mess,DB.hero.own,DB.hero.enemy,DB.army.total[0],kill_die]});
 
 }
 Connect.setTest("app/fight@fight",fight);

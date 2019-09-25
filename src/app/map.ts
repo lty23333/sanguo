@@ -140,7 +140,8 @@ class WfightWindow extends Widget{
         for(let i=0;i < DB.data.hero.upHero[0];i++){
             own[i] = heroList[i]
         }
-            AppEmitter.emit("intoFight",{fighter:[own,DB.data.map.guard[this.props.index]],face:Global.mainFace.id});
+           
+        AppEmitter.emit("intoFight",{fighter:[own,DB.data.map.guard[this.props.index]],city:this.props.id});
     } 
     remove(){
         Scene.remove(this.node);   
