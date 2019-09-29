@@ -143,7 +143,7 @@ class WfightWindow extends Widget {
 
 
     for (let i = 1; i < army.length; i++) {
-      str2 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`;
+      str2 = `${str2}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`;
     }
 
     this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;

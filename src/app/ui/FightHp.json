@@ -2,7 +2,7 @@
     "type": "text",
     "data": {
         "id": "damage",
-        "text": "-0",
+        "text": "-99999",
         "style": {"fontSize":20,"fill":"#FF0000","strokeThickness":2},
         "width": 300,
         "height": 100,

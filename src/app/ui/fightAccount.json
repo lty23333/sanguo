@@ -94,7 +94,7 @@
             "type": "text",
             "data": {
                 "id":"hero1",
-                "text":"名字",
+                "text":"",
                 "left":20,
                 "top": 90,
                 "style":{
@@ -105,7 +105,7 @@
             "type": "text",
             "data": {
                 "id":"hero2",
-                "text":"名字",
+                "text":"",
                 "left":20,
                 "top": 130,
                 "style":{
@@ -116,7 +116,7 @@
             "type": "text",
             "data": {
                 "id":"hero3",
-                "text":"名字",
+                "text":"",
                 "left":20,
                 "top": 170,
                 "style":{
@@ -149,7 +149,7 @@
             "type": "text",
             "data": {
                 "id":"kill1",
-                "text":"11",
+                "text":"",
                 "left":150,
                 "top": 90,
                 "style":{
@@ -160,7 +160,7 @@
             "type": "text",
             "data": {
                 "id":"kill2",
-                "text":"11",
+                "text":"",
                 "left":150,
                 "top": 130,
                 "style":{
@@ -171,7 +171,7 @@
             "type": "text",
             "data": {
                 "id":"kill3",
-                "text":"11",
+                "text":"",
                 "left":150,
                 "top": 170,
                 "style":{
@@ -182,7 +182,7 @@
             "type": "text",
             "data": {
                 "id":"kill4",
-                "text":"11",
+                "text":"",
                 "left":150,
                 "top": 210,
                 "style":{
@@ -204,7 +204,7 @@
             "type": "text",
             "data": {
                 "id":"die1",
-                "text":"11",
+                "text":"",
                 "left":280,
                 "top": 90,
                 "style":{
@@ -215,7 +215,7 @@
             "type": "text",
             "data": {
                 "id":"die2",
-                "text":"11",
+                "text":"",
                 "left":140,
                 "top": 130,
                 "style":{
@@ -226,7 +226,7 @@
             "type": "text",
             "data": {
                 "id":"die3",
-                "text":"11",
+                "text":"",
                 "left":140,
                 "top": 170,
                 "style":{
@@ -237,7 +237,7 @@
             "type": "text",
             "data": {
                 "id":"die4",
-                "text":"11",
+                "text":"",
                 "left":140,
                 "top": 210,
                 "style":{
@@ -260,7 +260,7 @@
         {
             "type":"app-ui-button",
             "props":{
-                "on":{"tap":{"func":"levelup"}},
+                "on":{"tap":{"func":"remove"}},
                 "url": "images/ui/button_buy.png",
                 "id":"button_levelup",
                 "anchor":[0.5,0.5],
@@ -268,7 +268,7 @@
                 "height": 100,
                 "left": 63,
                 "top": 310,
-                "text": "建造",
+                "text": "继续",
                 "size":30,
                 "color":"#d9c6ad"
             

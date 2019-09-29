@@ -44,8 +44,8 @@ class Fight {
 
     static pause = 1
     static events = []     //事件列表
-    static shake = 5      //震动次数
-    static shakeState = 8      //震动阶段
+    static shake = 4      //震动次数
+    static shakeState = 4      //震动阶段
 
 
 
@@ -66,11 +66,12 @@ class Fight {
             state = "run1"
 
         }else if(state == "run1"){
-            if(armysF.left == moverT[0]){
+            if(armysF.top == moverT[1]){
                 state = "damage"
                 if(damageSprite){
                     damageSprite.ni.left = armysT.left;
                     damageSprite.ni.top =armysT.top +10;
+                    damageNode.text = `-${damage}`;
                 }else{
                     damageSprite = Scene.open("app-ui-fightHp", Global.mainFace.node,null,{left:armysT.left,top:armysT.top +10,damage:damage});
                 }
@@ -89,10 +90,10 @@ class Fight {
                     Fight.events.push({type:"move",target: armysT});
                 }else{
                     Fight.shake -= 1;
-                    Fight.shakeState = 8
+                    Fight.shakeState = 4
                 }
             }else{
-                    Fight.shake = 5;
+                    Fight.shake = 4;
                     state = "run2";
                     armysT.hp -= damage;
                     numberNode[fight_show[0][4]][fight_show[0][5]] = armysT.max_hp - armysT.hp;
@@ -100,9 +101,9 @@ class Fight {
                     damageSprite.ni.top += 2000;
             }
         }else if(state == "run2"){
-            if(armysF.left == moverF[0]){
-                fight_show.slice(0,1);
-                if(fight_show){
+            if(armysF.top == moverF[1]){
+                fight_show.splice(0,1);
+                if(fight_show[0]){
                     state = "start";
                 }else{
                     state = "end";
@@ -113,7 +114,8 @@ class Fight {
                 Fight.events.push({type:"move",target: armysF});
             }
         }else if(state == "end"){
-            damageSprite = Scene.open("app-ui-fightAccount", Global.mainFace.node,null,{left:armysT.left,top:armysT.top +10,damage:damage});
+             Scene.open("app-ui-fightAccount", Global.mainFace.node);
+             state = ""
         }
           
     }
@@ -165,8 +167,8 @@ class Show{
     }
     static move(ev){
         let army = fighter_sprite[ev.target.group][ev.target.id];
-        army.ni.left = ev.target.left;
-        army.ni.top = ev.target.top;
+        army.x = ev.target.left;
+        army.y = ev.target.top;
     }
     static effect(ev){
         if(ev.effect == "addscore"){
@@ -256,7 +258,6 @@ class WfightAccount extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
         result = [["惨胜","小胜","大捷"],["惜败","小败","大败"]],
-        id = props.id,
         resultId = 0
 
         for(let i=0;i<kill_die[0].length-1;i++){
@@ -272,25 +273,31 @@ class WfightAccount extends Widget{
         }
 
         this.cfg.children[6].data.text = `${result[Math.abs(isvic-1)][resultId]}`;
-        for(let i =0;i<3;i++){
+        for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[8+i].data.text = `${bcfg2[fighter[0][i][0]]["name"]}`;
         }
-        for(let i =0;i<3;i++){
+        for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[13+i].data.text = `${kill_die[0][i]}`;
         }
-        for(let i =0;i<3;i++){
+        for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[18+i].data.text = `${kill_die[1][i]}`;
         }
-        this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
+        if(isvic){
+            this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
+        }else{
+            
+        }
+    
 
     }
 
     remove(){
-        Scene.remove(this.node); 
+        Scene.remove(Global.mainFace.node);
         AppEmitter.emit("stageStart"); 
         AppEmitter.emit(`${faceName[lastFace]}`);
         Fight.pause = 1;
     }
+
 
     added(node){
         this.node = node;
@@ -362,6 +369,7 @@ const open = () => {
 Widget.registW("app-ui-fightAccount",WfightAccount);
 Widget.registW("app-ui-fight",WFight);
 Widget.registW("app-ui-fightHero",WfightHero);
+Widget.registW("app-ui-fightHp",WfightHp);
 
 
 //注册页面打开事件
@@ -369,6 +377,7 @@ AppEmitter.add("intoFight",(node)=>{
     lastFace = Global.mainFace.id;
     fighter = node.fighter;
     enemyType = node.enemyType;
+    cityId = node.city;
     open();
 });
 

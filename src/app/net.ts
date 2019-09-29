@@ -231,10 +231,10 @@ const levelup = (id: any, callback) => {
             for(let i=0;i<effect_num.length;i++){
                DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
                effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
-        }                      
-         saveDb("build",DB.build);
-         saveDb("res",DB.res);
-         callback({ok:[DB.build[id-1001][1],num1,effect_end,cost_name2?num2:null]}); 
+            }                      
+            saveDb("build",DB.build);
+            saveDb("res",DB.res);
+            callback({ok:[DB.build[id-1001][1],num1,effect_end,cost_name2?num2:null]}); 
     }else{
         callback({err:1}); 
     }
@@ -494,7 +494,6 @@ const fight = (param: any, callback) => {
 
                 //打死了    
                 if(fighter[group][enemyId][1] <= Math.ceil(damage/fighter[group][enemyId][2])){
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,fighter[group][enemyId][1]]);
                     die = fighter[group][enemyId][1];
                     fighter[group][enemyId][1] = 0;
                     cur[group].splice(rnd,1);
@@ -502,10 +501,11 @@ const fight = (param: any, callback) => {
 
                 //没打死
                 }else{
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,damage])
                     die = Math.ceil(damage/fighter[group][enemyId][2]);
                     fighter[group][enemyId][1] -= die
                 }
+                //战斗报文
+                mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,die])
                 if(oder[i][1]){
                     kill_die[1][enemyId] += die
                 }else{
@@ -551,7 +551,46 @@ const fight = (param: any, callback) => {
     callback({ok:[isvic,mess,DB.hero.own,enemyType1,DB.army.total[0],kill_die]});
 
 }
+
+const fightAccount = (param: any, callback) => {
+    let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+        effect = bcfg[param.cityId]["effect_type"],
+        effect_num = bcfg[param.cityId]["effect_number"],
+        effect_end =[]
+    if(param.isvic){
+        let win = bcfg[param.cityId]["win"]
+        //加胜绩
+        if(DB.res.fail[1]>win){
+            DB.res.fail[1] -= win;
+        }else{
+            DB.res.win[1] += win -DB.res.fail[1];
+            DB.res.fail[1] = 0;
+        }
+        for(let i=0;i<effect_num.length;i++){
+            DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+            effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+        }   
+        saveDb("map",DB.map);
+        saveDb("res",DB.res);
+        callback({ok:[DB.res.fail,DB.res.win,effect_end]});
+    }else{
+        //加败绩
+        let fail = 50
+        if(DB.res.win[1] > fail){
+            DB.res.win[1] -= fail;
+        }else{
+            DB.res.fail[1] += fail -DB.res.win[1];
+            DB.res.win[1] = 0;
+        }
+        saveDb("res",DB.res);
+        callback({ok:[DB.res.fail,DB.res.win]});
+    }
+
+
+}
+
 Connect.setTest("app/fight@fight",fight);
+Connect.setTest("app/fight@fightAccount",fightAccount);
 
 
 //注册页面打开事件

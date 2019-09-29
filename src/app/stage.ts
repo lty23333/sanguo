@@ -66,7 +66,7 @@ class Stage {
     static face_name =["sceince","people","build","army","map"]
     static dayTime = 1500
     static nextDay = 0
-    static resNode = []
+    static resSprite = []
     static messageList = []
 
     static time 
@@ -113,8 +113,20 @@ class Stage {
             mun = res[idType],
             people = DB.data.people[name]
         //解锁新资源
-        if(idType ==0 && DB.data.res[name][0]>0 && !Stage.newsNode[res_nameID]){
-            Stage.newsNode[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+        if(idType ==0 && DB.data.res[name][0]>0 && !Stage.resSprite[res_nameID]){
+            Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+        }
+        //胜败绩根据其资源数值显示和消失
+        if(idType == 1 && res_nameID >3){
+            if(mun){
+                if(!Stage.resSprite[res_nameID]){
+                    Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+                }
+            }else{
+                if(Stage.resSprite[res_nameID]){
+                    Scene.remove(Stage.resSprite[res_nameID]);
+                }
+            }
         }
           
         if((idType ==1 || idType == 2|| idType == 4)&&( Stage.res[name][idType]!= undefined) ){
@@ -385,10 +397,10 @@ class WStart extends Widget{
  */
 const open = () => {
     stageNode = Scene.open("app-ui-stage", Scene.root);   
-    for(let i=0;i<4;i++){
+    for(let i=0;i<6;i++){
         let name = Stage.res_name[i]
         if(DB.data.res[name][0]>0){
-            Scene.open("app-ui-res", stageNode,null,{id:i});
+            Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});
         }
     }
 
