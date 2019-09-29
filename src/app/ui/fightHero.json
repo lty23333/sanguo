@@ -1,9 +1,8 @@
 {   
     "type": "container",
-    "on":{"tap":{"func":"buy","arg":[1001]}},
     "data": {
-        "width": "400",
-        "height": "400",
+        "width": 50,
+        "height": 100,
         "left": 50,
         "top": 20
     },
@@ -15,7 +14,7 @@
                 "height": 204,
                 "left": 0,
                 "top": 0,
-                "background-color": "#FA8072"
+                "background-color": "0xfa8072"
             }
         },
         {
@@ -25,7 +24,7 @@
                 "height": 200,
                 "left": 2,
                 "top": 2,
-                "background-color": "#FFFFFF"
+                "background-color": "0xffffff"
             }
         },
         {
@@ -36,7 +35,7 @@
                 "height": 0,
                 "left": 2,
                 "top": 2,
-                "background-color": "#CFCFCF"
+                "background-color": "0xcfcfcf"
             }
         },
         {

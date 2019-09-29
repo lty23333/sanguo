@@ -4,15 +4,15 @@
     "data": {
         "width": "500",
         "height": "500",
-        "left": 125,
-        "top": 200
+        "left": 0,
+        "top": 100
     },
     "children":[
         {
             "type": "rect",
             "data": {
-                "width": 500,
-                "height": 350,
+                "width": 600,
+                "height": 550,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad"
@@ -23,7 +23,7 @@
             "data": {
                 "id":"name",
                 "text":"名字",
-                "left":10,
+                "left":200,
                 "top": 20,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
@@ -36,7 +36,7 @@
                 "id":"army1",
                 "text":"攻",
                 "left":50,
-                "top": 100,
+                "top": 130,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
@@ -47,8 +47,8 @@
             "data": {
                 "id":"army2",
                 "text":"防",
-                "left":280,
-                "top": 100,
+                "left":340,
+                "top": 130,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
@@ -59,8 +59,8 @@
             "data": {
                 "id":"army",
                 "text":"VS",
-                "left":240,
-                "top": 100,
+                "left":265,
+                "top": 250,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
                 }
@@ -74,8 +74,8 @@
                 "url": "images/ui/button_buy.png",
                 "width": 210,
                 "height": 100,
-                "left": 0,
-                "top": 0
+                "left": 200,
+                "top": 400
             },
             "children": [
                 {

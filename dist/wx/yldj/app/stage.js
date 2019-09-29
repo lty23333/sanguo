@@ -49,17 +49,19 @@ class Stage {
     food: [],
     wood: [],
     sci: [],
-    gold: [] // 资源节点
+    gold: [],
+    win: [] // 资源节点
 
   };
   static build = [[]]; //建筑节点
 
   //年份节点
-  static res_name = ["food", "wood", "sci", "gold"];
+  static res_name = ["food", "wood", "sci", "gold", "win", "fail"];
   static work_name = ["total", "food", "wood", "sci", "gold"]; //资源名
 
   static five = ["金", "木", "水", "火", "土"];
-  static res_Cname = ["粮食", "木材", "科技", "黄金"];
+  static five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
+  static res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
   static season_Cname = ["春", "夏", "秋", "冬"];
   static face_name = ["sceince", "people", "build", "army", "map"];
   static dayTime = 1500;
@@ -140,6 +142,22 @@ class Stage {
           Stage.res[name][7].text = `${change.toFixed(1)}/秒`;
         }
       }
+    }
+  } //地图添加据点
+
+
+  static guardAdd() {
+    if (DB.data.date.day[0] == DB.data.map.date[0]) {
+      Connect.request({
+        type: "app/map@guard_add",
+        arg: {}
+      }, data => {
+        if (data.err) {
+          return console.log(data.err.reson);
+        }
+
+        DB.data.map.guard = data.ok[0];
+      });
     }
   } //事件触发
 
@@ -305,7 +323,21 @@ class WRes extends Widget {
     this.cfg.children[0].data.text = `${Cname}:`;
     this.cfg.children[1].data.text = DB.data.res[name][1];
     this.cfg.children[3].data.text = DB.data.res[name][2];
-    let change = res[3] * (res[4] + 1) + people[1] * people[2] * (1 + people[3]) - res[5] * (1 + res[6]);
+    let change = res[3] * (res[4] + 1) + people[1] * people[2] * (1 + people[3]) - res[5] * (1 + res[6]),
+        times = 1; //胜败和五行影响
+
+    if (id < 4) {
+      if (DB.data.res.win[1] > 0) {
+        times += 0.5;
+      }
+
+      if (DB.data.res.fail[1] > 0) {
+        times += -0.25;
+      }
+
+      times += Stage.five_res[Math.ceil(DB.data.date.day[0] / 400) % 5][id];
+      change = change * times;
+    }
 
     if (change >= 0) {
       this.cfg.children[4].data.text = `+${change.toFixed(0)}/秒`;
@@ -314,7 +346,7 @@ class WRes extends Widget {
     }
 
     this.cfg.children[5].data.text = DB.data.res[name][4];
-    this.cfg.data.top = id * 50 + 30;
+    this.cfg.data.top = Math.min(id * 50 + 30, 230);
   }
 
   added(node) {
@@ -365,6 +397,10 @@ class WStage extends Widget {
       if (faceid == 3) {
         AppEmitter.emit("intoArmy");
       }
+
+      if (faceid == 4) {
+        AppEmitter.emit("intoMap");
+      }
     }
   }
 
@@ -385,7 +421,7 @@ class WStart extends Widget {
 
 }
 /**
- * @description 打开关卡界面
+ * @description 打开zhan界面
  */
 
 
@@ -407,6 +443,14 @@ const open = () => {
 const openStart = () => {
   startNode = Scene.open("app-ui-start", Scene.root);
 };
+
+const pause = () => {
+  Stage.pause = 1;
+};
+
+const start = () => {
+  Stage.pause = 0;
+};
 /****************** 立即执行 ******************/
 //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
 
@@ -415,7 +459,9 @@ DB.init("res", {
   food: [1, 0, 5000, 0, 0, 0, 0],
   wood: [0, 0, 600, 0, 0, 0, 0],
   sci: [0, 0, 100, 0, 0, 0, 0],
-  gold: [1, 600, 600, 0, 0, 0, 0]
+  gold: [1, 600, 600, 0, 0, 0, 0],
+  win: [0, 0, 200, 0, 0, 1, 0],
+  fail: [0, 0, 200, 0, 0, 1, 0]
 });
 DB.init("date", {
   unlock: [0, 0],
@@ -423,7 +469,7 @@ DB.init("date", {
 }); //主界面解锁
 
 DB.init("face", {
-  "unlock": [0, 0, 1, 1, 0]
+  "unlock": [0, 0, 1, 1, 1]
 });
 DB.init("event", {
   "next": [2001]
@@ -442,6 +488,14 @@ Frame.add(() => {
   if (!Stage.pause) {
     Stage.run();
   }
+}); //注册暂停事件
+
+AppEmitter.add("stagePause", node => {
+  pause();
+}); //注册开始事件
+
+AppEmitter.add("stageStart", node => {
+  start();
 }); //注册页面打开事件
 
 AppEmitter.add("intoMain", node => {
@@ -464,6 +518,7 @@ DB.emitter.add(`res.gold.1`, () => {
 }); //注册日期监听
 
 DB.emitter.add(`date.day.0`, () => {
+  Stage.guardAdd();
   Stage.eventTrigger();
 }); //注册工作监听
 

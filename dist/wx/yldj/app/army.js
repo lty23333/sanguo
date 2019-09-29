@@ -241,7 +241,9 @@ for (let i in bcfg) {
 
 
 DB.init("hero", {
+  upHero: [1],
   own: [],
+  enemy: [],
   left: leftHero,
   choose: [0, 0, 0],
   add: [0, 0, 0, 0],

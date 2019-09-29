@@ -16,6 +16,7 @@ import {Global,rand} from './global';
 /****************** 本地 ******************/
 let heroList = [],  //己方英雄列表
     lastFace,        //上一个界面
+    enemyType,       //敌人种类,-1是入侵的，0,1,2代表第几个据点
     faceName = ["intoScience", "intoPeople","intoBuild","intoArmy","intoMap"],
     fighter,         //参战数据[[[id,num,add+1,位置,兵种],[己方]],[[敌方],[方]]]
     hpNode =[[]],          //扣血节点
@@ -26,7 +27,7 @@ let heroList = [],  //己方英雄列表
     attP = [[[]]] ,          //进队进攻的坐标          
     fighter_sprite = [[]],  //参战军队精灵
     armys = [[]],         //参战军队的逻辑对象
-    state = "start",      //表现演播的状态
+    state ,      //表现演播的状态
     isvic,        //是否胜利
     fight_show,  // 战斗表现
     armysF,    //当前军队逻辑对象
@@ -41,7 +42,7 @@ let heroList = [],  //己方英雄列表
 class Fight {
     
 
-    static pause = 0
+    static pause = 1
     static events = []     //事件列表
     static shake = 5      //震动次数
     static shakeState = 8      //震动阶段
@@ -57,8 +58,8 @@ class Fight {
         if(state == "start"){
             moverF = sitP[fight_show[0][1]][fight_show[0][2]]
             moverT = attP[fight_show[0][4]][fight_show[0][5]]
-            armysF = fight_show[fight_show[0][1]][fight_show[0][2]]
-            armysT = fight_show[fight_show[0][4]][fight_show[0][5]]
+            armysF = armys[fight_show[0][1]][fight_show[0][2]]
+            armysT = armys[fight_show[0][4]][fight_show[0][5]]
             damage =  fight_show[0][6]
             vx = (moverT[0]-moverF[0])/50
             vy = (moverT[1]-moverF[1])/50
@@ -67,24 +68,25 @@ class Fight {
         }else if(state == "run1"){
             if(armysF.left == moverT[0]){
                 state = "damage"
-            }else{
-                armysF.left = armysF.left + vx;
-                armysF.top = armysF.top + vy;
-                Fight.events.push({type:"move",target: armysF});
                 if(damageSprite){
                     damageSprite.ni.left = armysT.left;
                     damageSprite.ni.top =armysT.top +10;
                 }else{
                     damageSprite = Scene.open("app-ui-fightHp", Global.mainFace.node,null,{left:armysT.left,top:armysT.top +10,damage:damage});
                 }
+
+            }else{
+                armysF.left +=  vx;
+                armysF.top +=  vy;
+                Fight.events.push({type:"move",target: armysF});
             }
         }else if(state == "damage"){
             if(Fight.shake>0){
                 damageSprite.ni.top += 1;
-                if(Fight.shake>-9){
-                    armysT.left = armysF.left + Fight.shakeState/Fight.shakeState;
+                if(Fight.shakeState>-9){
+                    armysT.left +=  Fight.shakeState/(Math.abs(Fight.shakeState)?Math.abs(Fight.shakeState):1);
                     Fight.shakeState -= 1;
-                    Fight.events.push({type:"move",target: armysF});
+                    Fight.events.push({type:"move",target: armysT});
                 }else{
                     Fight.shake -= 1;
                     Fight.shakeState = 8
@@ -106,8 +108,8 @@ class Fight {
                     state = "end";
                 }
             }else{
-                armysF.left = armysF.left - vx;
-                armysF.top = armysF.top - vy;
+                armysF.left -= vx;
+                armysF.top -= vy;
                 Fight.events.push({type:"move",target: armysF});
             }
         }else if(state == "end"){
@@ -158,7 +160,8 @@ class Show{
         }
     }   
     static insert(ev){
-        fighter_sprite[ev.group][ev.id] = Scene.open("app-ui-fightHero", Global.mainFace.node,null, {id:ev.id,group:ev.group,left:sitP[ev.group][ev.id][0],top:sitP[ev.group][ev.id][1]});
+        if ( !fighter_sprite[ev.target.group]){ fighter_sprite[ev.target.group] = []}
+        fighter_sprite[ev.target.group][ev.target.id] = Scene.open("app-ui-fightHero", Global.mainFace.node,null, {id:ev.target.id,group:ev.target.group,left:sitP[ev.target.group][ev.target.id][0],top:sitP[ev.target.group][ev.target.id][1]});
     }
     static move(ev){
         let army = fighter_sprite[ev.target.group][ev.target.id];
@@ -175,6 +178,7 @@ class Show{
         let shap = fighter_sprite[ev.target.group][ev.target.id];
         Scene.remove(shap);
         delete fighter_sprite[ev.target.group][ev.target.id];
+        
     }
     static over(){
 
@@ -183,12 +187,12 @@ class Show{
 
 
 /**
- * @description  地图界面组件
+ * @description  战斗界面组件
  */
 class WFight extends Widget{
     setProps(props){
         super.setProps(props);
-        this.cfg.children[1].data.text = DB.data.map.city ;
+        // this.cfg.children[1].data.text = DB.data.map.city[0] ;
     }
 
     added(node){
@@ -228,7 +232,7 @@ class WfightHero extends Widget{
         this.cfg.data.top = props.top;
         this.cfg.children[3].data.text = `${name}`;
         this.cfg.children[3].data.style.fontSize = size[name.length]
-        this.cfg.children[1].data.style.fill = `${Global.color[bcfg[heroId]["color"]]}`;
+        this.cfg.children[3].data.style.fill = `${Global.color[bcfg[heroId]["color"]]}`;
         this.cfg.children[4].data.text = `${fighter[group][id][1]} ${Cname[fighter[group][id][4]]}`;    
     }
     remove(){
@@ -236,6 +240,8 @@ class WfightHero extends Widget{
     }  
     added(node){
         this.node = node;
+        if(!hpNode[this.props.group]){hpNode[this.props.group] = []}
+        if(!numberNode[this.props.group]){numberNode[this.props.group] = []}
         hpNode[this.props.group][this.props.id] = this.elements.get("hp");
         numberNode[this.props.group][this.props.id] = this.elements.get("number");
     }
@@ -283,6 +289,7 @@ class WfightAccount extends Widget{
         Scene.remove(this.node); 
         AppEmitter.emit("stageStart"); 
         AppEmitter.emit(`${faceName[lastFace]}`);
+        Fight.pause = 1;
     }
 
     added(node){
@@ -314,10 +321,14 @@ const open = () => {
     //显示军队
     for(let i=0; i<2;i++ ){
         for(let j=0; j<fighter[i].length;j++ ){
-            sitP[i][j][0] = 50 + 200 * j;
-            sitP[i][j][1] = 20 + 500 * i;
-            attP[i][j][0] = 50 + 200 * j;
-            attP[i][j][1] = sitP[i][j][1] + 200*(i?1:-1);
+            if (!sitP[i]){sitP[i] = []}
+            if (!attP[i]){attP[i] = []}
+            if (!sitP[i][j]){sitP[i][j] = []}
+            if (!attP[i][j]){attP[i][j] = []}
+
+            sitP[i][j].push(50 + 200 * j,520 - 500 * i)
+            attP[i][j].push(50 + 200 * j,sitP[i][j][1] + 200*(i?1:-1))
+            if (!armys[i]){armys[i] = []}
             armys[i][j] = new Army({
                 left : sitP[i][j][0],
                 top : sitP[i][j][1],
@@ -326,23 +337,21 @@ const open = () => {
                 id : j
             })
             Fight.events.push({type:"insert",target:armys[i][j]});
-           fighter_sprite[i][j] = Scene.open("app-ui-fightHero", Global.mainFace.node,null, {id:j,group:i,left:sitP[i][j][0],top:sitP[i][j][1]});
-
         }
     }
-    Connect.request({type:"app/fight@fight",arg:fighter},(data) => {
+    Connect.request({type:"app/fight@fight",arg:[fighter,enemyType]},(data) => {
         if(data.err){
             return console.log(data.err.reson);
         }
         isvic = data.ok[0];
         fight_show = data.ok[1];
         DB.data.hero.own = data.ok[2];
-        DB.data.hero.enemy = data.ok[3];
+        DB.data.map.guard = data.ok[3];
         DB.data.army.total[0] = data.ok[4];
         kill_die = data.ok[5];
+        Fight.pause = 0;
+        state = "start"
     })
-    Fight.pause = 0;
-
 
 }
 
@@ -359,6 +368,7 @@ Widget.registW("app-ui-fightHero",WfightHero);
 AppEmitter.add("intoFight",(node)=>{
     lastFace = Global.mainFace.id;
     fighter = node.fighter;
+    enemyType = node.enemyType;
     open();
 });
 

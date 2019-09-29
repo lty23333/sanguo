@@ -4,8 +4,8 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 300,
-        "top": 560
+        "left": 20,
+        "top": 100
     },
     "children":[
         {
@@ -36,7 +36,7 @@
                 "id":"belong",
                 "text":"归属",
                 "left":10,
-                "top": 20,
+                "top": 45,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
                 }
@@ -60,8 +60,8 @@
             "data": {
                 "id":"reward",
                 "text":"奖励：",
-                "left":70,
-                "top": 200,
+                "left":20,
+                "top": 220,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

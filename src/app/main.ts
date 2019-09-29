@@ -6,6 +6,8 @@ import  './build';
 import  './people';
 import  './science';
 import  './army';
+import  './map';
+import  './fight';
 
 
 //ui

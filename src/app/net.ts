@@ -4,6 +4,7 @@ import CfgMgr from "../libs/ni/cfgmrg";
 import {table} from "./formula";
 import {AppEmitter} from './appEmitter';
 import {rand} from './global';
+import util from "../libs/ni/util";
 
 /**
  * @description 模拟后台测试
@@ -21,12 +22,13 @@ const saveDb = (key,data) => {
 let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
 build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
-people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]},
-face:{"unlock":[0,0,1,1,0]},
+people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
+face:{"unlock":[0,0,1,1,1]},
 science:[[1,0]],
 hero:{own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
-army:{cur:[0],total:[0],price:[50]}
+army:{cur:[0],total:[0],price:[50]},
+map:{date:[1],city:[0],attack:[[]],guard:[]}
 }
 
 const initScience = () => {
@@ -430,29 +432,48 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_plus",army_plus);
     Connect.setTest("app/army@army_minus",army_minus);
     Connect.setTest("app/army@army_zero",army_zero);
+/****************** army ******************/
+const guard_add = (id: any, callback) => { 
+        let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+        let guard = bcfg[10001]["army"]
+        guard.splice(0,0,"10001"); 
+        DB.map.guard.push(guard);
+        saveDb("map",DB.map);
+        callback({ok:[DB.map.guard]});
+    }
+    const date_update = (date: any, callback) => { 
+        DB.map.date[0] = date
+        saveDb("map",DB.map);
+        callback({ok:[DB.map.date[0]]});
+    }
 
+    Connect.setTest("app/map@guard_add",guard_add);
+    Connect.setTest("app/map@date_update",date_update);
 
 /****************** fight ******************/
 //fighter:[id,num,add+1,位置,兵种]
-const fight = (fighter: any, callback) => {
+const fight = (param: any, callback) => {
     let num = [],
+        fighter = param[0],
         group_num = [fighter[0].length,fighter[1].length,fighter[0].length+fighter[1].length],
         oder = [],      //出手顺序
         dead = [0,0],   //死亡数量
-        cur = fighter,  //存活的角色
+        cur = util.copy(fighter),  //存活的角色
         mess =[],  //战斗报文
         isvic = 0, //是否胜利
         army_dead = [0,0],
-        kill_die = [[0,0,0,0],[0,0,0,0]]    //我军将领得杀敌与损伤
-    
+        kill_die = [[0,0,0,0],[0,0,0,0]],    //我军将领得杀敌与损伤
+        enemyType = param[1] >-1?DB.map.guard[param[1]]:DB.hero.enemy,
+        enemyType1 =  param[1] >-1?DB.map.guard:DB.hero.enemy
     for(let i= 0;i<2;i++){
         for(let j= 0;j<group_num[i];j++){
           fighter[i][j][5] = fighter[i][j][1] * fighter[i][j][2] ;
+          cur[i][j][5] = j ;
         }
     }
     
     for(let i= 0;i<group_num[2];i++){
-        num.push([1,group_num[0]-i?0:1,group_num[0]-i?i:i-group_num[0]]);
+        num.push([1,(group_num[0]-i > 0)?0:1,(group_num[0]-i > 0)?i:i-group_num[0]]);
     }
     
     //出手顺序确定
@@ -462,23 +483,26 @@ const fight = (fighter: any, callback) => {
         num.splice(rnd,1);
     }
     
-    while( dead[0] == group_num[0] || dead[1] == group_num[1] ){
+    while( ! (dead[0] == group_num[0]) && !(dead[1] == group_num[1]) ){
         for(let i = 0;i< oder.length;i++){
             if(oder[i][0]){
                 let group = Math.abs(oder[i][1]-1),
-                    enemyId = fighter[group].indexOf(cur[group][rand(cur[group].length-1)][0]),
+                    rnd = cur[group].length-1,
+                    enemyId = cur[group][rnd][5],
                     damage = fighter[oder[i][1]][oder[i][2]][5] /4 *(1 + ((fighter[oder[i][1]][oder[i][2]][4]-fighter[group][enemyId][4]) ==1?0.3:0)),
                     die = 0
 
                 //打死了    
                 if(fighter[group][enemyId][1] <= Math.ceil(damage/fighter[group][enemyId][2])){
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,fighter[group][enemyId][1]);
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,fighter[group][enemyId][1]]);
                     die = fighter[group][enemyId][1];
                     fighter[group][enemyId][1] = 0;
+                    cur[group].splice(rnd,1);
                     dead[group] += 1;
+
                 //没打死
                 }else{
-                    mess.push([fighter[oder[i][1]][oder[i][2]][0]],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,damage)
+                    mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,damage])
                     die = Math.ceil(damage/fighter[group][enemyId][2]);
                     fighter[group][enemyId][1] -= die
                 }
@@ -486,6 +510,9 @@ const fight = (fighter: any, callback) => {
                     kill_die[1][enemyId] += die
                 }else{
                     kill_die[0][oder[i][2]] += die
+                }
+                if(  (dead[0] == group_num[0]) || (dead[1] == group_num[1]) ){
+                    break;
                 }
             }
         }
@@ -495,25 +522,33 @@ const fight = (fighter: any, callback) => {
         isvic = 1;
     }
     // 军队数量保存
-    for(let i = 0;i < group_num[0]; i++){
+    for(let i = group_num[0]-1;i >= 0; i--){
         army_dead[0] += DB.hero.own[fighter[0][i][3]][1] - fighter[0][i][1];
         DB.hero.own[fighter[0][i][3]][1] = fighter[0][i][1];
     }
-    for(let i = 0;i < group_num[1]; i++){
-        army_dead[1] += DB.hero.enemy[fighter[1][i][3]][1] - fighter[1][i][1];
-        DB.hero.enemy[fighter[1][i][3]][1] = fighter[1][i][1];
-    }
-    for(let i =  group_num[1]-1;i >= 0; i--){
-        if(DB.hero.enemy[fighter[1][i][3]][1] <=0){
-            DB.hero.enemy.splice(fighter[1][i][3],1);
+    if(isvic){
+        if(param[1] >-1){
+            DB.map.guard.splice(param[1],1)
+        }else{
+            DB.hero.enemy = []
+        }
+    }else{
+        for(let i = group_num[1]-1;i >= 0; i--){
+            army_dead[1] += enemyType[fighter[1][i][3]][1] - fighter[1][i][1];
+            if(!fighter[1][i][1]){
+                enemyType.splice([fighter[1][i][3]],1);
+            }else{
+                enemyType[fighter[1][i][3]][1] = fighter[1][i][1];
+            }
         }
     }
+
 
     DB.army.total[0] -= army_dead[0]
     saveDb("hero",DB.hero);
     saveDb("army",DB.army);
-
-    callback({ok:[isvic,mess,DB.hero.own,DB.hero.enemy,DB.army.total[0],kill_die]});
+    saveDb("map",DB.map);
+    callback({ok:[isvic,mess,DB.hero.own,enemyType1,DB.army.total[0],kill_die]});
 
 }
 Connect.setTest("app/fight@fight",fight);

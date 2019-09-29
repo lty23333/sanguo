@@ -184,7 +184,7 @@ Widget.registW("app-ui-people",WPeople);
 Widget.registW("app-ui-peopleWork",WWork);
 Widget.registW("app-ui-workDis",WworkDis);
 //初始化人口数据库 [解锁，数量，提供单位资源量，效率提升百分比]
-DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[1,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0]});
+DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[1,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]});
 //注册人口监听
 
 for(let i = 0; i <2; i++){

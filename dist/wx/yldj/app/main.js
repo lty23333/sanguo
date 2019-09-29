@@ -5,7 +5,9 @@ import './net';
 import './build';
 import './people';
 import './science';
-import './army'; //ui
+import './army';
+import './map';
+import './fight'; //ui
 
 import './widget/button';
 import './widget/ani'; //local use
