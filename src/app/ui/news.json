@@ -22,7 +22,7 @@
             "type": "text",
             "data": {
                 "id":"text1",
-                "text":"点击空白处关闭",
+                "text":"xxxxxxx",
                 "left":5,
                 "top": 5,
                 "style":{
@@ -34,7 +34,7 @@
             "type": "text",
             "data": {
                 "id":"text2",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 30,
                 "style":{
@@ -46,7 +46,7 @@
             "type": "text",
             "data": {
                 "id":"text3",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 55,
                 "style":{
@@ -58,7 +58,7 @@
             "type": "text",
             "data": {
                 "id":"text4",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 80,
                 "style":{
@@ -70,7 +70,7 @@
             "type": "text",
             "data": {
                 "id":"text5",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 105,
                 "style":{
@@ -82,7 +82,7 @@
             "type": "text",
             "data": {
                 "id":"text6",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 130,
                 "style":{
@@ -94,7 +94,7 @@
             "type": "text",
             "data": {
                 "id":"text7",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 155,
                 "style":{
@@ -106,7 +106,7 @@
             "type": "text",
             "data": {
                 "id":"text8",
-                "text":"点击空白处关闭",
+                "text":"",
                 "left":5,
                 "top": 180,
                 "style":{

@@ -443,6 +443,7 @@ class WStart extends Widget {
 
 const open = () => {
   stageNode = Scene.open("app-ui-stage", Scene.root);
+  Scene.open("app-ui-news", Scene.root);
 
   for (let i = 0; i < 6; i++) {
     let name = Stage.res_name[i];

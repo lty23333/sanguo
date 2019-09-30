@@ -396,7 +396,8 @@ class WStart extends Widget{
  * @description 打开zhan界面
  */
 const open = () => {
-    stageNode = Scene.open("app-ui-stage", Scene.root);   
+    stageNode = Scene.open("app-ui-stage", Scene.root);
+    Scene.open("app-ui-news",Scene.root);   
     for(let i=0;i<6;i++){
         let name = Stage.res_name[i]
         if(DB.data.res[name][0]>0){
