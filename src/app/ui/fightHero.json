@@ -35,7 +35,7 @@
                 "height": 0,
                 "left": 2,
                 "top": 2,
-                "background-color": "0xcfcfcf"
+                "background-color": "0x000000"
             }
         },
         {
@@ -58,7 +58,7 @@
                 "left":20,
                 "top": 130,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0x000000", "align" : "center"
                 }
             }
         }

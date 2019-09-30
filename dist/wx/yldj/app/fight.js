@@ -64,7 +64,7 @@ class Fight {
   static pause = 1;
   static events = []; //事件列表
 
-  static shake = 4; //震动次数
+  static shake = 2; //震动次数
 
   static shakeState = 4; //震动阶段
 
@@ -81,8 +81,8 @@ class Fight {
       armysF = armys[fight_show[0][1]][fight_show[0][2]];
       armysT = armys[fight_show[0][4]][fight_show[0][5]];
       damage = fight_show[0][6];
-      vx = (moverT[0] - moverF[0]) / 50;
-      vy = (moverT[1] - moverF[1]) / 50;
+      vx = (moverT[0] - moverF[0]) / 30;
+      vy = (moverT[1] - moverF[1]) / 30;
       state = "run1";
     } else if (state == "run1") {
       if (armysF.top == moverT[1]) {
@@ -123,11 +123,11 @@ class Fight {
           Fight.shakeState = 4;
         }
       } else {
-        Fight.shake = 4;
+        Fight.shake = 2;
         state = "run2";
         armysT.hp -= damage;
         numberNode[fight_show[0][4]][fight_show[0][5]] = armysT.max_hp - armysT.hp;
-        hpNode[fight_show[0][4]][fight_show[0][5]] = (armysT.max_hp - armysT.hp) / armysT.max_hp;
+        hpNode[fight_show[0][4]][fight_show[0][5]].ni.height = (armysT.max_hp - armysT.hp) / armysT.max_hp * 200;
         damageSprite.ni.top += 2000;
       }
     } else if (state == "run2") {
@@ -309,7 +309,9 @@ class WfightAccount extends Widget {
     let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
         result = [["惨胜", "小胜", "大捷"], ["惜败", "小败", "大败"]],
-        resultId = 0;
+        resultId = 0,
+        kill_all = 0,
+        die_all = 0;
 
     for (let i = 0; i < kill_die[0].length - 1; i++) {
       kill_die[0][4] += kill_die[0][i];
@@ -332,22 +334,55 @@ class WfightAccount extends Widget {
 
     for (let i = 0; i < fighter[0].length; i++) {
       this.cfg.children[13 + i].data.text = `${kill_die[0][i]}`;
+      kill_all += kill_die[0][i];
     }
+
+    this.cfg.children[17].data.text = `${kill_all}`;
 
     for (let i = 0; i < fighter[0].length; i++) {
       this.cfg.children[18 + i].data.text = `${kill_die[1][i]}`;
+      die_all += kill_die[1][i];
     }
+
+    this.cfg.children[21].data.text = `${die_all}`;
 
     if (isvic) {
       this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
-    } else {}
+    } else {
+      this.cfg.children[22].data.text = "      +50败绩";
+    }
   }
 
   remove() {
     Scene.remove(Global.mainFace.node);
     AppEmitter.emit("stageStart");
     AppEmitter.emit(`${faceName[lastFace]}`);
-    Fight.pause = 1;
+    Fight.pause = 1; //发放战斗奖励
+
+    Connect.request({
+      type: "app/fight@fightAccount",
+      arg: {
+        isvic: isvic,
+        cityId: cityId
+      }
+    }, data => {
+      if (data.err) {
+        return console.log(data.err.reson);
+      }
+
+      DB.data.res.fail[1] = data.ok[0];
+      DB.data.res.win[1] = data.ok[1];
+
+      if (data.ok[2]) {
+        let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+            effect = bcfg[cityId]["effect_type"],
+            effect_num = bcfg[cityId]["effect_number"];
+
+        for (let i = 0; i < effect_num.length; i++) {
+          DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+        }
+      }
+    });
   }
 
   added(node) {
@@ -410,6 +445,7 @@ const open = () => {
         left: sitP[i][j][0],
         top: sitP[i][j][1],
         hp: fighter[i][j][1],
+        max_hp: fighter[i][j][1],
         group: i,
         id: j
       });

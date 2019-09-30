@@ -3,15 +3,15 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 350,
-        "top": 450
+        "left": 400,
+        "top": 400
     },
     "children":[
         {
             "type": "rect",
             "data": {
-                "width": 340,
-                "height": 430,
+                "width": 750,
+                "height": 1334,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad"

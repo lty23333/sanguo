@@ -50,7 +50,7 @@ class Stage {
     //shap id
     static id = 1
     static pause = 1
-    static  res={food:[],wood:[],sci:[],gold:[],win:[]}// 资源节点
+    static  res={food:[],wood:[],sci:[],gold:[],win:[],fail:[]}// 资源节点
     static  build =[[]] //建筑节点
     static  com_name // 通用窗口名字节点
     static  com_effect // 通用窗口效果节点
@@ -462,7 +462,7 @@ AppEmitter.add("intoMain",(node)=>{
 });
 //资源注册监听
 
-for(let i = 0;i < 4 ; i++){
+for(let i = 0;i < 6 ; i++){
     for(let j = 0; j <7; j++){
         DB.emitter.add(`res.${Stage.res_name[i]}.${j}`, ((x,y) => {
             return ()=>{

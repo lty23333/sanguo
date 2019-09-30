@@ -252,7 +252,7 @@ const eat_food = (param, callback) => {
 };
 
 const eat_gold = (param, callback) => {
-  DB.res.gold[5] = DB.army.total[0] * 6;
+  DB.res.gold[5] = DB.army.total[0] * 1;
   saveDb("res", DB.res);
   callback({
     ok: DB.res.gold[5]
@@ -263,6 +263,7 @@ Connect.setTest("app/res@add", add_res);
 Connect.setTest("app/res@manfood", manadd_food);
 Connect.setTest("app/people@changepeople", change_people);
 Connect.setTest("app/res@eatFood", eat_food);
+Connect.setTest("app/res@eatGold", eat_gold);
 /****************** build ******************/
 //建筑升级
 
@@ -714,7 +715,7 @@ const fightAccount = (param, callback) => {
     saveDb("map", DB.map);
     saveDb("res", DB.res);
     callback({
-      ok: [DB.res.fail, DB.res.win, effect_end]
+      ok: [DB.res.fail[1], DB.res.win[1], effect_end]
     });
   } else {
     //加败绩
@@ -729,7 +730,7 @@ const fightAccount = (param, callback) => {
 
     saveDb("res", DB.res);
     callback({
-      ok: [DB.res.fail, DB.res.win]
+      ok: [DB.res.fail[1], DB.res.win[1]]
     });
   }
 };

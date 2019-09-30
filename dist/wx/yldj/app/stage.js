@@ -50,7 +50,8 @@ class Stage {
     wood: [],
     sci: [],
     gold: [],
-    win: [] // 资源节点
+    win: [],
+    fail: [] // 资源节点
 
   };
   static build = [[]]; //建筑节点
@@ -518,7 +519,7 @@ AppEmitter.add("intoMain", node => {
   openStart();
 }); //资源注册监听
 
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < 6; i++) {
   for (let j = 0; j < 7; j++) {
     DB.emitter.add(`res.${Stage.res_name[i]}.${j}`, ((x, y) => {
       return () => {
