@@ -13,9 +13,17 @@ export default class User {
   /**
    * @description 平台名 "_default"没有任何平台 "wx"微信小游戏
    */
-  static pt = "xianquyouxi";
+
   /**
    * @description 平台用户信息
+   */
+
+  /**
+   * @description wx 登录code
+   */
+
+  /**
+   * @description 用户界面渲染对象
    */
 
   /**
@@ -68,6 +76,10 @@ export default class User {
  * @description 平台授权初始化
  */
 
+User.pt = "xianquyouxi";
+User.info = void 0;
+User.code = void 0;
+User.show = void 0;
 const ptFrom = {
   wx: () => {
     let wx = window.wx,
@@ -199,26 +211,7 @@ const loginCallback = err => {
     return console.log(err);
   }
 
-  Connect.request({
-    type: "app/all@read",
-    arg: []
-  }, data => {
-    let d = JSON.parse(data.ok);
-
-    for (let i in d) {
-      for (let j in d[i]) {
-        if (j == "own" || j == "left" || j == "choose" || j == 'enemy') {
-          DB.data.hero[j] = d[i][j];
-        } else {
-          for (let k in d[i][j]) {
-            DB.data[i][j][k] = d[i][j][k];
-          }
-        }
-      }
-    }
-  });
   AppEmitter.emit("intoMain");
-  AppEmitter.emit("intoBuild");
   Scene.remove(User.show);
   User.show = null;
 };

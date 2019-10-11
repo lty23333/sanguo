@@ -5,10 +5,10 @@ import Widget from '../libs/ni/widget';
 import { AppEmitter } from './appEmitter';
 import Connect from "../libs/ni/connect";
 import { Global } from './global';
+
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
-
 let workNode = [];
 let peopleNode = [];
 

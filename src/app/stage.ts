@@ -8,19 +8,23 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import {Global} from './global';
-import people from './people';
+import {Global,rand} from './global';
+
 
 
 /****************** 导出 ******************/
 export const addNews = (news) => {
-    if(DB.data.news.length<25){
-        DB.data.news.push(news);
+    if(DB.data.news[0].length<25){
+        DB.data.news[0].unshift(news);
     }else{
-        for(let i=23;i>0;i--){
-            DB.data.news[i-1] = DB.data.news[i];
-        }
-        DB.data.news[23] = news;
+        DB.data.news[0].splice(-1,1);
+    }
+}
+export const addFNews = (news) => {
+    if(DB.data.news[1].length<25){
+        DB.data.news[1].unshift(news);
+    }else{
+        DB.data.news[1].splice(-1,1);
     }
 }
 /****************** 本地 ******************/
@@ -68,11 +72,25 @@ class Stage {
     static nextDay = 0
     static resSprite = []
     static messageList = []
+    static hungry = ["仓无粮。","地荒，无粮。","大荒。","饿殍满地。","大饥，人相食。"]
+
 
     static time 
     static timeInterval =  500; //增加资源的时间间隔
     static newsNode =[]; //新闻节点
+    static newsFace = 0   //0-新闻，1-战报
 
+
+    static initDB(){
+        //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
+        DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]});
+        DB.init("date",{unlock:[0,0],day:[0]});
+        //主界面解锁
+        DB.init("face",{"unlock":[0,0,1,1,1]});
+        DB.init("event",{"next":[2001]});
+
+        DB.init("news",[[],[]]);//新闻
+    }
 
     //更新消息显示
     static updateMessage(message){
@@ -94,16 +112,25 @@ class Stage {
 
     //更新消息显示
     static updateNews(){
-        let len = DB.data.news.length
-        if(len < 8){
+        let type = Stage.newsFace
+        let len = DB.data.news[type].length
+        if(len < 7){
             for(let i=0;i<len;i++){
-                Stage.newsNode[i].text = DB.data.news[i];
+                Stage.newsNode[i].text = DB.data.news[type][len-1-i];
+            }
+            for(let i=len;i<7;i++){
+                Stage.newsNode[i].text = ""
             }
         }else{
-            for(let i=0;i<8;i++){
-                Stage.newsNode[i].text = DB.data.news[len -8 + i];
+            for(let i=0;i<7;i++){
+                Stage.newsNode[i].text = DB.data.news[type][6-i];
             }
         }
+
+        if(type && !len){
+            Stage.newsNode[0].text = "幸无战事,得以休想生息。"
+        }
+
 
     }
     //更新资源显示
@@ -155,11 +182,19 @@ class Stage {
     //地图添加据点
     static guardAdd(){
         if(DB.data.date.day[0]==DB.data.map.date[0]){
+            let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+                bcfg1 = CfgMgr.getOne("app/cfg/city.json@rand")
             Connect.request({type:"app/map@guard_add",arg:{}},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
                 }
                 DB.data.map.guard = data.ok[0];
+                if(data.ok[0][0][0]<20000){
+                    addNews(`斥候已经侦察好了前往${bcfg[data.ok[0][0][0]]["name"]}的道路。`);
+                }else{
+                    addNews(bcfg1[data.ok[0][0][0]]["dis"]);
+                }
+
             })
         }
     }
@@ -171,7 +206,8 @@ class Stage {
         if(DB.data.event.next[0]){
             let eventId = DB.data.event.next[0],
                 bcfg = CfgMgr.getOne("app/cfg/event.json@event"),
-                eventDate = bcfg[`${eventId}`]["date"]
+                eventDate = bcfg[`${eventId}`]["date"],
+                news = bcfg[eventId]["dis"]
 
 
             if(date == eventDate){
@@ -181,6 +217,10 @@ class Stage {
                         return console.log(data.err.reson);
                     }
                     DB.data[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] = data.ok[0];
+                    if(news){
+                        news = news.replace("{{number}}",bcfg[eventId]["number"])
+                        addNews(news);   
+                    }
                 })
                     //成功触发则立刻查看下一个事件是否可触发
                 Stage.eventTrigger();
@@ -197,10 +237,11 @@ class Stage {
                     DB.data.people[Stage.work_name[data.ok[2]]][data.ok[3]] = data.ok[0];
                 }       
                 if(data[1] ==1){
-
+                    let str =""
+                    addNews("一位流民在此定居。（人口+1）")
                 }
                 if(data[1] ==-1){
-
+                    addNews(`${Stage.hungry[rand(Stage.hungry.length)-1] }（人口-1）`)
                 }
             })         
         }
@@ -249,7 +290,11 @@ class Stage {
                         Stage.year.text =  `${Stage.five[Math.ceil(DB.data.date.day[0]/400) % 5]}第${Math.ceil(DB.data.date.day[0]/400)}年`
                     }
                 }
-                Stage.day.text = `${season} ${DB.data.date.day[0]}天`
+                Stage.day.text = `${season} ${DB.data.date.day[0] % 100}天`
+                //新年弹出新闻信息
+                if(DB.data.date.day[0] % 400 == 1){
+                    addNews(`--------------第${Math.ceil(DB.data.date.day[0]/400)}年-------------`)
+                }
             })
             Stage.nextDay += Stage.dayTime; 
         }
@@ -284,9 +329,15 @@ class WMessage extends Widget{
  */
 class WNews extends Widget{
     added(node){
-       for(let i=1;i<9;i++){
+       for(let i=1;i<8;i++){
            Stage.newsNode[i-1] = this.elements.get(`text${i}`);
        }
+    }
+    change(faceID){
+        if(Stage.newsFace != faceID){
+            Stage.newsFace = faceID;
+            Stage.updateNews();
+        }
     }
 }
 /**
@@ -382,9 +433,42 @@ class WStage extends Widget{
  * @description 开始游戏界面
  */
 class WStart extends Widget{
-    startGame(){
+    setProps(props){
+        super.setProps(props);
+        
+    }
 
+    //重新开始
+    startGame(){
         Scene.remove(startNode);
+        open();
+        AppEmitter.emit("intoBuild"); 
+        startNode = null;
+        Stage.pause = 0;  
+        Stage.time = Date.now() + Stage.timeInterval;
+        Stage.nextDay = Date.now() + Stage.dayTime;
+    }
+    //继续游戏
+    continue(){
+        Connect.request({type:"app/all@read",arg:[]},(data) => {
+            let d = JSON.parse(data.ok);
+            for(let i in d){
+                for(let j in d[i]){
+                    if(j == "own" || j== "left" || j== "choose" || j==  'enemy'){
+                        DB.data.hero[j] = d[i][j];
+                    }else{
+                        for(let k in d[i][j]){
+                            DB.data[i][j][k] = d[i][j][k];
+                        }
+                    }
+    
+                }
+            }
+        })
+    
+        Scene.remove(startNode);
+        open();
+        AppEmitter.emit("intoBuild"); 
         startNode = null;
         Stage.pause = 0;  
         Stage.time = Date.now() + Stage.timeInterval;
@@ -393,7 +477,7 @@ class WStart extends Widget{
 }
 
 /**
- * @description 打开zhan界面
+ * @description 打开界面
  */
 const open = () => {
     stageNode = Scene.open("app-ui-stage", Scene.root);
@@ -404,6 +488,7 @@ const open = () => {
             Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});
         }
     }
+    Stage.updateNews();
 
 
     // console.log(Stage.width,Stage.height);
@@ -421,6 +506,7 @@ const start = () => {
 
 
 /****************** 立即执行 ******************/
+
 //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
 DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]});
 DB.init("date",{unlock:[0,0],day:[0]});
@@ -428,9 +514,7 @@ DB.init("date",{unlock:[0,0],day:[0]});
 DB.init("face",{"unlock":[0,0,1,1,1]});
 DB.init("event",{"next":[2001]});
 
-DB.init("news",[]);//新闻
-
-
+DB.init("news",[[],[]]);//新闻
 
 
 //注册组件
@@ -458,7 +542,6 @@ AppEmitter.add("stageStart",(node)=>{
 });
 //注册页面打开事件
 AppEmitter.add("intoMain",(node)=>{
-    open();
     openStart();
 });
 //资源注册监听
@@ -502,3 +585,7 @@ DB.emitter.add(`news`, () => {
 DB.emitter.add(`message`, (str) => {
     Stage.updateMessage(str);
 });
+// //重新开始，重置数据库
+// AppEmitter.add("initDB",(node)=>{
+//     Stage.initDB();
+// });

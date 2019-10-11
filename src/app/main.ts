@@ -41,8 +41,6 @@ export default class Main {
             Connect.open(cfg,()=>{
                 //初始化数据库
                 AppEmitter.emit("initDB");
-                AppEmitter.emit("initBuild");
-                AppEmitter.emit("initScience");
                 User.init();
                 Process.clear();
   

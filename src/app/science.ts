@@ -9,6 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global} from './global';
+import {addNews} from './stage';
 
 /****************** 导出 ******************/
 
@@ -27,9 +28,7 @@ class Science {
     static unlock_science = []
     static scienceNode = []
 
-    static clear(){
 
-    }
     //更新科技数量
     static updateScience(id,type){
         if(type ==0){
@@ -194,11 +193,6 @@ AppEmitter.add("intoScience",(node)=>{
     open();
 });
 
-AppEmitter.add("initScience",(node)=>{
-    initScience();
-    emtScience();
-});
-
 
 //科技注册监听
 const emtScience = () => {
@@ -213,3 +207,8 @@ const emtScience = () => {
     } 
 }  
 
+//重新开始，重置数据库
+AppEmitter.add("initDB",(node)=>{
+    initScience();
+    emtScience();
+});

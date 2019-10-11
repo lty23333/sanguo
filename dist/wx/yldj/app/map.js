@@ -15,11 +15,9 @@ let cityNumberNode,
 heroList = []; //己方英雄列表
 
 class Map {
-  static city_sprite = []; //据点精灵
-
-  static armyNode = []; //敌军描述节点
+  //据点精灵
+  //敌军描述节点
   //更新据点
-
   static updateGuard() {
     let time = [15, 50, 100];
     let newDate = DB.data.date.day[0] + Math.ceil(time[DB.data.map.guard.length] * (700 + rand(600) / 1000)); //更新下一次时间
@@ -64,10 +62,13 @@ class Map {
  */
 
 
+Map.city_sprite = [];
+Map.armyNode = [];
+
 class WMap extends Widget {
   setProps(props) {
     super.setProps(props);
-    this.cfg.children[1].data.text = DB.data.map.city;
+    this.cfg.children[1].data.text = DB.data.map.city[0];
   }
 
   added(node) {
@@ -78,15 +79,27 @@ class WMap extends Widget {
 
 
 class WCity extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+    this.backNode = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
-    let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+    let bcfg,
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
         Cname = ["步", "骑", "弓"],
         id = props.id,
         army = DB.data.map.guard[props.index],
         str1 = "",
-        str2 = "";
+        str2 = ""; //判断城市还是随机据点
+
+    if (id < 20000) {
+      bcfg = CfgMgr.getOne("app/cfg/city.json@city");
+    } else {
+      bcfg = CfgMgr.getOne("app/cfg/city.json@rand");
+    }
 
     for (let i = 1; i < army.length; i++) {
       str1 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`;
@@ -127,15 +140,27 @@ class WCity extends Widget {
 
 
 class WfightWindow extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
-    let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+    let bcfg,
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
         Cname = ["步", "骑", "弓"],
         id = props.id,
         army = DB.data.map.guard[props.index],
         str1 = "",
-        str2 = ""; //我军上阵
+        str2 = ""; //判断城市还是随机据点
+
+    if (id < 20000) {
+      bcfg = CfgMgr.getOne("app/cfg/city.json@city");
+    } else {
+      bcfg = CfgMgr.getOne("app/cfg/city.json@rand");
+    } //我军上阵
+
 
     for (let i = 0; i < DB.data.hero.upHero[0]; i++) {
       str1 = `${str1}\n${bcfg2[heroList[i][0]]["name"]}(${heroList[i][1]}${Cname[bcfg2[heroList[i][0]]["arms"]]})`;
@@ -154,7 +179,8 @@ class WfightWindow extends Widget {
   fight() {
     let own = [],
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        bcfg2 = CfgMgr.getOne("app/cfg/city.json@city");
+        bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
+        bcfg4 = CfgMgr.getOne("app/cfg/city.json@army");
 
     for (let i = 0; i < DB.data.hero.upHero[0]; i++) {
       if (!own[i]) {
@@ -176,8 +202,15 @@ class WfightWindow extends Widget {
       }
 
       enemy[i][0] = DB.data.map.guard[this.props.index][i + 1][0];
-      enemy[i][1] = DB.data.map.guard[this.props.index][i + 1][1];
-      enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"] / 100 + bcfg2[this.props.id]["attribute"];
+      enemy[i][1] = DB.data.map.guard[this.props.index][i + 1][1]; //判断是否是城市
+
+      if (this.props.id < 20000) {
+        enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"] / 100 + bcfg2[this.props.id];
+      } else {
+        enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"] / 100 + bcfg4[this.props.id];
+      }
+
+      ["attribute"];
       enemy[i][3] = i + 1;
       enemy[i][4] = bcfg[enemy[i][0]]["arms"];
     }
@@ -246,7 +279,7 @@ Widget.registW("app-ui-city", WCity); //初始化敌军数据库guard: [[[据点
 
 DB.init("map", {
   date: [1],
-  city: [0],
+  city: [0, 10000],
   attack: [[]],
   guard: []
 }); //注册页面打开事件

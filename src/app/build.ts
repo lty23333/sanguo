@@ -9,6 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global,rand} from './global';
+import {addNews} from './stage';
 
 
 /****************** 导出 ******************/
@@ -340,7 +341,7 @@ class WcomWindow extends Widget{
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-build", Scene.root);
     Global.mainFace.id = 2;
-    DB.data.build[8][0]=1;
+    // DB.data.build[8][0]=1;
     //显示解锁的建筑按钮
     for(let i=0; i<DB.data.build.length;i++ ){
         if(DB.data.build[i][0]){
@@ -375,7 +376,7 @@ DB.init("hotel",{date:[0],price:[10]});
 AppEmitter.add("intoBuild",(node)=>{
     open();
 });
-AppEmitter.add("initBuild",(node)=>{
+AppEmitter.add("initDB",(node)=>{
     initBuild();
     emtBuild();
 });

@@ -9,6 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global} from './global';
+import {addNews} from './stage';
 
 
 /****************** 导出 ******************/

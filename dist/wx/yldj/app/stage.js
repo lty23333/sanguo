@@ -6,18 +6,21 @@ import Widget from '../libs/ni/widget';
 import CfgMgr from '../libs/ni/cfgmrg';
 import { AppEmitter } from './appEmitter';
 import Connect from "../libs/ni/connect";
-import { Global } from './global';
-
+import { Global, rand } from './global';
 /****************** 导出 ******************/
-export const addNews = news => {
-  if (DB.data.news.length < 25) {
-    DB.data.news.push(news);
-  } else {
-    for (let i = 23; i > 0; i--) {
-      DB.data.news[i - 1] = DB.data.news[i];
-    }
 
-    DB.data.news[23] = news;
+export const addNews = news => {
+  if (DB.data.news[0].length < 25) {
+    DB.data.news[0].unshift(news);
+  } else {
+    DB.data.news[0].splice(-1, 1);
+  }
+};
+export const addFNews = news => {
+  if (DB.data.news[1].length < 25) {
+    DB.data.news[1].unshift(news);
+  } else {
+    DB.data.news[1].splice(-1, 1);
   }
 };
 /****************** 本地 ******************/
@@ -29,50 +32,48 @@ levelupNode, //升级消耗节点
 buildNode; // 建筑渲染节点
 
 class Stage {
-  static width = 0;
-  static height = 0;
   /**
    * @description 自己
    */
   // static self: Shap
   // //自己的默认移动速度
-
-  static svx = -7;
   //down
-  static down = 0; //up
-
-  static up = 0; //shap id
-
-  static id = 1;
-  static pause = 1;
-  static res = {
-    food: [],
-    wood: [],
-    sci: [],
-    gold: [],
-    win: [],
-    fail: [] // 资源节点
-
-  };
-  static build = [[]]; //建筑节点
-
+  //up
+  //shap id
+  //建筑节点
+  // 通用窗口名字节点
+  // 通用窗口效果节点
+  // 通用窗口消耗节点
+  //日期节点
   //年份节点
-  static res_name = ["food", "wood", "sci", "gold", "win", "fail"];
-  static work_name = ["total", "food", "wood", "sci", "gold"]; //资源名
+  //资源名
+  //增加资源的时间间隔
+  //新闻节点
+  //0-新闻，1-战报
+  static initDB() {
+    //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
+    DB.init("res", {
+      food: [1, 0, 5000, 0, 0, 0, 0],
+      wood: [0, 0, 600, 0, 0, 0, 0],
+      sci: [0, 0, 100, 0, 0, 0, 0],
+      gold: [1, 600, 600, 0, 0, 0, 0],
+      win: [0, 0, 200, 0, 0, 1, 0],
+      fail: [0, 0, 200, 0, 0, 1, 0]
+    });
+    DB.init("date", {
+      unlock: [0, 0],
+      day: [0]
+    }); //主界面解锁
 
-  static five = ["金", "木", "水", "火", "土"];
-  static five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
-  static res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
-  static season_Cname = ["春", "夏", "秋", "冬"];
-  static face_name = ["sceince", "people", "build", "army", "map"];
-  static dayTime = 1500;
-  static nextDay = 0;
-  static resSprite = [];
-  static messageList = [];
-  static timeInterval = 500; //增加资源的时间间隔
+    DB.init("face", {
+      "unlock": [0, 0, 1, 1, 1]
+    });
+    DB.init("event", {
+      "next": [2001]
+    });
+    DB.init("news", [[], []]); //新闻
+  } //更新消息显示
 
-  static newsNode = []; //新闻节点
-  //更新消息显示
 
   static updateMessage(message) {
     let MNode = Scene.open("app-ui-message", Scene.root, null, {
@@ -94,16 +95,25 @@ class Stage {
 
 
   static updateNews() {
-    let len = DB.data.news.length;
+    let type = Stage.newsFace;
+    let len = DB.data.news[type].length;
 
-    if (len < 8) {
+    if (len < 7) {
       for (let i = 0; i < len; i++) {
-        Stage.newsNode[i].text = DB.data.news[i];
+        Stage.newsNode[i].text = DB.data.news[type][len - 1 - i];
+      }
+
+      for (let i = len; i < 7; i++) {
+        Stage.newsNode[i].text = "";
       }
     } else {
-      for (let i = 0; i < 8; i++) {
-        Stage.newsNode[i].text = DB.data.news[len - 8 + i];
+      for (let i = 0; i < 7; i++) {
+        Stage.newsNode[i].text = DB.data.news[type][6 - i];
       }
+    }
+
+    if (type && !len) {
+      Stage.newsNode[0].text = "幸无战事,得以休想生息。";
     }
   } //更新资源显示
 
@@ -164,6 +174,8 @@ class Stage {
 
   static guardAdd() {
     if (DB.data.date.day[0] == DB.data.map.date[0]) {
+      let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+          bcfg1 = CfgMgr.getOne("app/cfg/city.json@rand");
       Connect.request({
         type: "app/map@guard_add",
         arg: {}
@@ -173,6 +185,12 @@ class Stage {
         }
 
         DB.data.map.guard = data.ok[0];
+
+        if (data.ok[0][0][0] < 20000) {
+          addNews(`斥候已经侦察好了前往${bcfg[data.ok[0][0][0]]["name"]}的道路。`);
+        } else {
+          addNews(bcfg1[data.ok[0][0][0]]["dis"]);
+        }
       });
     }
   } //事件触发
@@ -184,7 +202,8 @@ class Stage {
     if (DB.data.event.next[0]) {
       let eventId = DB.data.event.next[0],
           bcfg = CfgMgr.getOne("app/cfg/event.json@event"),
-          eventDate = bcfg[`${eventId}`]["date"];
+          eventDate = bcfg[`${eventId}`]["date"],
+          news = bcfg[eventId]["dis"];
 
       if (date == eventDate) {
         DB.data.event.next[0] = eventId + 1;
@@ -197,6 +216,11 @@ class Stage {
           }
 
           DB.data[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] = data.ok[0];
+
+          if (news) {
+            news = news.replace("{{number}}", bcfg[eventId]["number"]);
+            addNews(news);
+          }
         }); //成功触发则立刻查看下一个事件是否可触发
 
         Stage.eventTrigger();
@@ -217,9 +241,14 @@ class Stage {
           DB.data.people[Stage.work_name[data.ok[2]]][data.ok[3]] = data.ok[0];
         }
 
-        if (data[1] == 1) {}
+        if (data[1] == 1) {
+          let str = "";
+          addNews("一位流民在此定居。（人口+1）");
+        }
 
-        if (data[1] == -1) {}
+        if (data[1] == -1) {
+          addNews(`${Stage.hungry[rand(Stage.hungry.length) - 1]}（人口-1）`);
+        }
       });
     }
   } //资源自动变化
@@ -276,7 +305,11 @@ class Stage {
           }
         }
 
-        Stage.day.text = `${season} ${DB.data.date.day[0]}天`;
+        Stage.day.text = `${season} ${DB.data.date.day[0] % 100}天`; //新年弹出新闻信息
+
+        if (DB.data.date.day[0] % 400 == 1) {
+          addNews(`--------------第${Math.ceil(DB.data.date.day[0] / 400)}年-------------`);
+        }
       });
       Stage.nextDay += Stage.dayTime;
     }
@@ -288,7 +321,52 @@ class Stage {
  */
 
 
+Stage.width = 0;
+Stage.height = 0;
+Stage.svx = -7;
+Stage.insertTimer = void 0;
+Stage.down = 0;
+Stage.up = 0;
+Stage.id = 1;
+Stage.pause = 1;
+Stage.res = {
+  food: [],
+  wood: [],
+  sci: [],
+  gold: [],
+  win: [],
+  fail: [] // 资源节点
+
+};
+Stage.build = [[]];
+Stage.com_name = void 0;
+Stage.com_effect = void 0;
+Stage.com_cost = void 0;
+Stage.day = void 0;
+Stage.year = void 0;
+Stage.res_name = ["food", "wood", "sci", "gold", "win", "fail"];
+Stage.work_name = ["total", "food", "wood", "sci", "gold"];
+Stage.five = ["金", "木", "水", "火", "土"];
+Stage.five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
+Stage.res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
+Stage.season_Cname = ["春", "夏", "秋", "冬"];
+Stage.face_name = ["sceince", "people", "build", "army", "map"];
+Stage.dayTime = 1500;
+Stage.nextDay = 0;
+Stage.resSprite = [];
+Stage.messageList = [];
+Stage.hungry = ["仓无粮。", "地荒，无粮。", "大荒。", "饿殍满地。", "大饥，人相食。"];
+Stage.time = void 0;
+Stage.timeInterval = 500;
+Stage.newsNode = [];
+Stage.newsFace = 0;
+
 class WBack extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   remove() {
     Scene.remove(this.node);
   }
@@ -317,8 +395,15 @@ class WMessage extends Widget {
 
 class WNews extends Widget {
   added(node) {
-    for (let i = 1; i < 9; i++) {
+    for (let i = 1; i < 8; i++) {
       Stage.newsNode[i - 1] = this.elements.get(`text${i}`);
+    }
+  }
+
+  change(faceID) {
+    if (Stage.newsFace != faceID) {
+      Stage.newsFace = faceID;
+      Stage.updateNews();
     }
   }
 
@@ -427,8 +512,44 @@ class WStage extends Widget {
 
 
 class WStart extends Widget {
+  setProps(props) {
+    super.setProps(props);
+  } //重新开始
+
+
   startGame() {
     Scene.remove(startNode);
+    open();
+    AppEmitter.emit("intoBuild");
+    startNode = null;
+    Stage.pause = 0;
+    Stage.time = Date.now() + Stage.timeInterval;
+    Stage.nextDay = Date.now() + Stage.dayTime;
+  } //继续游戏
+
+
+  continue() {
+    Connect.request({
+      type: "app/all@read",
+      arg: []
+    }, data => {
+      let d = JSON.parse(data.ok);
+
+      for (let i in d) {
+        for (let j in d[i]) {
+          if (j == "own" || j == "left" || j == "choose" || j == 'enemy') {
+            DB.data.hero[j] = d[i][j];
+          } else {
+            for (let k in d[i][j]) {
+              DB.data[i][j][k] = d[i][j][k];
+            }
+          }
+        }
+      }
+    });
+    Scene.remove(startNode);
+    open();
+    AppEmitter.emit("intoBuild");
     startNode = null;
     Stage.pause = 0;
     Stage.time = Date.now() + Stage.timeInterval;
@@ -437,7 +558,7 @@ class WStart extends Widget {
 
 }
 /**
- * @description 打开zhan界面
+ * @description 打开界面
  */
 
 
@@ -453,8 +574,9 @@ const open = () => {
         id: i
       });
     }
-  } // console.log(Stage.width,Stage.height);
+  }
 
+  Stage.updateNews(); // console.log(Stage.width,Stage.height);
 };
 
 const openStart = () => {
@@ -491,7 +613,7 @@ DB.init("face", {
 DB.init("event", {
   "next": [2001]
 });
-DB.init("news", []); //新闻
+DB.init("news", [[], []]); //新闻
 //注册组件
 
 Widget.registW("app-ui-stage", WStage);
@@ -516,7 +638,6 @@ AppEmitter.add("stageStart", node => {
 }); //注册页面打开事件
 
 AppEmitter.add("intoMain", node => {
-  open();
   openStart();
 }); //资源注册监听
 
@@ -556,4 +677,7 @@ DB.emitter.add(`news`, () => {
 
 DB.emitter.add(`message`, str => {
   Stage.updateMessage(str);
-});
+}); // //重新开始，重置数据库
+// AppEmitter.add("initDB",(node)=>{
+//     Stage.initDB();
+// });

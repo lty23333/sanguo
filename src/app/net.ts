@@ -28,7 +28,7 @@ science:[[1,0]],
 hero:{own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
 army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0],attack:[[]],guard:[]}
+map:{date:[1],city:[0,10000],attack:[[]],guard:[]}
 }
 
 const initScience = () => {
@@ -322,7 +322,7 @@ const hero_choose = (param: any, callback) => {
         param = 2;
     } 
 
-    if(DB.hotel.date[0] < now || param == 2){
+    if(DB.hotel.date[0] < now && param == 2){
         DB.hotel.date[0] = now;
         for(let i=0;i<3;i++){
             let num = 0,
@@ -432,20 +432,34 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_plus",army_plus);
     Connect.setTest("app/army@army_minus",army_minus);
     Connect.setTest("app/army@army_zero",army_zero);
-/****************** army ******************/
+/****************** map ******************/
 const guard_add = (id: any, callback) => { 
-        let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
-        let guard = bcfg[10001]["army"]
-        guard.splice(0,0,"10001"); 
+        let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+            bcfg2 = CfgMgr.getOne("app/cfg/city.json@rand"),
+            bcfg3 = CfgMgr.getOne("app/cfg/city.json@army"),
+            guard ,
+            guardId
+        //随机据点
+        if(rand(3)>1){
+          guardId = 20000 +rand(3);
+          guard = bcfg3[DB.date.day[0]]["army"] 
+        //城市据点
+        }else{
+          guardId = DB.map.city[1] + 1;
+          DB.map.city[1] += 1;
+          guard = bcfg[guardId]["army"]
+        }    
+        guard.splice(0,0,guardId); 
         DB.map.guard.push(guard);
         saveDb("map",DB.map);
-        callback({ok:[DB.map.guard]});
-    }
-    const date_update = (date: any, callback) => { 
+        callback({ok:[DB.map.guard,guardId]});
+}
+
+const date_update = (date: any, callback) => { 
         DB.map.date[0] = date
         saveDb("map",DB.map);
         callback({ok:[DB.map.date[0]]});
-    }
+}
 
     Connect.setTest("app/map@guard_add",guard_add);
     Connect.setTest("app/map@date_update",date_update);
@@ -566,10 +580,13 @@ const fightAccount = (param: any, callback) => {
             DB.res.win[1] += win -DB.res.fail[1];
             DB.res.fail[1] = 0;
         }
-        for(let i=0;i<effect_num.length;i++){
-            DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
-            effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
-        }   
+        if(effect){
+            for(let i=0;i<effect_num.length;i++){
+                DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+                effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+            }   
+
+        }
         saveDb("map",DB.map);
         saveDb("res",DB.res);
         callback({ok:[DB.res.fail[1],DB.res.win[1],effect_end]});

@@ -33,6 +33,7 @@ class Map {
                     return console.log(data.err.reson);
                 }
                 DB.data.map.date[0] = data.ok[0];
+                
             })
         }
 
@@ -60,7 +61,7 @@ class Map {
 class WMap extends Widget{
     setProps(props){
         super.setProps(props);
-        this.cfg.children[1].data.text = DB.data.map.city ;
+        this.cfg.children[1].data.text = DB.data.map.city[0] ;
     }
 
     added(node){
@@ -76,14 +77,19 @@ class WCity extends Widget{
 
     setProps(props){
         super.setProps(props);
-        let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+        let bcfg ,
             bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
             Cname = ["步","骑","弓"],
             id = props.id,
             army = DB.data.map.guard[props.index],
             str1 = "",
             str2 = ""
-
+        //判断城市还是随机据点
+        if(id<20000){
+            bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+        }else{
+            bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+        }   
         for(let i=1;i< army.length;i++){
             str1 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`
         }
@@ -120,13 +126,20 @@ class WfightWindow extends Widget{
 
     setProps(props){
         super.setProps(props);
-        let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
-        bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        Cname = ["步","骑","弓"],
-        id = props.id,
-        army = DB.data.map.guard[props.index],
-        str1 = "",
-        str2 = ""
+        let bcfg ,
+            bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
+            Cname = ["步","骑","弓"],
+            id = props.id,
+            army = DB.data.map.guard[props.index],
+            str1 = "",
+            str2 = ""
+
+         //判断城市还是随机据点
+        if(id<20000){
+            bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+        }else{
+            bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+        }  
         //我军上阵
         for(let i=0;i < DB.data.hero.upHero[0];i++){
             str1 = `${str1}\n${bcfg2[heroList[i][0]]["name"]}(${heroList[i][1]}${Cname[bcfg2[heroList[i][0]]["arms"]]})`
@@ -144,7 +157,9 @@ class WfightWindow extends Widget{
     fight(){
         let own =[],
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-            bcfg2 = CfgMgr.getOne("app/cfg/city.json@city")
+            bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
+            bcfg4 = CfgMgr.getOne("app/cfg/city.json@army")
+
         for(let i=0;i < DB.data.hero.upHero[0];i++){
             if(!own[i]){own[i] = []}
             own[i][0] = heroList[i][0]
@@ -158,7 +173,13 @@ class WfightWindow extends Widget{
             if(!enemy[i]){enemy[i] = []}
             enemy[i][0] = DB.data.map.guard[this.props.index][i+1][0]
             enemy[i][1] = DB.data.map.guard[this.props.index][i+1][1]
-            enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
+            //判断是否是城市
+            if(this.props.id < 20000){
+                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]
+            }else{
+                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[this.props.id]
+            }
+            ["attribute"]
             enemy[i][3] = i+1
             enemy[i][4] = bcfg[enemy[i][0]]["arms"]
         }
@@ -210,8 +231,7 @@ Widget.registW("app-ui-map",WMap);
 Widget.registW("app-ui-fightWindow",WfightWindow);
 Widget.registW("app-ui-city",WCity);
 //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
-
-DB.init("map",{date:[1],city:[0],attack:[[]],guard:[]});
+DB.init("map",{date:[1],city:[0,10000],attack:[[]],guard:[]});
 
 
 

@@ -19,14 +19,58 @@
             }
         },
         {
+            "type": "rect",
+            "on":{"tap":{"func":"change","arg":[0]}},
+            "data": {
+                "width": 150,
+                "height": 50,
+                "left": 0,
+                "top": -50,
+                "background-color": "#d9c6ad"
+            },
+            "children": [
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "消息",
+                        "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                        "left": 34,
+                        "top": 10
+                    }
+                }
+            ]
+        },
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"change","arg":[1]}},
+            "data": {
+                "width": 150,
+                "height": 100,
+                "left": 150,
+                "top": -50,
+                "background-color": "#d9c6ad"
+            },
+            "children": [
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "战报",
+                        "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
+                        "left": 34,
+                        "top": 10
+                    }
+                }
+            ]
+        },
+        {
             "type": "text",
             "data": {
                 "id":"text1",
-                "text":"xxxxxxx",
+                "text":"",
                 "left":5,
                 "top": 5,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -36,9 +80,9 @@
                 "id":"text2",
                 "text":"",
                 "left":5,
-                "top": 30,
+                "top": 33,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -48,9 +92,9 @@
                 "id":"text3",
                 "text":"",
                 "left":5,
-                "top": 55,
+                "top": 61,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -60,9 +104,9 @@
                 "id":"text4",
                 "text":"",
                 "left":5,
-                "top": 80,
+                "top": 89,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -72,9 +116,9 @@
                 "id":"text5",
                 "text":"",
                 "left":5,
-                "top": 105,
+                "top": 117,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -84,9 +128,9 @@
                 "id":"text6",
                 "text":"",
                 "left":5,
-                "top": 130,
+                "top": 145,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -96,21 +140,9 @@
                 "id":"text7",
                 "text":"",
                 "left":5,
-                "top": 155,
+                "top": 173,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
-            }
-        },
-        {
-            "type": "text",
-            "data": {
-                "id":"text8",
-                "text":"",
-                "left":5,
-                "top": 180,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         }

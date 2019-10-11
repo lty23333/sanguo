@@ -63,7 +63,7 @@ let DB = {
   },
   map: {
     date: [1],
-    city: [0],
+    city: [0, 10000],
     attack: [[]],
     guard: []
   }
@@ -415,7 +415,7 @@ const hero_choose = (param, callback) => {
     param = 2;
   }
 
-  if (DB.hotel.date[0] < now || param == 2) {
+  if (DB.hotel.date[0] < now && param == 2) {
     DB.hotel.date[0] = now;
 
     for (let i = 0; i < 3; i++) {
@@ -554,16 +554,29 @@ Connect.setTest("app/army@army_buy", army_buy);
 Connect.setTest("app/army@army_plus", army_plus);
 Connect.setTest("app/army@army_minus", army_minus);
 Connect.setTest("app/army@army_zero", army_zero);
-/****************** army ******************/
+/****************** map ******************/
 
 const guard_add = (id, callback) => {
-  let bcfg = CfgMgr.getOne("app/cfg/city.json@city");
-  let guard = bcfg[10001]["army"];
-  guard.splice(0, 0, "10001");
+  let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
+      bcfg2 = CfgMgr.getOne("app/cfg/city.json@rand"),
+      bcfg3 = CfgMgr.getOne("app/cfg/city.json@army"),
+      guard,
+      guardId; //随机据点
+
+  if (rand(3) > 1) {
+    guardId = 20000 + rand(3);
+    guard = bcfg3[DB.date.day[0]]["army"]; //城市据点
+  } else {
+    guardId = DB.map.city[1] + 1;
+    DB.map.city[1] += 1;
+    guard = bcfg[guardId]["army"];
+  }
+
+  guard.splice(0, 0, guardId);
   DB.map.guard.push(guard);
   saveDb("map", DB.map);
   callback({
-    ok: [DB.map.guard]
+    ok: [DB.map.guard, guardId]
   });
 };
 
@@ -707,9 +720,11 @@ const fightAccount = (param, callback) => {
       DB.res.fail[1] = 0;
     }
 
-    for (let i = 0; i < effect_num.length; i++) {
-      DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
-      effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+    if (effect) {
+      for (let i = 0; i < effect_num.length; i++) {
+        DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+        effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+      }
     }
 
     saveDb("map", DB.map);

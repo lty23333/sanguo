@@ -8,17 +8,6 @@
     },
     "children": [
         {
-            "type": "sprite",
-            "data": {
-                "url":"images/ui/black.jpg",
-                "width": "100%",
-                "height": "100%",
-                "left": 0,
-                "top": 0,
-                "alpha":0.5
-            }
-        },
-        {
             "type":"rect",
             "on":{"tap":{"func":"startGame"}},
             "data":{
@@ -42,7 +31,7 @@
                         {
                             "type": "text",
                             "data": {
-                                "text":"开始游戏",
+                                "text":"新游戏",
                                 "left":59,
                                 "top": 42,
                                 "style":{
@@ -54,6 +43,22 @@
                 }
                 
             ]
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"continue"}},
+                "id":"button_login",
+                "url": "images/ui/button_buy.png",
+                "width": 214,
+                "height": 100,
+                "left": 300,
+                "top": 400,
+                "text": "继续游戏",
+                "size":30,
+                "color":"#d9c6ad",
+                "alpha": 0
+            }
         }
     ]
 }
