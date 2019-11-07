@@ -63,7 +63,7 @@ class WHero extends Widget {
         max = Math.floor((bcfg[id]["command"] + DB.data.hero.add[0]) / 10),
         name = bcfg[id]["name"];
     super.setProps(props);
-    this.cfg.children[0].children[0].data.text = `${name}(${heroList[i][1]}/${max})`;
+    this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
     this.cfg.data.top = Army.hero_top[i + 1];
     this.cfg.children[0].on = {
       "tap": {
@@ -71,19 +71,19 @@ class WHero extends Widget {
         "arg": [i]
       }
     };
-    this.cfg.children[1].props.on = {
+    this.cfg.children[2].on = {
       "tap": {
         "func": "army_plus",
         "arg": [heroList[i][3]]
       }
     };
-    this.cfg.children[2].props.on = {
+    this.cfg.children[4].on = {
       "tap": {
         "func": "army_minus",
         "arg": [heroList[i][3]]
       }
     };
-    this.cfg.children[3].props.on = {
+    this.cfg.children[6].on = {
       "tap": {
         "func": "army_zero",
         "arg": [heroList[i][3]]

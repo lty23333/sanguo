@@ -24,10 +24,10 @@
             "data": {
                 "id":"name",
                 "text":"点击空白处关闭",
-                "left":340,
-                "top": 1300,
+                "left":200,
+                "top": 1250,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
                 }
             }
         }

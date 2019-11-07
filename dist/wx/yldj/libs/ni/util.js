@@ -291,13 +291,12 @@ export default class Util {
     "^": (a, b) => {
       return Math.pow(a, b);
     }
-    /**
-     * @description 判断对象是否满足条件conds
-     * @param obj 需要判断的对象
-     * @param conds 条件列表 [["hp",">",0],["camp",1],["or",["type",1],...]]
-     */
-
   };
+  /**
+   * @description 判断对象是否满足条件conds
+   * @param obj 需要判断的对象
+   * @param conds 条件列表 [["hp",">",0],["camp",1],["or",["type",1],...]]
+   */
 
   static condsCheck(obj, conds) {
     var i,

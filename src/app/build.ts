@@ -33,10 +33,8 @@ class Build {
     static cur_buildId = 0
     static phero = [80,15,4,0.8,0.2,0]
     static heroNode = []
+    static totalNode 
 
-    static clear(){
-
-    }
     //更新建筑数量
     static updateBuild(id,type){
         if(type ==0){
@@ -73,7 +71,7 @@ class WbuildButton extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             id = props.id,
             name = bcfg[id]["name"]
-        this.cfg.children[0].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[2].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
         this.cfg.data.left = bcfg[id]["left"];
         this.cfg.data.top =  bcfg[id]["top"];
         this.cfg.on = {"tap":{"func":"addBuild","arg":[id]}};
@@ -113,7 +111,7 @@ class WbuildButton extends Widget{
 class WBuild extends Widget{
 
     added(node){
-        
+        Build.totalNode = this.elements.get("build_number");
     }
     manfood_number(){
         Connect.request({type:"app/res@manfood",arg:{}},(data) => {
@@ -121,9 +119,8 @@ class WBuild extends Widget{
                 return console.log(data.err.reson);
             }
             DB.data.res.food[1] = data.ok;
+            AppEmitter.emit("message","粮食+2");
         })
-
-
     }
 }
 //英雄弹窗
@@ -207,7 +204,10 @@ class Whotel extends Widget{
             effect = bcfg[id]["effect_type"]
    
             Connect.request({type:"app/build@levelup",arg:id},(data) => {
-                if(data.err){
+                if(data.err == 1){
+                    AppEmitter.emit("message","建筑数量已达上限！");
+                    return console.log(data.err.reson);
+                }else if(data.err == 2){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
                 }
@@ -220,6 +220,7 @@ class Whotel extends Widget{
                 }   
                 DB.data.build[id-1001][1] = data.ok[0];
                 DB.data.res[cost_name][1] = data.ok[1];
+                DB.data.map.ciyt[2] = data.ok[4];
    
                 //更新窗口信息
                 Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
@@ -298,7 +299,10 @@ class WcomWindow extends Widget{
            cost2 = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number2"];
         }
             Connect.request({type:"app/build@levelup",arg:id},(data) => {
-                if(data.err){
+                if(data.err == 1){
+                    AppEmitter.emit("message","建筑数量已达上限！");
+                    return console.log(data.err.reson);
+                }else if(data.err == 2){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
                 }
@@ -314,6 +318,7 @@ class WcomWindow extends Widget{
                 if(data.ok[3]!=null){
                     DB.data.res[cost_name2][1] = data.ok[3];
                 }
+                DB.data.map.ciyt[2] = data.ok[4];
                 //更新窗口信息
                 Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
                 Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
@@ -321,6 +326,7 @@ class WcomWindow extends Widget{
                 if(cost_name2){
                     Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
                 }
+                Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
             })    
         
     } 
@@ -341,13 +347,14 @@ class WcomWindow extends Widget{
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-build", Scene.root);
     Global.mainFace.id = 2;
-    // DB.data.build[8][0]=1;
+     DB.data.build[8][0]=1;
     //显示解锁的建筑按钮
     for(let i=0; i<DB.data.build.length;i++ ){
         if(DB.data.build[i][0]){
             Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1001});
         }
     }
+    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
 
 }
 

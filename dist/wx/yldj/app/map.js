@@ -15,9 +15,11 @@ let cityNumberNode,
 heroList = []; //己方英雄列表
 
 class Map {
-  //据点精灵
-  //敌军描述节点
+  static city_sprite = []; //据点精灵
+
+  static armyNode = []; //敌军描述节点
   //更新据点
+
   static updateGuard() {
     let time = [15, 50, 100];
     let newDate = DB.data.date.day[0] + Math.ceil(time[DB.data.map.guard.length] * (700 + rand(600) / 1000)); //更新下一次时间
@@ -62,9 +64,6 @@ class Map {
  */
 
 
-Map.city_sprite = [];
-Map.armyNode = [];
-
 class WMap extends Widget {
   setProps(props) {
     super.setProps(props);
@@ -79,12 +78,6 @@ class WMap extends Widget {
 
 
 class WCity extends Widget {
-  constructor(...args) {
-    super(...args);
-    this.node = void 0;
-    this.backNode = void 0;
-  }
-
   setProps(props) {
     super.setProps(props);
     let bcfg,
@@ -140,11 +133,6 @@ class WCity extends Widget {
 
 
 class WfightWindow extends Widget {
-  constructor(...args) {
-    super(...args);
-    this.node = void 0;
-  }
-
   setProps(props) {
     super.setProps(props);
     let bcfg,
@@ -276,10 +264,11 @@ const open = () => {
 Widget.registW("app-ui-map", WMap);
 Widget.registW("app-ui-fightWindow", WfightWindow);
 Widget.registW("app-ui-city", WCity); //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
+//city:[占领城市数量，，所有建筑数量]
 
 DB.init("map", {
   date: [1],
-  city: [0, 10000],
+  city: [0, 10000, 0],
   attack: [[]],
   guard: []
 }); //注册页面打开事件

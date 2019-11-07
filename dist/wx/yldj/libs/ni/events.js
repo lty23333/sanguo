@@ -26,9 +26,9 @@ export class Events {
     tap: "tap",
     longtap: "longtap",
     drag: "drag",
-    end: "end" // 正在触发的事件状态
+    end: "end"
+  }; // 正在触发的事件状态
 
-  };
   static status = {
     currTarget: null,
     // 当前触发事件的渲染对象
@@ -41,9 +41,8 @@ export class Events {
     eventType: null,
     // 触发的事件类型
     time: 0 // 触发时间点
-    //是否移动端
 
-  };
+  }; //是否移动端
 
   /**
    * @description 初始化设备数据

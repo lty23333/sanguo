@@ -78,11 +78,10 @@ const barData = {
       }
     }]
   }]
-  /**
-   * @description 打开进度界面
-   */
-
 };
+/**
+ * @description 打开进度界面
+ */
 
 const createBar = () => {
   if (Process.node) {

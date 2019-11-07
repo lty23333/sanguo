@@ -11,11 +11,21 @@ import { Global } from './global';
 
 /****************** 本地 ******************/
 class Science {
-  //科技节点
-  // 通用窗口名字节点
-  // 通用窗口效果节点
+  static width = 0;
+  static height = 0;
+  static science = [[], [], []]; //科技节点
+
   // 通用窗口消耗节点
-  //更新科技数量
+  static science_sprite = [];
+  static cur_scienceId = 0;
+  static coordinate = {
+    left: [0, 300, 0, 300, 0, 300, 0, 300],
+    top: [0, 0, 150, 150, 300, 300, 450, 450]
+  }; //科技按钮坐标
+
+  static unlock_science = [];
+  static scienceNode = []; //更新科技数量
+
   static updateScience(id, type) {
     if (type == 0) {
       if (DB.data.science[id][0] == 1 && Global.mainFace.id == 0) {
@@ -53,28 +63,7 @@ class Science {
  */
 
 
-Science.width = 0;
-Science.height = 0;
-Science.science = [[], [], []];
-Science.com_name = void 0;
-Science.com_effect = void 0;
-Science.com_cost = void 0;
-Science.science_sprite = [];
-Science.cur_scienceId = 0;
-Science.coordinate = {
-  left: [0, 300, 0, 300, 0, 300, 0, 300],
-  top: [0, 0, 150, 150, 300, 300, 450, 450] //科技按钮坐标
-
-};
-Science.unlock_science = [];
-Science.scienceNode = [];
-
 class WscienceButton extends Widget {
-  constructor(...args) {
-    super(...args);
-    this.backNode = void 0;
-  }
-
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -127,11 +116,6 @@ class WScience extends Widget {
 
 
 class WcomWindow extends Widget {
-  constructor(...args) {
-    super(...args);
-    this.node = void 0;
-  }
-
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),

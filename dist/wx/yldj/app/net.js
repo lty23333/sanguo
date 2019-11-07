@@ -63,7 +63,7 @@ let DB = {
   },
   map: {
     date: [1],
-    city: [0, 10000],
+    city: [0, 10000, 0],
     attack: [[]],
     guard: []
   }
@@ -287,10 +287,15 @@ const levelup = (id, callback) => {
     num2 = DB.res[cost_name2][1];
   }
 
-  if (num1 >= cost1 && (!cost_name2 || num2 >= cost2)) {
+  if (DB.map.city[2] >= DB.map.city[0] * 10 + 100) {
+    callback({
+      err: 1
+    });
+  } else if (num1 >= cost1 && (!cost_name2 || num2 >= cost2)) {
     num1 -= cost1;
     DB.build[id - 1001][1] += 1;
     DB.res[cost_name1][1] = num1;
+    DB.map.city[2] += 1;
 
     if (cost_name2) {
       num2 -= cost2;
@@ -306,11 +311,11 @@ const levelup = (id, callback) => {
     saveDb("build", DB.build);
     saveDb("res", DB.res);
     callback({
-      ok: [DB.build[id - 1001][1], num1, effect_end, cost_name2 ? num2 : null]
+      ok: [DB.build[id - 1001][1], num1, effect_end, cost_name2 ? num2 : null, DB.map.city[2]]
     });
   } else {
     callback({
-      err: 1
+      err: 2
     });
   }
 };

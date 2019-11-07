@@ -28,7 +28,7 @@ science:[[1,0]],
 hero:{own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
 army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0,10000],attack:[[]],guard:[]}
+map:{date:[1],city:[0,10000,0],attack:[[]],guard:[]}
 }
 
 const initScience = () => {
@@ -218,10 +218,13 @@ const levelup = (id: any, callback) => {
         num2 = DB.res[cost_name2][1];
     }
          
-    if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
+    if (DB.map.city[2] >= DB.map.city[0]*10+100 ){
+        callback({err:1}); 
+    }else if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
             num1 -= cost1;
             DB.build[id-1001][1] += 1;
             DB.res[cost_name1][1] = num1;
+            DB.map.city[2] += 1;
             if(cost_name2){
                 num2 -= cost2;
                 DB.res[cost_name2][1] = num2;              
@@ -234,9 +237,9 @@ const levelup = (id: any, callback) => {
             }                      
             saveDb("build",DB.build);
             saveDb("res",DB.res);
-            callback({ok:[DB.build[id-1001][1],num1,effect_end,cost_name2?num2:null]}); 
+            callback({ok:[DB.build[id-1001][1],num1,effect_end,cost_name2?num2:null,DB.map.city[2]]}); 
     }else{
-        callback({err:1}); 
+        callback({err:2}); 
     }
           
 }

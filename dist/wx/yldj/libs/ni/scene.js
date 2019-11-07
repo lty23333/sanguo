@@ -335,15 +335,14 @@ class Ni {
   animate = {
     "ani": "",
     "times": 0,
-    "speed": 1 // times 0: 无限循环播放, [1~N]: 循环播放 N 次
+    "speed": 1
+  }; // times 0: 无限循环播放, [1~N]: 循环播放 N 次
 
-    /**
-     * @description 创建应用层管理对象
-     * @param show 显示对象
-     * @param cfg 显示配置
-     */
-
-  };
+  /**
+   * @description 创建应用层管理对象
+   * @param show 显示对象
+   * @param cfg 显示配置
+   */
 
   constructor(show, cfg, type, parent) {
     this.type = type;
@@ -720,12 +719,11 @@ const creater = {
     o.ni.play();
     return o;
   }
-  /**
-   * @description 初始化canvas
-   * @param option 
-   */
-
 };
+/**
+ * @description 初始化canvas
+ * @param option 
+ */
 
 const initCanvas = (option, cfg) => {
   if (option.view) {

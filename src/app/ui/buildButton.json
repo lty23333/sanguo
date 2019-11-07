@@ -1,24 +1,57 @@
-{
-    "type": "sprite",
-    "on":{"tap":{"func":"addBuild","arg":[1001]}},
+{   
+    "type": "container",
     "data": {
-        "id": "button_build",
-        "url": "images/ui/button_buy.png",
-        "width": 210,
+        "width": 200,
         "height": 100,
-        "left": 100,
-        "top": 770
+        "left": 0,
+        "top": 0,
+        "on": 0
     },
-    "children": [
-        {
-            "type": "text",
-            "data": {
-                "id":"button_add",
-                "text": "button",
-                "style": {"fontSize":30,"fill":"#d9c6ad","strokeThickness":2},
-                "left": 34,
-                "top": 25
+    "children":[
+     {
+        "type": "rect",
+        "data": {
+            "width": 202,
+             "height": 102,
+             "left": -1,
+             "top": -1,
+             "background-color": "0xe6e6fa",
+             "alpha":0.1
+        }
+    }, 
+    {
+        "type": "rect",
+        "data": {
+            "width": 200,
+             "height": 100,
+             "left": 0,
+             "top": 0,
+             "background-color": "#d9c6ad",
+             "alpha":0.75
+        }
+    },     
+    {
+        "type": "text",
+        "data": {
+            "id":"number_name",
+            "text":"",
+            "left":50,
+            "top": 30,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
             }
         }
-    ]
+    },
+    {
+        "type": "rect",
+        "data": {
+            "width": 160,
+             "height": 5,
+             "left": 20,
+             "top": 80,
+             "background-color": "0xe6e6fa",
+             "alpha":0.4
+        }
+    }
+  ]
 }

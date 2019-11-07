@@ -29,7 +29,7 @@
     },
     {
         "name": "browser",
-        "dist": "../../back/htdocs/static/sanguo",
+        "dist": "../../go/htdocs/sanguo",
         "ignore":["/README.md","/build.json","/config.ts","/game.json","/game.ts","/project.config.json","/pc.html","pc.js"],
         "plugins":{
             "ts":{

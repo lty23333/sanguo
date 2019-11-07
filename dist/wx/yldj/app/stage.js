@@ -32,24 +32,53 @@ levelupNode, //升级消耗节点
 buildNode; // 建筑渲染节点
 
 class Stage {
+  static width = 0;
+  static height = 0;
   /**
    * @description 自己
    */
   // static self: Shap
   // //自己的默认移动速度
+
+  static svx = -7;
   //down
-  //up
-  //shap id
-  //建筑节点
-  // 通用窗口名字节点
-  // 通用窗口效果节点
-  // 通用窗口消耗节点
-  //日期节点
+  static down = 0; //up
+
+  static up = 0; //shap id
+
+  static id = 1;
+  static pause = 1;
+  static res = {
+    food: [],
+    wood: [],
+    sci: [],
+    gold: [],
+    win: [],
+    fail: []
+  }; // 资源节点
+
+  static build = [[]]; //建筑节点
+
   //年份节点
-  //资源名
-  //增加资源的时间间隔
-  //新闻节点
-  //0-新闻，1-战报
+  static res_name = ["food", "wood", "sci", "gold", "win", "fail"];
+  static work_name = ["total", "food", "wood", "sci", "gold"]; //资源名
+
+  static five = ["金", "木", "水", "火", "土"];
+  static five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
+  static res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
+  static season_Cname = ["春", "夏", "秋", "冬"];
+  static face_name = ["sceince", "people", "build", "army", "map"];
+  static dayTime = 1500;
+  static nextDay = 0;
+  static resSprite = [];
+  static messageList = [];
+  static hungry = ["仓无粮。", "地荒，无粮。", "大荒。", "饿殍满地。", "大饥，人相食。"];
+  static timeInterval = 500; //增加资源的时间间隔
+
+  static newsNode = []; //新闻节点
+
+  static newsFace = 0; //0-新闻，1-战报
+
   static initDB() {
     //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
     DB.init("res", {
@@ -88,7 +117,7 @@ class Stage {
 
   static runMessage() {
     for (let i = 0; i < Stage.messageList.length; i++) {
-      Stage.messageList[i].x += 2;
+      Stage.messageList[i].y -= 2;
       Stage.messageList[i].alpha -= 0.04;
     }
   } //更新消息显示
@@ -321,52 +350,7 @@ class Stage {
  */
 
 
-Stage.width = 0;
-Stage.height = 0;
-Stage.svx = -7;
-Stage.insertTimer = void 0;
-Stage.down = 0;
-Stage.up = 0;
-Stage.id = 1;
-Stage.pause = 1;
-Stage.res = {
-  food: [],
-  wood: [],
-  sci: [],
-  gold: [],
-  win: [],
-  fail: [] // 资源节点
-
-};
-Stage.build = [[]];
-Stage.com_name = void 0;
-Stage.com_effect = void 0;
-Stage.com_cost = void 0;
-Stage.day = void 0;
-Stage.year = void 0;
-Stage.res_name = ["food", "wood", "sci", "gold", "win", "fail"];
-Stage.work_name = ["total", "food", "wood", "sci", "gold"];
-Stage.five = ["金", "木", "水", "火", "土"];
-Stage.five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
-Stage.res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
-Stage.season_Cname = ["春", "夏", "秋", "冬"];
-Stage.face_name = ["sceince", "people", "build", "army", "map"];
-Stage.dayTime = 1500;
-Stage.nextDay = 0;
-Stage.resSprite = [];
-Stage.messageList = [];
-Stage.hungry = ["仓无粮。", "地荒，无粮。", "大荒。", "饿殍满地。", "大饥，人相食。"];
-Stage.time = void 0;
-Stage.timeInterval = 500;
-Stage.newsNode = [];
-Stage.newsFace = 0;
-
 class WBack extends Widget {
-  constructor(...args) {
-    super(...args);
-    this.node = void 0;
-  }
-
   remove() {
     Scene.remove(this.node);
   }
@@ -421,9 +405,9 @@ class WRes extends Widget {
         Cname = Stage.res_Cname[id],
         res = DB.data.res[name],
         people = DB.data.people[name];
-    this.cfg.children[0].data.text = `${Cname}:`;
-    this.cfg.children[1].data.text = DB.data.res[name][1];
-    this.cfg.children[3].data.text = DB.data.res[name][2];
+    this.cfg.children[2].data.text = `${Cname}:`;
+    this.cfg.children[3].data.text = DB.data.res[name][1];
+    this.cfg.children[5].data.text = DB.data.res[name][2];
     let change = res[3] * (res[4] + 1) + people[1] * people[2] * (1 + people[3]) - res[5] * (1 + res[6]),
         times = 1; //胜败和五行影响
 
@@ -441,12 +425,12 @@ class WRes extends Widget {
     }
 
     if (change >= 0) {
-      this.cfg.children[4].data.text = `+${change.toFixed(0)}/秒`;
+      this.cfg.children[6].data.text = `+${change.toFixed(0)}/秒`;
     } else {
-      this.cfg.children[4].data.text = `${change.toFixed(0)}/秒`;
+      this.cfg.children[6].data.text = `${change.toFixed(0)}/秒`;
     }
 
-    this.cfg.children[5].data.text = DB.data.res[name][4];
+    this.cfg.children[7].data.text = DB.data.res[name][4];
     this.cfg.data.top = Math.min(id * 50 + 30, 230);
   }
 
@@ -675,7 +659,7 @@ DB.emitter.add(`news`, () => {
   Stage.updateNews();
 }); //注册消息监听
 
-DB.emitter.add(`message`, str => {
+AppEmitter.add(`message`, str => {
   Stage.updateMessage(str);
 }); // //重新开始，重置数据库
 // AppEmitter.add("initDB",(node)=>{

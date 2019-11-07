@@ -3,8 +3,8 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 350,
-        "top": 450
+        "left": 230,
+        "top": 500
     },
     "children":[
         {
@@ -54,20 +54,27 @@
             }
         },
         {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"levelup"}},
-                "url": "images/ui/button_buy.png",
-                "id":"button_levelup",
-                "anchor":[0.5,0.5],
-                "width": 214,
+            "type": "rect",
+            "on":{"tap":{"func":"levelup"}},
+            "data": {
+                "width": 400,
                 "height": 100,
-                "left": 100,
+                "left": 0,
                 "top": 300,
-                "text": "建造",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "background-color": "0x696969",
+                "alpha":0.3
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"建造",
+                "left":170,
+                "top": 330,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
             }
         }
     ]

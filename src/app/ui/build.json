@@ -15,24 +15,90 @@
                 "left": 0,
                 "top": 0
             },
-            "children":[     
-            {
-                "type":"app-ui-button",
-                "props":{
-                    "on":{"tap":{"func":"manfood_number"}},
-                    "url": "images/ui/button_buy.png",
-                    "id":"button_manfood_number",
-                    "anchor":[0.5,0.5],
-                    "width": 214,
-                    "height": 100,
-                    "left": 100,
-                    "top": 400,
-                    "text": "采集野果",
-                    "size":30,
-                    "color":"#d9c6ad"
+            "children":[
+                {
+                   "type": "rect",
+                   "on":{"tap":{"func":"manfood_number"}},
+                   "data": {
+                       "width": 200,
+                        "height": 100,
+                        "left": 50,
+                        "top": 400,
+                        "background-color": "#d9c6ad",
+                        "alpha":0.75
+                   }
+               },     
+               {
+                   "type": "text",
+                   "data": {
+                       "id":"number_name",
+                       "text":"采集野果",
+                       "left":85,
+                       "top": 430,
+                       "style":{
+                           "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                       }
+                   }
+               },
+               {
+                "type": "rect",
+                "data": {
+                    "width": 160,
+                     "height": 5,
+                     "left": 70,
+                     "top": 480,
+                     "background-color": "0xe6e6fa",
+                     "alpha":0.4
                 }
-            }         
+            }
+        
          ]
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 320,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"",
+                "text":"建筑数量：",
+                "left":50,
+                "top": 315,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"build_number",
+                "text":"0/0",
+                "left":220,
+                "top": 315,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 380,
+                 "height": 10,
+                 "left": 350,
+                 "top": 330,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
         }
     ]
 }

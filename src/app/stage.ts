@@ -104,7 +104,7 @@ class Stage {
 
     static runMessage(){
         for(let i=0;i<Stage.messageList.length;i++){
-            Stage.messageList[i].x += 2
+            Stage.messageList[i].y -= 2
             Stage.messageList[i].alpha -= 0.04
         }
     }
@@ -351,9 +351,9 @@ class WRes extends Widget{
             Cname =Stage.res_Cname[id],
             res = DB.data.res[name],
             people = DB.data.people[name]
-        this.cfg.children[0].data.text = `${Cname}:`;
-        this.cfg.children[1].data.text = DB.data.res[name][1];
-        this.cfg.children[3].data.text = DB.data.res[name][2];
+        this.cfg.children[2].data.text = `${Cname}:`;
+        this.cfg.children[3].data.text = DB.data.res[name][1];
+        this.cfg.children[5].data.text = DB.data.res[name][2];
         let change = (res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6]),
         times = 1
 //胜败和五行影响
@@ -369,12 +369,12 @@ class WRes extends Widget{
         }
 
         if (change>=0){
-            this.cfg.children[4].data.text = `+${change.toFixed(0)}/秒`;
+            this.cfg.children[6].data.text = `+${change.toFixed(0)}/秒`;
         }else{
-            this.cfg.children[4].data.text = `${change.toFixed(0)}/秒`;
+            this.cfg.children[6].data.text = `${change.toFixed(0)}/秒`;
         }
 
-        this.cfg.children[5].data.text = DB.data.res[name][4];
+        this.cfg.children[7].data.text = DB.data.res[name][4];
         this.cfg.data.top = Math.min(id*50 +30,230);
         
     }
@@ -582,7 +582,7 @@ DB.emitter.add(`news`, () => {
     Stage.updateNews()
 });
 //注册消息监听
-DB.emitter.add(`message`, (str) => {
+AppEmitter.add(`message`, (str) => {
     Stage.updateMessage(str);
 });
 // //重新开始，重置数据库
