@@ -88,7 +88,7 @@ class WbuildButton extends Widget{
                 }else{
                     Scene.open(`app-ui-hotel`,this.backNode,null, {id:1009,backNode:this.backNode});
                     for(let i=0;i<data.ok[0].length;i++){
-                        Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:90+i*230});
+                        Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:35+i*230});
                     }
                 }  
             })         
@@ -133,11 +133,11 @@ class Whero extends Widget{
             id = props.id
 
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
-        this.cfg.children[1].data.style.fill = `${Global.color[bcfg[id]["color"]]}`;
-        this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}`;
-        this.cfg.children[3].data.text = `${Build.army_Cname[bcfg[id]["arms"]]}:${bcfg[id]["number"]}`;
-        this.cfg.children[4].data.text = `${bcfg[id]["gold"]}黄金`;
+        this.cfg.children[2].data.text = `${bcfg[id]["name"]}`;
+        this.cfg.children[2].data.style.fill = `${Global.color[bcfg[id]["color"]]}`;
+        this.cfg.children[3].data.text = `统帅：${bcfg[id]["command"]}`;
+        this.cfg.children[4].data.text = `${Build.army_Cname[bcfg[id]["arms"]]}:${bcfg[id]["number"]}`;
+        this.cfg.children[5].data.text = `${bcfg[id]["gold"]}黄金`;
         this.cfg.data.left = props.left;
 
         this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
@@ -186,10 +186,10 @@ class Whotel extends Widget{
             cost_name = bcfg[id]["cost_type1"],
             effect = bcfg[id]["effect_type"]
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-        this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-        this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
-        this.cfg.children[6].data.text = `刷新：${DB.data.hotel.price[0]}黄金`;
+        this.cfg.children[2].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[3].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+        this.cfg.children[4].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+        this.cfg.children[9].data.text = `${DB.data.hotel.price[0]}黄金`;
 
 
         Build.cur_buildId = id
@@ -210,22 +210,24 @@ class Whotel extends Widget{
                 }else if(data.err == 2){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
+                }else{
+                    for(let i=0;i<effect.length;i++){
+                        if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
+    
+                        }else{
+                            DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                        }
+                    }   
+                    DB.data.build[id-1001][1] = data.ok[0];
+                    DB.data.res[cost_name][1] = data.ok[1];
+                    DB.data.map.ciyt[2] = data.ok[4];
+       
+                    //更新窗口信息
+                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                    Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+                    Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    AppEmitter.emit("message","酒馆+1");
                 }
-                for(let i=0;i<effect.length;i++){
-                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
-
-                    }else{
-                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                    }
-                }   
-                DB.data.build[id-1001][1] = data.ok[0];
-                DB.data.res[cost_name][1] = data.ok[1];
-                DB.data.map.ciyt[2] = data.ok[4];
-   
-                //更新窗口信息
-                Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-                Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-                Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
             })    
         
     } 
@@ -277,9 +279,10 @@ class WcomWindow extends Widget{
            cost2 = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
         } 
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-        this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-        this.cfg.children[3].data.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+        this.cfg.children[2].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[5].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+        this.cfg.children[8].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
+        this.cfg.children[11].data.text = bcfg[id]["dis"];
         if(cost_name2){
             Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
         } 
@@ -305,28 +308,30 @@ class WcomWindow extends Widget{
                 }else if(data.err == 2){
                     AppEmitter.emit("message","资源不足！");
                     return console.log(data.err.reson);
-                }
-                for(let i=0;i<effect.length;i++){
-                    if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
-
-                    }else{
-                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                }else{
+                    for(let i=0;i<effect.length;i++){
+                        if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
+    
+                        }else{
+                            DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                        }
+                    }   
+                    DB.data.build[id-1001][1] = data.ok[0];
+                    DB.data.res[cost_name][1] = data.ok[1];
+                    if(data.ok[3]!=null){
+                        DB.data.res[cost_name2][1] = data.ok[3];
                     }
-                }   
-                DB.data.build[id-1001][1] = data.ok[0];
-                DB.data.res[cost_name][1] = data.ok[1];
-                if(data.ok[3]!=null){
-                    DB.data.res[cost_name2][1] = data.ok[3];
+                    DB.data.map.ciyt[2] = data.ok[4];
+                    //更新窗口信息
+                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                    Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+                    Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    if(cost_name2){
+                        Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
+                    }
+                    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
+                    AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
                 }
-                DB.data.map.ciyt[2] = data.ok[4];
-                //更新窗口信息
-                Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-                Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-                Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
-                if(cost_name2){
-                    Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
-                }
-                Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
             })    
         
     } 

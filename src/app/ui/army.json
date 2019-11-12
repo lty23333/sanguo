@@ -3,19 +3,19 @@
     "data": {
         "width": 600,
         "height": 600,
-        "left": 80,
-        "top": 330
+        "left": 30,
+        "top": 315
     },
     "children":[
         {
             "type": "text",
             "data": {
                 "text":"空闲士兵：",
-                "left":0,
+                "left":20,
                 "top": 0,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
             }
         },
         {
@@ -23,22 +23,22 @@
             "data": {
                 "id":"army_number",
                 "text":"0",
-                "left":140,
+                "left":190,
                 "top": 0,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
         {
             "type": "rect",
             "data": {
-                "width": 200,
-                 "height": 100,
-                 "left": 100,
-                 "top": 400,
+                "width": 140,
+                 "height": 70,
+                 "left": 430,
+                 "top": -10,
                  "background-color": "#d9c6ad",
-                 "alpha":0.75,
+                 "alpha":0.70,
                  "on":{"tap":{"func":"army_buy"}}
             }
         },     
@@ -47,8 +47,8 @@
             "data": {
                 "id":"number_name",
                 "text":"招募",
-                "left":135,
-                "top": 435,
+                "left":470,
+                "top": 10,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
@@ -59,12 +59,23 @@
             "data": {
                 "id":"army_price",
                 "text":"50黄金",
-                "left":350,
-                "top": 0,
+                "left":600,
+                "top": 7,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+                    ,"strokeThickness":2}
             }
-        }   
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 0,
+                 "top": 5,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        }
     ]
 }

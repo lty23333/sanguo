@@ -5,14 +5,25 @@
         "width": "400",
         "height": "400",
         "left": 300,
-        "top": 560
+        "top": 500
     },
     "children":[
         {
             "type": "rect",
             "data": {
+                "width": 224,
+                "height": 284,
+                "left": -2,
+                "top": -2,
+                "alpha":0.5,
+                "background-color": "0xe6e6fa"
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
                 "width": 220,
-                "height": 350,
+                "height": 280,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad"
@@ -23,10 +34,10 @@
             "data": {
                 "id":"name",
                 "text":"名字",
-                "left":10,
+                "left":30,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -59,8 +70,8 @@
             "data": {
                 "id":"cost",
                 "text":"1 黄金",
-                "left":70,
-                "top": 200,
+                "left":60,
+                "top": 230,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

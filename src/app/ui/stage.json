@@ -114,8 +114,8 @@
                                 "id":"button_autfood_number",
                                 "text": "科技",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
-                                "left": 34,
-                                "top": 25
+                                "left": 50,
+                                "top": 35
                             }
                         }
                     ]
@@ -137,8 +137,8 @@
                                 "id":"button_autfood_number",
                                 "text": "人口",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
-                                "left": 34,
-                                "top": 25
+                                "left": 50,
+                                "top": 35
                             }
                         }
                     ]
@@ -160,8 +160,8 @@
                                 "id":"button_autfood_number",
                                 "text": "建筑",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
-                                "left": 34,
-                                "top": 25
+                                "left": 50,
+                                "top": 35
                             }
                         }
                     ]
@@ -183,8 +183,8 @@
                                 "id":"button_autfood_number",
                                 "text": "军队",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
-                                "left": 34,
-                                "top": 25
+                                "left": 50,
+                                "top": 35
                             }
                         }
                     ]
@@ -206,11 +206,66 @@
                                 "id":"button_autfood_number",
                                 "text": "地图",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
-                                "left": 34,
-                                "top": 25
+                                "left": 50,
+                                "top": 35
                             }
                         }
                     ]
+                },
+                {
+                    "type": "rect",
+                    "data": {
+                     "width": 4,
+                     "height": 60,
+                     "left": 150,
+                      "top": 20,
+                      "background-color": "0xe6e6fa",
+                      "alpha":0.5
+                   }
+                },
+                {
+                    "type": "rect",
+                    "data": {
+                     "width": 4,
+                     "height": 60,
+                     "left": 300,
+                      "top": 20,
+                      "background-color": "0xe6e6fa",
+                      "alpha":0.5
+                   }
+                },
+                {
+                    "type": "rect",
+                    "data": {
+                     "width": 4,
+                     "height": 60,
+                     "left": 450,
+                      "top": 20,
+                      "background-color": "0xe6e6fa",
+                      "alpha":0.5
+                   }
+                },
+                {
+                    "type": "rect",
+                    "data": {
+                     "width": 4,
+                     "height": 60,
+                     "left": 600,
+                      "top": 20,
+                      "background-color": "0xe6e6fa",
+                      "alpha":0.5
+                   }
+                },
+                {
+                    "type": "rect",
+                    "data": {
+                     "width": 750,
+                     "height": 4,
+                     "left": 0,
+                      "top": 0,
+                      "background-color": "0xe6e6fa",
+                      "alpha":0.5
+                   }
                 }
                 
            

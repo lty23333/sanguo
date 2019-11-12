@@ -3,10 +3,21 @@
     "data": {
         "width": "400",
         "height": "400",
-        "left": 100,
-        "top": 450
+        "left": 25,
+        "top": 400
     },
     "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 704,
+                "height": 704,
+                "left": -2,
+                "top": -2,
+                "alpha":0.5,
+                "background-color": "0xe6e6fa"
+            }
+        },
         {
             "type": "rect",
             "data": {
@@ -22,10 +33,10 @@
             "data": {
                 "id":"name",
                 "text":"酒馆",
-                "left":330,
+                "left":310,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -35,7 +46,7 @@
                 "id":"effect",
                 "text":"效果：",
                 "left":30,
-                "top": 470,
+                "top": 550,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
@@ -47,43 +58,57 @@
                 "id":"cost",
                 "text":"消耗：",
                 "left":30,
-                "top": 550,
+                "top": 650,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
         {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"levelup"}},
-                "url": "images/ui/button_buy.png",
-                "id":"button_levelup",
-                "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 100,
+            "type": "rect",
+            "on":{"tap":{"func":"levelup"}},
+            "data": {
+                "width": 180,
+                "height": 90,
+                "left": 500,
                 "top": 600,
-                "text": "建造",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "background-color": "0x696969",
+                "alpha":0.5
             }
         },
         {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"update"}},
-                "url": "images/ui/button_buy.png",
-                "id":"button_update",
-                "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 300,
-                "top": 600,
-                "text": "刷新",
-                "size":30,
-                "color":"#d9c6ad"
+            "type": "text",
+            "data": {
+                "text":"建造",
+                "left":560,
+                "top": 632,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"update"}},
+            "data": {
+                "width": 180,
+                "height": 90,
+                "left": 500,
+                "top": 400,
+                "background-color": "0x696969",
+                "alpha":0.5
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"刷新",
+                "left":560,
+                "top": 432,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
             }
         },
         {
@@ -91,10 +116,76 @@
             "data": {
                 "id":"update",
                 "text":"刷新：",
-                "left":330,
-                "top": 550,
+                "left":30,
+                "top": 450,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 400,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"刷新消耗",
+                "left":45,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 500,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"建造效果",
+                "left":45,
+                "top": 500,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 600,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"建造消耗",
+                "left":45,
+                "top": 600,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         }
