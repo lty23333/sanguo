@@ -2,18 +2,17 @@
 import Loader from "./loader";
 import Util from "./util";
 import Fs from "./fs";
+import Emitter from "./emitter";
 /****************** 导出 ******************/
 
 export default class Music {
   //音乐缓存表
-  static table = {}; //背景音乐
+  //背景音乐
 
-  static bgm = "";
   /**
    * @description 初始化配置表
    * @param data 配置数据{"audio/xx":decodeAudioData}
    */
-
   static registMusic(data) {
     for (let k in data) {
       if (Util.fileSuffix(k) == ".mp3") {
@@ -28,14 +27,28 @@ export default class Music {
 
 
   static play(path, loop) {
-    let m = Music.table[path];
-
-    if (loop) {
-      m.loop = loop;
-      Music.bgm = path;
+    if (Music.table[path] && Music.table[path].PLAYING_STATE == Music.table[path].playbackState) {
+      Music.table[path].stop();
     }
 
-    m.start();
+    let m = createBufferSource(path);
+
+    if (loop) {
+      Music.bgm = path;
+
+      if (!m) {
+        return;
+      }
+
+      m.loop = loop;
+    }
+
+    try {
+      m.start();
+      Music.table[path] = m;
+    } catch (e) {
+      console.log(e);
+    }
   }
   /**
    * @description 暂停音乐
@@ -53,8 +66,16 @@ export default class Music {
  * @description 兼容微信
  */
 
+Music.buffs = {};
+Music.table = {};
+Music.bgm = "";
+
 class Source {
   constructor() {
+    this.audio = void 0;
+    this._buffer = void 0;
+    this._loop = void 0;
+    this._src = void 0;
     this.audio = window.wx.createInnerAudioContext();
   }
 
@@ -124,13 +145,36 @@ const autioCtx = new (window.AudioContext || window.webkitAudioContext || WxAudi
 
 const decodeAudioData = (k, data) => {
   autioCtx.decodeAudioData(data, buff => {
-    let a = autioCtx.createBufferSource();
-    a.buffer = buff || Fs.fs.createImg(k);
-    Music.table[k] = a;
+    Music.buffs[k] = buff || Fs.fs.createImg(k);
+
+    if (Music.bgm && Music.bgm == k && !Music.table[k]) {
+      Music.play(k, true);
+    }
   });
+};
+
+const createBufferSource = k => {
+  if (!Music.buffs[k]) {
+    return;
+  }
+
+  let a = autioCtx.createBufferSource();
+  a.buffer = Music.buffs[k];
+  a.connect && a.connect(autioCtx.destination);
+  return a;
 };
 /****************** 立即执行 ******************/
 //绑定资源监听
 
 
 Loader.addResListener("registMusic", Music.registMusic);
+Emitter.global.add("hide", () => {
+  if (Music.bgm) {
+    Music.stop(Music.bgm);
+  }
+});
+Emitter.global.add("show", () => {
+  if (Music.bgm) {
+    Music.play(Music.bgm, true);
+  }
+});

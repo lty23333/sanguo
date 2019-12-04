@@ -1,21 +1,25 @@
 {
-    "type": "sprite",
+    "type": "rect",
     "data": {
-        "id": "button_store",
-        "url": "images/ui/button_store.png",
-        "width": 136,
-        "height": 100,
-        "left": 100,
-        "top": 770
+        "width": 204,
+        "height": 104,
+        "left": 0,
+        "top": 0,
+        "background-color": "0x696969",
+        "background-alpha":0.4,
+        "border-width":2,
+        "border-color":"0xe6e6fa",
+        "border-alpha":0.6,
+        "border-align":0.5,
+        "radius":30
     },
     "children": [
+
         {
             "type": "text",
             "data": {
                 "text": "button",
-                "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2},
-                "left": 34,
-                "top": 25
+                "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
             }
         }
     ]

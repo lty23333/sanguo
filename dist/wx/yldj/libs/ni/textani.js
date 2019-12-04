@@ -5,13 +5,14 @@ import Util from "./util";
 
 export default class TextAnimate {
   constructor(aniFunc, style) {
+    this.cache = [];
+    this.playing = [];
+    this.style = void 0;
+    this.aniFunc = void 0;
     this.aniFunc = aniFunc;
     this.style = style;
   } //动画缓存
 
-
-  cache = [];
-  playing = []; //文字样式
 
   //创建text
 

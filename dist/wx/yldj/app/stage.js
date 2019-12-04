@@ -32,53 +32,25 @@ levelupNode, //升级消耗节点
 buildNode; // 建筑渲染节点
 
 class Stage {
-  static width = 0;
-  static height = 0;
   /**
    * @description 自己
    */
   // static self: Shap
   // //自己的默认移动速度
-
-  static svx = -7;
   //down
-  static down = 0; //up
-
-  static up = 0; //shap id
-
-  static id = 1;
-  static pause = 1;
-  static res = {
-    food: [],
-    wood: [],
-    sci: [],
-    gold: [],
-    win: [],
-    fail: []
-  }; // 资源节点
-
-  static build = [[]]; //建筑节点
-
+  //up
+  //shap id
+  // 资源节点
+  //建筑节点
+  // 通用窗口名字节点
+  // 通用窗口效果节点
+  // 通用窗口消耗节点
+  //日期节点
   //年份节点
-  static res_name = ["food", "wood", "sci", "gold", "win", "fail"];
-  static work_name = ["total", "food", "wood", "sci", "gold"]; //资源名
-
-  static five = ["金", "木", "水", "火", "土"];
-  static five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
-  static res_Cname = ["粮食", "木材", "科技", "黄金", "胜绩", "败绩"];
-  static season_Cname = ["春", "夏", "秋", "冬"];
-  static face_name = ["sceince", "people", "build", "army", "map"];
-  static dayTime = 1500;
-  static nextDay = 0;
-  static resSprite = [];
-  static messageList = [];
-  static hungry = ["仓无粮。", "地荒，无粮。", "大荒。", "饿殍满地。", "大饥，人相食。"];
-  static timeInterval = 500; //增加资源的时间间隔
-
-  static newsNode = []; //新闻节点
-
-  static newsFace = 0; //0-新闻，1-战报
-
+  //资源名
+  //增加资源的时间间隔
+  //新闻节点
+  //0-新闻，1-战报
   static initDB() {
     //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
     DB.init("res", {
@@ -112,13 +84,13 @@ class Stage {
     setTimeout(() => {
       Stage.messageList.splice(Stage.messageList.indexOf(MNode), 1);
       Scene.remove(MNode);
-    }, 500);
+    }, 1500);
   }
 
   static runMessage() {
     for (let i = 0; i < Stage.messageList.length; i++) {
-      Stage.messageList[i].y -= 2;
-      Stage.messageList[i].alpha -= 0.04;
+      Stage.messageList[i].y -= 1.2;
+      Stage.messageList[i].alpha -= 0.007;
     }
   } //更新消息显示
 
@@ -153,7 +125,7 @@ class Stage {
         mun = res[idType],
         people = DB.data.people[name]; //解锁新资源
 
-    if (idType == 0 && DB.data.res[name][0] > 0 && !Stage.resSprite[res_nameID]) {
+    if (idType == 0 && DB.data.res[name][0] >= 1 && !Stage.resSprite[res_nameID]) {
       Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode, null, {
         id: res_nameID
       });
@@ -279,6 +251,29 @@ class Stage {
           addNews(`${Stage.hungry[rand(Stage.hungry.length) - 1]}（人口-1）`);
         }
       });
+    } //每季度刷新市场的价格
+
+
+    if (Math.ceil(date / 100) > DB.data.shop.date[0]) {
+      Connect.request({
+        type: "app/shop@updateShop",
+        arg: {}
+      }, data => {
+        let res = ["粮食", "木材", "知识"];
+
+        if (data.err) {
+          return console.log(data.err.reson);
+        }
+
+        DB.data.shop.price = data.ok[1];
+        DB.data.shop.date[0] = data.ok[2];
+
+        if (data.ok[0] < 3) {
+          addNews(`市场中的${res[data.ok[0]]}似乎卖得很便宜。`);
+        } else {
+          addNews(`有外来商贾高价收购${res[data.ok[0] - 3]}。`);
+        }
+      });
     }
   } //资源自动变化
 
@@ -350,7 +345,51 @@ class Stage {
  */
 
 
+Stage.width = 0;
+Stage.height = 0;
+Stage.svx = -7;
+Stage.insertTimer = void 0;
+Stage.down = 0;
+Stage.up = 0;
+Stage.id = 1;
+Stage.pause = 1;
+Stage.res = {
+  food: [],
+  wood: [],
+  sci: [],
+  gold: [],
+  win: [],
+  fail: []
+};
+Stage.build = [[]];
+Stage.com_name = void 0;
+Stage.com_effect = void 0;
+Stage.com_cost = void 0;
+Stage.day = void 0;
+Stage.year = void 0;
+Stage.res_name = ["food", "wood", "sci", "gold", "win", "fail"];
+Stage.work_name = ["total", "food", "wood", "sci", "gold"];
+Stage.five = ["金", "木", "水", "火", "土"];
+Stage.five_res = [[0, 0, 0, 0.5], [0, 0.5, 0, 0], [0, 0, 0.5, 0], [-0.25, 0, 0, 0], [0.5, 0, 0, 0]];
+Stage.res_Cname = ["粮食", "木材", "知识", "黄金", "胜绩", "败绩"];
+Stage.season_Cname = ["春", "夏", "秋", "冬"];
+Stage.face_name = ["sceince", "people", "build", "army", "map"];
+Stage.dayTime = 1500;
+Stage.nextDay = 0;
+Stage.resSprite = [];
+Stage.messageList = [];
+Stage.hungry = ["仓无粮。", "地荒，无粮。", "大荒。", "饿殍满地。", "大饥，人相食。"];
+Stage.time = void 0;
+Stage.timeInterval = 500;
+Stage.newsNode = [];
+Stage.newsFace = 0;
+
 class WBack extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   remove() {
     Scene.remove(this.node);
   }
@@ -440,6 +479,56 @@ class WRes extends Widget {
     Stage.res[name][2] = this.elements.get("max");
     Stage.res[name][7] = this.elements.get("change");
     Stage.res[name][4] = this.elements.get("addtion");
+  }
+
+}
+/**
+ * @description  资源显示组件
+ */
+
+
+class WConfirm extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
+  setProps(props) {
+    super.setProps(props);
+    this.cfg.children[2].data.text = `${props.text}`;
+    this.cfg.children[3].props.on = {
+      "tap": {
+        "func": `${props.on}`,
+        "arg": props.arg
+      }
+    };
+  } //将领革职
+
+
+  hero_delete(id) {
+    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        name = bcfg[DB.data.hero.own[id][0]]["name"];
+    Connect.request({
+      type: "app/army@hero_delete",
+      arg: [id]
+    }, data => {
+      let text = ["叹主不公，积怨成疾，郁郁而终。", "被贬，翌日愤懑出走，不知所踪。", "听闻被贬，不发一言，拂袖而去。"];
+      DB.data.hero.own = data.ok[0];
+      DB.data.army.cur[0] = data.ok[1];
+      this.remove();
+      AppEmitter.emit("message", `${name}已被革职！`);
+      addNews(`${name}${text[rand(text.length) - 1]}`);
+      Scene.remove(Global.mainFace.node);
+      AppEmitter.emit("intoArmy");
+    });
+  }
+
+  remove() {
+    Scene.remove(this.node);
+  }
+
+  added(node) {
+    this.node = node;
   }
 
 }
@@ -605,7 +694,8 @@ Widget.registW("app-ui-start", WStart);
 Widget.registW("app-ui-back", WBack);
 Widget.registW("app-ui-message", WMessage);
 Widget.registW("app-ui-res", WRes);
-Widget.registW("app-ui-news", WNews); //注册循环
+Widget.registW("app-ui-news", WNews);
+Widget.registW("app-ui-confirm", WConfirm); //注册循环
 
 Frame.add(() => {
   if (!Stage.pause) {

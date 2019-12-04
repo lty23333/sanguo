@@ -15,11 +15,9 @@ let cityNumberNode,
 heroList = []; //己方英雄列表
 
 class Map {
-  static city_sprite = []; //据点精灵
-
-  static armyNode = []; //敌军描述节点
+  //据点精灵
+  //敌军描述节点
   //更新据点
-
   static updateGuard() {
     let time = [15, 50, 100];
     let newDate = DB.data.date.day[0] + Math.ceil(time[DB.data.map.guard.length] * (700 + rand(600) / 1000)); //更新下一次时间
@@ -64,6 +62,9 @@ class Map {
  */
 
 
+Map.city_sprite = [];
+Map.armyNode = [];
+
 class WMap extends Widget {
   setProps(props) {
     super.setProps(props);
@@ -78,6 +79,12 @@ class WMap extends Widget {
 
 
 class WCity extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+    this.backNode = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg,
@@ -133,6 +140,11 @@ class WCity extends Widget {
 
 
 class WfightWindow extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg,
@@ -150,7 +162,7 @@ class WfightWindow extends Widget {
     } //我军上阵
 
 
-    for (let i = 0; i < DB.data.hero.upHero[0]; i++) {
+    for (let i = 0; i < DB.data.hero.MaxHero[0]; i++) {
       str1 = `${str1}\n${bcfg2[heroList[i][0]]["name"]}(${heroList[i][1]}${Cname[bcfg2[heroList[i][0]]["arms"]]})`;
     } //敌军上阵
 
@@ -170,7 +182,7 @@ class WfightWindow extends Widget {
         bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
         bcfg4 = CfgMgr.getOne("app/cfg/city.json@army");
 
-    for (let i = 0; i < DB.data.hero.upHero[0]; i++) {
+    for (let i = 0; i < DB.data.hero.MaxHero[0]; i++) {
       if (!own[i]) {
         own[i] = [];
       }

@@ -70,7 +70,7 @@
                 "left":5,
                 "top": 5,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -82,7 +82,7 @@
                 "left":5,
                 "top": 33,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -94,7 +94,7 @@
                 "left":5,
                 "top": 61,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -106,7 +106,7 @@
                 "left":5,
                 "top": 89,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -118,7 +118,7 @@
                 "left":5,
                 "top": 117,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -130,7 +130,7 @@
                 "left":5,
                 "top": 145,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -142,7 +142,7 @@
                 "left":5,
                 "top": 173,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }

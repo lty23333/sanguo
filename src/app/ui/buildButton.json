@@ -8,17 +8,6 @@
         "on": 0
     },
     "children":[
-     {
-        "type": "rect",
-        "data": {
-            "width": 202,
-             "height": 102,
-             "left": -1,
-             "top": -1,
-             "background-color": "0xe6e6fa",
-             "alpha":0.1
-        }
-    }, 
     {
         "type": "rect",
         "data": {
@@ -27,7 +16,11 @@
              "left": 0,
              "top": 0,
              "background-color": "#d9c6ad",
-             "alpha":0.75
+             "alpha":1,
+             "border-width":2,
+             "border-color":"0xe6e6fa",
+             "border-alpha":0.3,
+             "border-align":0.5
         }
     },     
     {
@@ -50,7 +43,7 @@
              "left": 20,
              "top": 80,
              "background-color": "0xe6e6fa",
-             "alpha":0.4
+             "alpha":0.6
         }
     }
   ]

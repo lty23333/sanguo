@@ -1,5 +1,17 @@
 export default class Config {
   constructor(option) {
+    this.platForm = "wx";
+    this.name = "sanguo";
+    this.remote = "https://mgame.xianquyouxi.com";
+    this.screen = {
+      _width: 750,
+      _height: 1334,
+      width: 0,
+      height: 0,
+      left: 0,
+      top: 0,
+      scale: 1
+    };
     const {
       windowWidth,
       windowHeight
@@ -16,16 +28,4 @@ export default class Config {
     this.screen.scale = s;
   }
 
-  platForm = "wx";
-  name = "sanguo";
-  remote = "https://mgame.xianquyouxi.com";
-  screen = {
-    _width: 750,
-    _height: 1334,
-    width: 0,
-    height: 0,
-    left: 0,
-    top: 0,
-    scale: 1
-  };
 }

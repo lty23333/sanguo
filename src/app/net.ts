@@ -25,8 +25,9 @@ date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
 face:{"unlock":[0,0,1,1,1]},
 science:[[1,0]],
-hero:{own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hero:{MaxHero:[1,1],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
+shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
 map:{date:[1],city:[0,10000,0],attack:[[]],guard:[]}
 }
@@ -173,6 +174,11 @@ const manadd_food = (param: any, callback) => {
          }
          
      }
+
+     if(DB.build[0][0] <1){
+        DB.build[0][0] += 0.2
+        DB.build[14][0] += 0.2
+     }
      DB.res.food[1] = number;
      saveDb("res",DB.res);
      callback({ok:DB.res.food[1]}); 
@@ -183,23 +189,24 @@ const manadd_food = (param: any, callback) => {
      callback({ok:DB.res.food[5]});  
 
  }
- const eat_gold = (param: any, callback) => {
-    DB.res.gold[5] = DB.army.total[0] *1;
-    saveDb("res",DB.res);
-    callback({ok:DB.res.gold[5]});  
+//  const eat_gold = (param: any, callback) => {
+//     DB.res.gold[5] = DB.army.total[0] *1;
+//     saveDb("res",DB.res);
+//     callback({ok:DB.res.gold[5]});  
 
-}
+// }
 
 
 Connect.setTest("app/res@add",add_res);
 Connect.setTest("app/res@manfood",manadd_food);
 Connect.setTest("app/people@changepeople",change_people);
 Connect.setTest("app/res@eatFood",eat_food);
-Connect.setTest("app/res@eatGold",eat_gold);
+// Connect.setTest("app/res@eatGold",eat_gold);
 /****************** build ******************/
 
 //建筑升级
 const levelup = (id: any, callback) => {
+
     let  bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
          bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
          cost1 = bcfg2[DB.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],         
@@ -221,6 +228,11 @@ const levelup = (id: any, callback) => {
     if (DB.map.city[2] >= DB.map.city[0]*10+100 ){
         callback({err:1}); 
     }else if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
+        //山路特殊处理
+        if(id == 1015 && DB.build[1][1] <5){
+            callback({err:3}); 
+            return;
+        }
             num1 -= cost1;
             DB.build[id-1001][1] += 1;
             DB.res[cost_name1][1] = num1;
@@ -247,7 +259,7 @@ const levelup = (id: any, callback) => {
 Connect.setTest("app/build@levelup",levelup);
 /****************** science ******************/
 
-//解锁科技
+//解锁知识
 const unlock = (id: any, callback) => {
     let  bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
          cost = bcfg[id][`cost`],  
@@ -296,15 +308,30 @@ const people_minus = (id: any, callback) => {
     }               
     callback({ok:[DB.people[id][1]]}); 
 }
+
 const people_zero = (id: any, callback) => {       
     DB.people[id][1] = 0;
     saveDb("people",DB.people);             
     callback({ok:[DB.people[id][1]]}); 
 }
 
+const people_max = (id: any, callback) => {   
+    let name =["food","wood","sci","gold"],
+        p = DB.people,
+        all= p.total[0]
+    for(let i=0;i<4;i++){
+        if(i != id){
+            all -= p[name[i]][1]
+        }    
+    }    
+    DB.people[id][1] = all;
+    saveDb("people",DB.people);             
+    callback({ok:[DB.people[id][1]]}); 
+}
     Connect.setTest("app/people@people_plus",people_plus);
     Connect.setTest("app/people@people_minus",people_minus);
     Connect.setTest("app/people@people_zero",people_zero);
+    Connect.setTest("app/people@people_max",people_max);
 /****************** event ******************/
 const eventtrigger = (eventId: any, callback) => {       
     let bcfg = CfgMgr.getOne("app/cfg/event.json@event")
@@ -362,12 +389,16 @@ const hero_buy = (id: any, callback) => {
         choose_id = DB.hero.choose.indexOf(id)
 
         if(gold<=DB.res.gold[1]){
-            DB.res.gold[1] = DB.res.gold[1] -gold;
-            DB.hero.choose.splice(choose_id,1);
-            DB.hero.own.push([id,0,0,DB.hero.own.length]);
-            saveDb("hero",DB.hero);   
-            saveDb("res",DB.res);
-            callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
+            if(DB.hero.own.length < DB.hero.MaxHero[1]){
+                DB.res.gold[1] = DB.res.gold[1] -gold;
+                DB.hero.choose.splice(choose_id,1);
+                DB.hero.own.push([id,0,0,DB.hero.own.length]);
+                saveDb("hero",DB.hero);   
+                saveDb("res",DB.res);
+                callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
+            }else{
+                callback({err:2}); 
+            }
         }else{
         callback({err:1}); 
     }
@@ -386,7 +417,7 @@ const army_buy = (id: any, callback) => {
             DB.army.cur[0] +=1;
             saveDb("army",DB.army);     
             saveDb("res",DB.res);
-            callback({ok:[DB.res.gold[1],DB.army.total,DB.army.cur]});
+            callback({ok:[DB.res.gold[1],DB.army.total[0],DB.army.cur[0]]});
         }else{
         callback({err:1}); 
     }
@@ -396,7 +427,7 @@ const army_buy = (id: any, callback) => {
 const army_plus = (id: any, callback) => { 
     let a = DB.army,
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        max_army = Math.floor(bcfg[DB.hero.own[id][0]]["command"]/10) + DB.hero.add[0]
+        max_army = bcfg[DB.hero.own[id][0]]["command"] + DB.hero.add[0]
 
     if (a.cur[0] >0 ){
         if(max_army > DB.hero.own[id][1]){
@@ -423,9 +454,36 @@ const army_minus = (id: any, callback) => {
     }               
     callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]}); 
 }
-const army_zero = (id: any, callback) => {
-    DB.army.cur[0] += DB.hero.own[id][1]; 
-    DB.hero.own[id][1] = 0;
+//删除将军
+const hero_delete = (id: any, callback) => {       
+    if (DB.hero.own[id] ){
+         DB.army.cur[0] += DB.hero.own[id][1];
+         DB.hero.own.splice(id,1);
+         saveDb("hero",DB.hero);
+         saveDb("army",DB.army);
+    }               
+    callback({ok:[DB.hero.own,DB.army.cur[0]]}); 
+}
+// const army_zero = (id: any, callback) => {
+//     DB.army.cur[0] += DB.hero.own[id][1]; 
+//     DB.hero.own[id][1] = 0;
+//     saveDb("army",DB.army);  
+//     saveDb("hero",DB.hero);          
+//     callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]});
+// }
+const army_max = (id: any, callback) => {
+    let a = DB.army,
+        bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        max_army = bcfg[DB.hero.own[id][0]]["command"] + DB.hero.add[0]
+    if(a.cur[0] >0){
+        if(a.cur[0] + DB.hero.own[id][1]> max_army){
+            a.cur[0] -=  max_army + DB.hero.own[id][1];
+            DB.hero.own[id][1] = max_army;
+        }else{
+            DB.hero.own[id][1] += a.cur[0];
+            a.cur[0] = 0;
+        }
+    }
     saveDb("army",DB.army);  
     saveDb("hero",DB.hero);          
     callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]});
@@ -434,7 +492,10 @@ const army_zero = (id: any, callback) => {
     Connect.setTest("app/army@army_buy",army_buy);
     Connect.setTest("app/army@army_plus",army_plus);
     Connect.setTest("app/army@army_minus",army_minus);
-    Connect.setTest("app/army@army_zero",army_zero);
+    // Connect.setTest("app/army@army_zero",army_zero);
+    Connect.setTest("app/army@army_max",army_max);
+    Connect.setTest("app/army@hero_delete",hero_delete);
+
 /****************** map ******************/
 const guard_add = (id: any, callback) => { 
         let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
@@ -611,6 +672,42 @@ const fightAccount = (param: any, callback) => {
 
 Connect.setTest("app/fight@fight",fight);
 Connect.setTest("app/fight@fightAccount",fightAccount);
+
+/****************** shop ******************/
+//市场资源价格
+const buy = (param: any, callback) => {
+    let goods = [["gold","food"],["gold","wood"],["gold","sic"],["food","gold"],["wood","gold"],["sic","gold"]]
+
+
+    //购买某种商品后刷新价格
+    if(DB.res[goods[param][0]] >= DB.shop.price[param] * DB.shop.number[0]){
+        DB.res[goods[param][0]] -= DB.shop.number[0] 
+        DB.res[goods[param][1]] += Math.ceil(DB.shop.price[param] * DB.shop.number[0])
+        DB.shop.price[param] = DB.shop.price[param] * 0.9
+        saveDb("res",DB.res);
+        saveDb("shop",DB.shop);
+        callback({ok:[DB.res[goods[param][0]],DB.res[goods[param][1]],DB.shop.price[param]]});
+    }else{
+        callback({err:1}); 
+    }
+}
+
+const updateShop = (param: any, callback) => {
+    let discount = rand(6) - 1,
+        price = [8,1,1,0.125,1,1]
+    
+
+    for(let i = 0;i<=5;i++){
+        DB.shop.price[i] = price[i] * (85+rand(15))/100
+    }
+    DB.shop.price[discount] = price[discount] * (120+rand(15))/100
+    DB.shop.date[0] += 1 
+    saveDb("shop",DB.shop);
+    callback({ok:[discount,DB.shop.price,DB.shop.date[0]]});
+
+}
+Connect.setTest("app/shop@buy",buy);
+Connect.setTest("app/shop@updateShop",updateShop);
 
 
 //注册页面打开事件

@@ -116,18 +116,9 @@ export default class Util {
     }
   }
 
-  static seedRandom = function (seed, max, min) {
-    max = max || 1;
-    min = min || 0;
-    let num = (seed * 9301 + 49297) % 233280;
-    var rnd = num / 233280.0;
-    seed = this.randNumber(seed);
-    return [min + rnd * (max - min), seed]; // Math.ceil实现取整功能，可以根据需要取消取整
-  };
   /**
    * @description 初始化某个对象的所有属性值
    */
-
   static initObjValue(obj, value) {
     for (let k in obj) {
       obj[k] = value;
@@ -255,49 +246,11 @@ export default class Util {
   } // 条件判断表
 
 
-  static condMap = {
-    '>': function (a, b) {
-      return a > b;
-    },
-    '>=': function (a, b) {
-      return a >= b;
-    },
-    '<': function (a, b) {
-      return a < b;
-    },
-    '=<': function (a, b) {
-      return a <= b;
-    },
-    '!=': function (a, b) {
-      return a !== b;
-    }
-  };
-  static calculate = {
-    "=": (a, b) => {
-      return b;
-    },
-    "+": (a, b) => {
-      return a + b;
-    },
-    "*": (a, b) => {
-      return a * b;
-    },
-    "/": (a, b) => {
-      return a / b;
-    },
-    "-": (a, b) => {
-      return a - b;
-    },
-    "^": (a, b) => {
-      return Math.pow(a, b);
-    }
-  };
   /**
    * @description 判断对象是否满足条件conds
    * @param obj 需要判断的对象
    * @param conds 条件列表 [["hp",">",0],["camp",1],["or",["type",1],...]]
    */
-
   static condsCheck(obj, conds) {
     var i,
         j,
@@ -524,4 +477,51 @@ export default class Util {
   }
 
 }
+
+Util.seedRandom = function (seed, max, min) {
+  max = max || 1;
+  min = min || 0;
+  let num = (seed * 9301 + 49297) % 233280;
+  var rnd = num / 233280.0;
+  seed = this.randNumber(seed);
+  return [min + rnd * (max - min), seed]; // Math.ceil实现取整功能，可以根据需要取消取整
+};
+
+Util.condMap = {
+  '>': function (a, b) {
+    return a > b;
+  },
+  '>=': function (a, b) {
+    return a >= b;
+  },
+  '<': function (a, b) {
+    return a < b;
+  },
+  '=<': function (a, b) {
+    return a <= b;
+  },
+  '!=': function (a, b) {
+    return a !== b;
+  }
+};
+Util.calculate = {
+  "=": (a, b) => {
+    return b;
+  },
+  "+": (a, b) => {
+    return a + b;
+  },
+  "*": (a, b) => {
+    return a * b;
+  },
+  "/": (a, b) => {
+    return a / b;
+  },
+  "-": (a, b) => {
+    return a - b;
+  },
+  "^": (a, b) => {
+    return Math.pow(a, b);
+  }
+};
 ;

@@ -69,11 +69,10 @@ var RsType;
 })(RsType || (RsType = {}));
 
 class RsError {
-  err = {
-    reson: ""
-  };
-
   constructor(message) {
+    this.err = {
+      reson: ""
+    };
     this.err.reson = message;
   }
 

@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"remove"}},
     "data": {
-        "width": "2000",
-        "height": "4000",
+        "width": 2000,
+        "height": 4000,
         "left": 0,
         "top": 0
     },
@@ -16,7 +16,7 @@
                 "left": -750,
                 "top": -1500,
                 "background-color": "#d9c6ad",
-                "alpha":0.5
+                "alpha":0.78
             }
         },
         {
@@ -27,7 +27,7 @@
                 "left":200,
                 "top": 1250,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }

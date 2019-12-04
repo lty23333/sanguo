@@ -4,8 +4,6 @@ import Widget from '../libs/ni/widget';
 /****************** 导出 ******************/
 
 export default class Process {
-  static table = [];
-
   static add() {
     let index = Process.table.length;
     Process.table.push(0);
@@ -23,6 +21,9 @@ export default class Process {
 }
 /****************** 本地 ******************/
 
+Process.timer = void 0;
+Process.node = void 0;
+Process.table = [];
 const barData = {
   "type": "rect",
   "data": {

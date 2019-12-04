@@ -1,9 +1,9 @@
 {   
-    "type": "container",
+    "type": "rect",
     "on":{"tap":{"func":"choose","arg":[1001]}},
     "data": {
-        "width": "400",
-        "height": "400",
+        "width": 220,
+        "height": 350,
         "left": 20,
         "top": 100
     },
@@ -15,7 +15,13 @@
                 "height": 350,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
             }
         },
         {
@@ -26,7 +32,7 @@
                 "left":10,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -36,9 +42,9 @@
                 "id":"belong",
                 "text":"归属",
                 "left":10,
-                "top": 45,
+                "top": 65,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -61,7 +67,7 @@
                 "id":"reward",
                 "text":"奖励：",
                 "left":20,
-                "top": 220,
+                "top": 250,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

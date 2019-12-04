@@ -1,5 +1,6 @@
 /****************** 导入 ******************/
 import * as PIXI from '../pixijs/pixi';
+import '../pixijs/pixi-spine';
 import Util from "./util"
 import Loader from "./loader";
 /****************** 导出 ******************/
@@ -33,7 +34,7 @@ export default class Spine {
 				spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas)
 				spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
 				spineData = spineJsonParser.readSkeletonData(rawSkeletonData);
-				console.log(spineData);
+				// console.log(spineData);
 				Spine.spineData[k] = spineData;
 				delete data[k];
 				delete data[jk];
@@ -43,11 +44,13 @@ export default class Spine {
 	/**
 	 * @description 创建pine动画
 	 */
-	static create(name){
-		if(!Spine.spineData[name]){
+	static create(data){
+		if(!Spine.spineData[data.url]){
 			return ;
 		}
-		return new PIXI.spine.Spine(Spine.spineData[name]);
+		let o = new PIXI.spine.Spine(Spine.spineData[data.url]);
+
+		return o;
 	}
 	/**
 	 * @description 更新动画

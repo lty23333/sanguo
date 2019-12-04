@@ -1,0 +1,174 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 600,
+        "height": 820,
+        "left": 75,
+        "top": 300
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 600,
+                "height": 820,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":140,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 100,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"买入",
+                "left":45,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 280,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"卖出",
+                "left":45,
+                "top": 280,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 460,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"建造效果",
+                "left":45,
+                "top": 460,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"effect",
+                "text":"效果：",
+                "left":50,
+                "top": 510,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 560,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"建造消耗",
+                "left":45,
+                "top": 560,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"消耗：",
+                "left":50,
+                "top": 610,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"levelup"}},
+                "id":"cost",
+                "left": 300,
+                "top": 750,
+                "text": "建造",
+                "size":35,
+                "width": 200,
+                "height": 100
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"dis",
+                "text":"安得广厦千万间，大庇天下寒士俱欢颜！",
+                "left":0,
+                "top": 840,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 28, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
+            }
+        }
+    ]
+}

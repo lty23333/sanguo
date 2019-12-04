@@ -1,8 +1,8 @@
 {   
     "type": "container",
     "data": {
-        "width": "400",
-        "height": "400",
+        "width": 700,
+        "height": 700,
         "left": 25,
         "top": 400
     },
@@ -10,22 +10,15 @@
         {
             "type": "rect",
             "data": {
-                "width": 704,
-                "height": 704,
-                "left": -2,
-                "top": -2,
-                "alpha":0.5,
-                "background-color": "0xe6e6fa"
-            }
-        },
-        {
-            "type": "rect",
-            "data": {
                 "width": 700,
                 "height": 700,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
             }
         },
         {
@@ -48,7 +41,7 @@
                 "left":30,
                 "top": 550,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -60,57 +53,37 @@
                 "left":30,
                 "top": 650,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
         {
-            "type": "rect",
-            "on":{"tap":{"func":"levelup"}},
-            "data": {
-                "width": 180,
-                "height": 90,
-                "left": 500,
-                "top": 600,
-                "background-color": "0x696969",
-                "alpha":0.5
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"levelup"}},
+                "id":"cost",
+                "left": 600,
+                "top": 650,
+                "text": "建造",
+                "size":34,
+                "width": 160,
+                "height": 80
             }
         },
         {
-            "type": "text",
-            "data": {
-                "text":"建造",
-                "left":560,
-                "top": 632,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"update"}},
+                "id":"update",
+                "left": 600,
+                "top": 450,
+                "text": "刷新",
+                "size":34,
+                "width": 160,
+                "height": 80
             }
         },
 
-        {
-            "type": "rect",
-            "on":{"tap":{"func":"update"}},
-            "data": {
-                "width": 180,
-                "height": 90,
-                "left": 500,
-                "top": 400,
-                "background-color": "0x696969",
-                "alpha":0.5
-            }
-        },
-        {
-            "type": "text",
-            "data": {
-                "text":"刷新",
-                "left":560,
-                "top": 432,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
-            }
-        },
         {
             "type": "text",
             "data": {
@@ -119,7 +92,7 @@
                 "left":30,
                 "top": 450,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -141,7 +114,7 @@
                 "left":45,
                 "top": 400,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -163,7 +136,7 @@
                 "left":45,
                 "top": 500,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -185,8 +158,20 @@
                 "left":45,
                 "top": 600,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"dis",
+                "text":"安得广厦千万间，大庇天下寒士俱欢颜！",
+                "left":60,
+                "top": 720,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 28, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
             }
         }
     ]

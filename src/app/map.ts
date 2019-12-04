@@ -141,7 +141,7 @@ class WfightWindow extends Widget{
             bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
         }  
         //我军上阵
-        for(let i=0;i < DB.data.hero.upHero[0];i++){
+        for(let i=0;i < DB.data.hero.MaxHero[0];i++){
             str1 = `${str1}\n${bcfg2[heroList[i][0]]["name"]}(${heroList[i][1]}${Cname[bcfg2[heroList[i][0]]["arms"]]})`
         }
         //敌军上阵
@@ -160,7 +160,7 @@ class WfightWindow extends Widget{
             bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
             bcfg4 = CfgMgr.getOne("app/cfg/city.json@army")
 
-        for(let i=0;i < DB.data.hero.upHero[0];i++){
+        for(let i=0;i < DB.data.hero.MaxHero[0];i++){
             if(!own[i]){own[i] = []}
             own[i][0] = heroList[i][0]
             own[i][1] = heroList[i][1]

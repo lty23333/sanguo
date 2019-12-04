@@ -1,21 +1,37 @@
 {   
     "type": "container",
     "data": {
-        "width": "400",
-        "height": "400",
-        "left": 350,
-        "top": 450
+        "width": 450,
+        "height": 300,
+        "left": 150,
+        "top": 250
     },
     "children":[
         {
             "type": "rect",
             "data": {
-                "width": 400,
-                "height": 400,
+                "width": 2000,
+                "height": 3000,
+                "left": -400,
+                "top": -1000,
+                "background-color": "#d9c6ad",
+                "alpha":0.78
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 450,
+                "height": 300,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
-            }
+                "background-color": "#d9c6ad",
+                "alpha":1,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.3,
+                "border-align":0.5
+           }      
         },
         {
             "type": "text",
@@ -23,7 +39,7 @@
                 "id":"text",
                 "text":"是否花费",
                 "left":30,
-                "top": 100,
+                "top": 75,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }
@@ -33,34 +49,26 @@
             "type":"app-ui-button",
             "props":{
                 "on":{"tap":{"func":"levelup"}},
-                "url": "images/ui/button_buy.png",
                 "id":"button_levelup",
                 "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 100,
-                "top": 300,
-                "text": "确认",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "width": 180,
+                "height": 90,
+                "left": 120,
+                "top": 220,
+                "text": "确认"
             }
         },
         {
             "type":"app-ui-button",
             "props":{
-                "on":{"tap":{"func":"levelup"}},
-                "url": "images/ui/button_buy.png",
-                "id":"button_levelup",
+                "on":{"tap":{"func":"remove"}},
+                "id":"button_remove",
                 "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 100,
-                "top": 300,
-                "text": "取消",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "width": 180,
+                "height": 90,
+                "left": 330,
+                "top": 220,
+                "text": "取消"
             }
         }
     ]

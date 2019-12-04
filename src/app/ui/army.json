@@ -14,7 +14,7 @@
                 "left":20,
                 "top": 0,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}
             }
         },
@@ -26,32 +26,24 @@
                 "left":190,
                 "top": 0,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
+
         {
-            "type": "rect",
-            "data": {
-                "width": 140,
-                 "height": 70,
-                 "left": 430,
-                 "top": -10,
-                 "background-color": "#d9c6ad",
-                 "alpha":0.70,
-                 "on":{"tap":{"func":"army_buy"}}
-            }
-        },     
-        {
-            "type": "text",
-            "data": {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"army_buy"}},
                 "id":"number_name",
-                "text":"招募",
-                "left":470,
-                "top": 10,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+                "left": 640,
+                "top": 30,
+                "text": "招兵",
+                "size":34,
+                "width": 150,
+                "height": 80,
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75
             }
         },
         {
@@ -60,9 +52,9 @@
                 "id":"army_price",
                 "text":"50黄金",
                 "left":600,
-                "top": 7,
+                "top": 70,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 27, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}
             }
         },
@@ -75,6 +67,40 @@
                  "top": 5,
                  "background-color": "0xffd700",
                  "alpha":0.75
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 0,
+                 "top": 60,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"将领数量：",
+                "left":20,
+                "top": 52,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
+                    ,"strokeThickness":2}
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"hero_number",
+                "text":"0/0",
+                "left":190,
+                "top": 52,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
+                }
             }
         }
     ]

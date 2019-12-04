@@ -29,21 +29,34 @@ class Button extends Widget {
     super.setProps(props);
     const cfg = this.cfg,
           text = cfg.children[0].data,
-          dk = ["id", "url", "width", "height", "left", "top"];
+          dk = ["id", "width", "height", "left", "top", "background-color", "background-alpha", "radius"];
 
     for (let i = 0, len = dk.length; i < len; i++) {
-      cfg.data[dk[i]] = props[dk[i]];
+      if (props[dk[i]] != undefined) {
+        cfg.data[dk[i]] = props[dk[i]];
+      }
     }
 
-    cfg.on = props.on || {
-      "tap": {
-        "func": "buttonTap",
-        arg: []
-      }
-    };
-    text.text = props.text;
-    text.style.fontSize = props.size;
-    text.style.fill = props.color;
+    if (props.on != undefined) {
+      cfg.on = props.on || {
+        "tap": {
+          "func": "buttonTap",
+          arg: []
+        }
+      };
+    }
+
+    if (props.on != undefined) {
+      text.text = props.text;
+    }
+
+    if (props.size != undefined) {
+      text.style.fontSize = props.size;
+    }
+
+    if (props.color != undefined) {
+      text.style.fill = props.color;
+    }
 
     if (props.on && props.on.tap) {
       this[cfg.on.tap.func] = () => {
@@ -61,10 +74,11 @@ class Button extends Widget {
     let node = this.elements.get(this.props.id),
         text = this.elements.get(this.props.id).children[0];
     node.anchor.set(0.5, 0.5);
-    node.ni.left = this.props.left + this.props.width / 2;
-    node.ni.top = this.props.top + this.props.height / 2;
-    text.ni.left = (this.props.width - text.width) / 2 - this.props.width / 2;
-    text.ni.top = (this.props.height - text.height) / 2 - this.props.height / 2;
+    text.anchor.set(0.5, 0.5); // node.ni.left = this.props.left - this.props.width/2;
+    // node.ni.top = this.props.top - this.props.height/2;
+    //  text.ni.left = (this.props.width - text.width)/2 - this.props.width/2;
+    //  text.ni.top = (this.props.height - text.height)/2 - this.props.height/2;
+
     console.log(text.width, text.height);
   }
 

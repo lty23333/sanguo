@@ -21,28 +21,9 @@ export let HandlerResult;
 
 export class Events {
   //支持的事件类型
-  static eventsType = {
-    start: "start",
-    tap: "tap",
-    longtap: "longtap",
-    drag: "drag",
-    end: "end"
-  }; // 正在触发的事件状态
-
-  static status = {
-    currTarget: null,
-    // 当前触发事件的渲染对象
-    event: null,
-    // 事件对象 PIXI.interaction.InteractionEvent
-    startPos: null,
-    // 起始位置 {x:0,y:0}
-    moving: null,
-    // 
-    eventType: null,
-    // 触发的事件类型
-    time: 0 // 触发时间点
-
-  }; //是否移动端
+  // 正在触发的事件状态
+  //是否移动端
+  //绑定函数
 
   /**
    * @description 初始化设备数据
@@ -309,6 +290,29 @@ export class Events {
   }
 
 }
+Events.eventsType = {
+  start: "start",
+  tap: "tap",
+  longtap: "longtap",
+  drag: "drag",
+  end: "end"
+};
+Events.status = {
+  currTarget: null,
+  // 当前触发事件的渲染对象
+  event: null,
+  // 事件对象 PIXI.interaction.InteractionEvent
+  startPos: null,
+  // 起始位置 {x:0,y:0}
+  moving: null,
+  // 
+  eventType: null,
+  // 触发的事件类型
+  time: 0 // 触发时间点
+
+};
+Events.mobile = void 0;
+Events.bindFunc = void 0;
 ;
 /****************** 本地 ******************/
 

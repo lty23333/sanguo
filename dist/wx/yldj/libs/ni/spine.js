@@ -1,5 +1,6 @@
 /****************** 导入 ******************/
 import * as PIXI from '../pixijs/pixi';
+import '../pixijs/pixi-spine';
 import Util from "./util";
 import Loader from "./loader";
 /****************** 导出 ******************/
@@ -8,21 +9,18 @@ export default class Spine {
   /**
    * @description 动画列表
    */
-  static anims = [];
+
   /**
    * @description 配置缓存
    */
 
-  static cfgs = {};
   /**
    * @description 配置解析后的spine数据，直接用来创建spine动画对象
    */
 
-  static spineData = {};
   /**
    * @description 添加配置
    */
-
   static addSpineData(data) {
     let jk, rawSkeletonData, rawAtlasData, spineAtlas, spineAtlasLoader, spineJsonParser, spineData;
 
@@ -38,8 +36,8 @@ export default class Spine {
         });
         spineAtlasLoader = new PIXI.spine.core.AtlasAttachmentLoader(spineAtlas);
         spineJsonParser = new PIXI.spine.core.SkeletonJson(spineAtlasLoader);
-        spineData = spineJsonParser.readSkeletonData(rawSkeletonData);
-        console.log(spineData);
+        spineData = spineJsonParser.readSkeletonData(rawSkeletonData); // console.log(spineData);
+
         Spine.spineData[k] = spineData;
         delete data[k];
         delete data[jk];
@@ -51,12 +49,13 @@ export default class Spine {
    */
 
 
-  static create(name) {
-    if (!Spine.spineData[name]) {
+  static create(data) {
+    if (!Spine.spineData[data.url]) {
       return;
     }
 
-    return new PIXI.spine.Spine(Spine.spineData[name]);
+    let o = new PIXI.spine.Spine(Spine.spineData[data.url]);
+    return o;
   }
   /**
    * @description 更新动画
@@ -71,4 +70,7 @@ export default class Spine {
 /****************** 立即执行 ******************/
 //绑定资源监听
 
+Spine.anims = [];
+Spine.cfgs = {};
+Spine.spineData = {};
 Loader.addResListener("addSpineData", Spine.addSpineData);

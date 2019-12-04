@@ -30,14 +30,20 @@ export default class Emitter {
 		let evs = this.list[key],r = [];
 		if(!evs){
 			// console.error(`There is no handler match '${key}'`);
-			return ;
+			return r;
 		}
 		for(let i = 0, len = evs.length; i < len; i++){
 			r.push(evs[i](param));
 		}
 		return r;
 	}
+
+	static global: Emitter
 }
 /****************** 本地 ******************/
 
 /****************** 立即执行 ******************/
+/**
+ * @description 注册全局事件触发器
+ */
+Emitter.global = new Emitter();

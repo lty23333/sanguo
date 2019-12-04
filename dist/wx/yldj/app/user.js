@@ -13,9 +13,17 @@ export default class User {
   /**
    * @description 平台名 "_default"没有任何平台 "wx"微信小游戏
    */
-  static pt = "xianquyouxi";
+
   /**
    * @description 平台用户信息
+   */
+
+  /**
+   * @description wx 登录code
+   */
+
+  /**
+   * @description 用户界面渲染对象
    */
 
   /**
@@ -68,6 +76,10 @@ export default class User {
  * @description 平台授权初始化
  */
 
+User.pt = "xianquyouxi";
+User.info = void 0;
+User.code = void 0;
+User.show = void 0;
 const ptFrom = {
   wx: () => {
     let wx = window.wx,

@@ -39,7 +39,7 @@
             "left":0,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     },
@@ -51,7 +51,7 @@
             "left":75,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     },
@@ -63,7 +63,7 @@
             "left":180,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     },
@@ -75,7 +75,7 @@
             "left":190,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     },
@@ -87,7 +87,7 @@
             "left":310,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     },       
@@ -99,7 +99,7 @@
             "left":440,
             "top": 5,
             "style":{
-                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
             }
         }
     }

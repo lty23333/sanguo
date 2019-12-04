@@ -2,7 +2,6 @@
 
 /****************** 导出 ******************/
 export default class Frame {
-  static list = [];
   /**
    * @description 添加帧回调
    * @param frameCall 帧回调函数
@@ -10,7 +9,6 @@ export default class Frame {
    * @param isOnce 是否一次性，是则执行一次后删除
    * @returns {} 帧对象，存储于帧列表，如果自身需要手动删除，则用户应该抓住它
    */
-
   static add(frameCall, interval, isOnce) {
     let f = {
       frameCall: frameCall,
@@ -29,7 +27,7 @@ export default class Frame {
 
 
   static delete(f) {
-    let i = Frame.list.indexOf(f);
+    let i = Frame.findHandler(f);
 
     if (i < 0) {
       return console.warn(`Don't have the frameCallback `, f);
@@ -37,6 +35,19 @@ export default class Frame {
 
     Frame.list.splice(i, 1);
     f.delete = true;
+  }
+
+  static findHandler(f) {
+    let r = -1;
+
+    for (let i = 0, len = Frame.list.length; i < len; i++) {
+      if (Frame.list[i].frameCall == f) {
+        r = i;
+        break;
+      }
+    }
+
+    return r;
   }
   /**
    * @description 执行帧列表
@@ -70,6 +81,8 @@ export default class Frame {
 
 }
 /****************** 本地 ******************/
+
+Frame.list = [];
 
 const requestFrameImpl = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
   return setTimeout(callback, 0.5 + 1000 / 60 << 0);

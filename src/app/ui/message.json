@@ -3,9 +3,7 @@
     "data": {
         "id": "message",
         "text": "不可用",
-        "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2},
-        "width": 200,
-        "height": 75,
+        "style": {"fontSize":40,"fill":"#adbbd9","strokeThickness":2, "align" : "center"},
         "left": 250,
         "top": 650
     }

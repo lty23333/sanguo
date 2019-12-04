@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"buy","arg":[1001]}},
     "data": {
-        "width": "400",
-        "height": "400",
+        "width": 220,
+        "height": 280,
         "left": 300,
         "top": 500
     },
@@ -11,22 +11,17 @@
         {
             "type": "rect",
             "data": {
-                "width": 224,
-                "height": 284,
-                "left": -2,
-                "top": -2,
-                "alpha":0.5,
-                "background-color": "0xe6e6fa"
-            }
-        },
-        {
-            "type": "rect",
-            "data": {
-                "width": 220,
+                "width": 210,
                 "height": 280,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "0x696969",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
             }
         },
         {
@@ -49,7 +44,7 @@
                 "left":30,
                 "top": 100,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -61,7 +56,7 @@
                 "left":30,
                 "top": 150,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },

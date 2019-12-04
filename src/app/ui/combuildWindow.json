@@ -1,8 +1,8 @@
 {   
     "type": "container",
     "data": {
-        "width": "400",
-        "height": "400",
+        "width": 400,
+        "height": 400,
         "left": 175,
         "top": 500
     },
@@ -10,22 +10,15 @@
         {
             "type": "rect",
             "data": {
-                "width": 404,
-                "height": 434,
-                "left": -2,
-                "top": -2,
-                "alpha":0.5,
-                "background-color": "0xe6e6fa"
-            }
-        },
-        {
-            "type": "rect",
-            "data": {
                 "width": 400,
                 "height": 430,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
             }
         },
         {
@@ -58,7 +51,7 @@
                 "left":45,
                 "top": 100,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -70,7 +63,7 @@
                 "left":50,
                 "top": 150,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -92,7 +85,7 @@
                 "left":45,
                 "top": 200,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -104,43 +97,32 @@
                 "left":50,
                 "top": 250,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
         {
-            "type": "rect",
-            "on":{"tap":{"func":"levelup"}},
-            "data": {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"levelup"}},
+                "id":"cost",
+                "left": 200,
+                "top": 360,
+                "text": "建造",
+                "size":35,
                 "width": 200,
-                "height": 100,
-                "left": 100,
-                "top": 310,
-                "background-color": "0x696969",
-                "alpha":0.5
+                "height": 100
             }
         },
         {
             "type": "text",
             "data": {
-                "id":"cost",
-                "text":"建造",
-                "left":170,
-                "top": 342,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
-            }
-        },
-        {
-            "type": "text",
-            "data": {
-                "id":"cost",
+                "id":"dis",
                 "text":"安得广厦千万间，大庇天下寒士俱欢颜！",
                 "left":0,
                 "top": 450,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 28, "fill" : "0xffffff", "align" : "center"
                     ,"strokeThickness":2}
             }
         }

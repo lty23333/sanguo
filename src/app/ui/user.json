@@ -12,14 +12,10 @@
             "props":{
                 "on":{"tap":{"func":"login"}},
                 "id":"button_login",
-                "url": "images/ui/button_buy.png",
-                "width": 214,
-                "height": 100,
-                "left": -107,
-                "top": -50,
+                "left": 0,
+                "top": 0,
                 "text": "登陆",
-                "size":30,
-                "color":"#d9c6ad"
+                "size":40
             }
         }
     ]

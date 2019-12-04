@@ -1,20 +1,24 @@
 {   
     "type": "container",
     "data": {
-        "width": "400",
-        "height": "400",
-        "left": 100,
-        "top": 0
+        "width": 400,
+        "height": 400,
+        "left": 150,
+        "top": 100
     },
     "children":[
         {
             "type": "rect",
             "data": {
                 "width": 400,
-                "height": 400,
+                "height": 300,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
             }
         },
         {
@@ -25,7 +29,7 @@
                 "left":140,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -48,18 +52,6 @@
                 "text":"兵种：",
                 "left":30,
                 "top": 150,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
-            }
-        },
-        {
-            "type": "text",
-            "data": {
-                "id":"fihgt",
-                "text":"战斗力：",
-                "left":70,
-                "top": 200,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

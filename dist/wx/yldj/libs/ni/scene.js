@@ -1,55 +1,35 @@
+/**
+ * pixijs 已经屏蔽掉自带的ticker
+ * 		  修改webglSupport检查判断
+ */
+
 /****************** 导入 ******************/
 import * as PIXI from '../pixijs/pixi';
 import Loader from "./loader";
 import Frame from './frame';
 import Animate from './animate';
 import { Events } from './events';
-import DragonBones from './dragonbones';
+import Spine from './spine';
 import Widget from './widget';
 /****************** 导出 ******************/
 
 export default class Scene {
   // render
-  static app = function () {
-    return app;
-  }; //屏幕尺寸
-
+  //屏幕尺寸
+  // root node
   // fps node
-  static FPS = (() => {
-    let m = {},
-        c = 0,
-        t = Date.now();
+  // object cache
+  //SpriteSheets
+  // rectTextures
 
-    m.loop = () => {
-      c += 1;
-
-      if (Date.now() - t >= 1000) {
-        if (m.node) {
-          m.node.text = `FPS ${c}`;
-        }
-
-        c = 0;
-        t = Date.now();
-      }
-    };
-
-    m.node = null;
-    return m;
-  })(); // object cache
-
-  static cache = {}; //SpriteSheets
-
-  static spriteSheets = {};
   /**
    * @description create scene
    */
-
   static Application(option, cfg) {
     initCanvas(option, cfg); // option.sharedTicker = false;
     // option.sharedLoader	= false;
 
-    app = new Application(option);
-    app.ticker = null; //映射pixi坐标
+    app = new Application(option); //映射pixi坐标
 
     app.renderer.plugins.interaction.mapPositionToPoint = (point, x, y) => {
       point.x = x * cfg.screen.scale - cfg.screen.left;
@@ -59,29 +39,27 @@ export default class Scene {
 
     this.root = new Container();
     this.root.width = cfg.screen.width;
-    this.root.height = cfg.screen.height; // this.root.position.set(cfg.screen.left,cfg.screen.top);
+    this.root.height = cfg.screen.height;
+    this.root.ni = {
+      z: 0
+    }; // this.root.position.set(cfg.screen.left,cfg.screen.top);
 
     Events.bindGlobal(this.root);
     app.stage.addChild(this.root);
     this.root.calculateBounds(); //FPS
+    // this.FPS.node = new Text("FPS 0",{fontFamily : 'Arial', fontSize: 24, fill : 0xff1010,strokeThickness:2});
+    // this.FPS.node.position.set(15,115);
+    // this.FPS.node.ni = {z:1};
+    // app.stage.addChild(this.FPS.node);
 
-    this.FPS.node = new Text("FPS 0", {
-      fontFamily: 'Arial',
-      fontSize: 24,
-      fill: 0xff1010,
-      strokeThickness: 2
-    });
-    this.FPS.node.position.set(15, 115);
-    app.stage.addChild(this.FPS.node);
     this.screen = cfg.screen; //添加主循环
 
     Frame.add(function () {
-      Scene.FPS.loop();
+      // Scene.FPS.loop();
       app.render();
       Events.loop();
-      DragonBones.update();
-    });
-    console.log(PIXI.spine);
+    }); // console.log(PIXI.spine,Spine);
+
     return app;
   }
   /**
@@ -150,11 +128,10 @@ export default class Scene {
         if (this.ni.id) {
           // console.log(`Delete the node which id is ${this.ni.id} from cache!!`);
           o.widget.elements.delete(o.ni.id);
-        }
+        } // if(this.ni.type === "dragonbones"){
+        // 	DragonBones.remove(this.ni);
+        // }
 
-        if (this.ni.type === "dragonbones") {
-          DragonBones.remove(this.ni);
-        }
       });
 
       if (option.children && option.children.length) {
@@ -254,14 +231,12 @@ export default class Scene {
     for (let k in data) {
       let texture = Loader.resources[k.replace(".json", ".png")].texture.baseTexture;
       Scene.spriteSheets[k] = new Spritesheet(texture, JSON.parse(data[k]));
-      Scene.spriteSheets[k].parse(function (sps) {
-        console.log(sps);
+      Scene.spriteSheets[k].parse(function (sps) {// console.log(sps);
       });
       delete data[k];
-    }
+    } // console.log(Scene.spriteSheets);
+    // console.log(PIXI.loader);
 
-    console.log(Scene.spriteSheets);
-    console.log(PIXI.loader);
   }
   /**
    * @description 根据图片路径获取spriteSheets
@@ -302,13 +277,101 @@ export default class Scene {
     r.y = g.y;
     return r;
   }
+  /**
+   * @description 缓存rect texture
+   * @param name 
+   * @param texture 
+   */
+
+
+  static setRectTexture(name, texture) {
+    if (Scene.rectTextures[name]) {
+      return console.log(`Has ${name} rect texture`);
+    }
+
+    Scene.rectTextures[name] = texture;
+  }
+  /**
+   * @description 获取rect texture
+   * @param name 
+   */
+
+
+  static getRectTexture(name) {
+    return Scene.rectTextures[name];
+  }
+  /**
+   * @description 创建canvas纹理
+   */
+
+
+  static createCanvasTexture(canvas) {
+    let texture = new BaseTexture(canvas);
+    texture = new Texture(texture);
+    Texture.removeFromCache(texture); // console.log(texture);
+
+    return texture;
+  }
+  /**
+   * @description 添加纹理精灵到指定父节点
+   * @param texture 纹理
+   * @param parent 父节点
+   */
+
+
+  static createSpriteFromTexture(texture, parent) {
+    let sprite = new Sprite(texture);
+    parent.addChild(sprite);
+    return sprite;
+  }
+  /**
+   * @description 从缓存中删除纹理
+   * @param texture 需要删除的纹理
+   */
+
+
+  static removeTextureFromCache(texture) {
+    Texture.removeFromCache(texture);
+  }
 
 }
 /****************** 本地 ******************/
 
+Scene.app = function () {
+  return app;
+};
+
+Scene.screen = void 0;
+Scene.root = void 0;
+
+Scene.FPS = (() => {
+  let m = {},
+      c = 0,
+      t = Date.now();
+
+  m.loop = () => {
+    c += 1;
+
+    if (Date.now() - t >= 1000) {
+      if (m.node) {
+        m.node.text = `FPS ${c}`;
+      }
+
+      c = 0;
+      t = Date.now();
+    }
+  };
+
+  m.node = null;
+  return m;
+})();
+
+Scene.cache = {};
+Scene.spriteSheets = {};
+Scene.rectTextures = {};
 let Application = PIXI.Application,
     Container = PIXI.Container,
-    TextureCache = PIXI.utils.TextureCache,
+    Texture = PIXI.Texture,
     Sprite = PIXI.Sprite,
     Rectangle = PIXI.Rectangle,
     Text = PIXI.Text,
@@ -316,39 +379,49 @@ let Application = PIXI.Application,
     AnimatedSprite = PIXI.extras.AnimatedSprite,
     Point = PIXI.Point,
     Graphics = PIXI.Graphics,
+    BaseTexture = PIXI.BaseTexture,
     //当前渲染实例 new PIXI.Application()
 app;
 
 class Ni {
   //resize的定时器,连续改变，将会只更新一次
-  z = 0;
-  id = ""; //显示对象
+  //显示对象
 
   /**
    * @description 帧动画动作列表
    */
-  actions = {};
+
   /**
    * @description 画状态表
    */
-
-  animate = {
-    "ani": "",
-    "times": 0,
-    "speed": 1
-  }; // times 0: 无限循环播放, [1~N]: 循环播放 N 次
+  // times 0: 无限循环播放, [1~N]: 循环播放 N 次
 
   /**
    * @description 创建应用层管理对象
    * @param show 显示对象
    * @param cfg 显示配置
    */
-
   constructor(show, cfg, type, parent) {
     this.type = type;
+    this.rsTimer = void 0;
+    this._width = void 0;
+    this._height = void 0;
+    this._left = void 0;
+    this._top = void 0;
+    this._bottom = void 0;
+    this._right = void 0;
+    this.z = 0;
+    this.id = "";
+    this.show = void 0;
+    this.actions = {};
+    this.animate = {
+      "ani": "",
+      "times": 0,
+      "speed": 1
+    };
     let isAni = false;
 
-    if (cfg.z) {
+    if (cfg.z != undefined) {
       this.z = cfg.z;
     }
 
@@ -372,10 +445,6 @@ class Ni {
 
     if (!isAni) {
       this.animate = null;
-    }
-
-    if (cfg.anicallback) {
-      this.anicallback = cfg.anicallback;
     }
 
     this.show = show;
@@ -415,43 +484,22 @@ class Ni {
     this.delayRS();
   }
   /**
-   * @description 动画回调
-   */
-
-
-  anicallback(status, ani) {}
-  /**
-   * @description 播放骨骼动画
-   */
-
-
-  play(ani = this.animate.ani, times = this.animate.times) {
-    if (this.type !== "dragonbones") {
-      return;
-    }
-
-    this.animate.ani = ani;
-    this.animate.times = times;
-    DragonBones.play(this);
-  }
-  /**
-   * @description 暂停骨骼动画
-   */
-
-
-  stop(ani = this.animate.ani) {
-    if (this.type !== "dragonbones") {
-      return;
-    }
-
-    DragonBones.stop(ani, this);
-  }
-  /**
    * @description 重新计算位置大小
    */
 
 
   resize(parent) {
+    if (!parent && !this.show.parent) {
+      return console.log("no parent!", this);
+    }
+
+    let bound = Ni.caclBound(this, parent);
+    bound.w !== undefined && (this.show.width = bound.w);
+    bound.h !== undefined && (this.show.height = bound.h);
+    this.show.position.set(bound.x, bound.y);
+  }
+
+  static caclBound(o, parent) {
     let x,
         y,
         w,
@@ -473,13 +521,13 @@ class Ni {
       return s;
     };
 
-    parent = parent || this.show.parent;
-    w = parseNumber(this._width, parent._width);
-    h = parseNumber(this._height, parent._height);
-    l = parseNumber(this._left, parent._width);
-    r = parseNumber(this._right, parent._width);
-    t = parseNumber(this._top, parent._height);
-    b = parseNumber(this._bottom, parent._height);
+    parent = parent || o.show.parent;
+    w = parseNumber(o._width, parent._width);
+    h = parseNumber(o._height, parent._height);
+    l = parseNumber(o._left, parent._width);
+    r = parseNumber(o._right, parent._width);
+    t = parseNumber(o._top, parent._height);
+    b = parseNumber(o._bottom, parent._height);
 
     if (l !== undefined) {
       x = l;
@@ -487,9 +535,9 @@ class Ni {
 
     if (r !== undefined) {
       if (x !== undefined) {
-        w = parent._width - x - r;
+        w = (parent._width || parent.width) - x - r;
       } else {
-        x = parent._width - this.show.width - r;
+        x = (parent._width || parent.width) - (o.show._width || o.show.width) - r;
       }
     }
 
@@ -499,17 +547,22 @@ class Ni {
 
     if (b !== undefined) {
       if (y !== undefined) {
-        h = parent._height - y - b;
+        h = (parent._height || parent.height) - y - b;
       } else {
-        y = parent._height - this.show._height - b;
+        y = (parent._height || parent.height) - (o.show._height || o.show.height) - b;
       }
     }
 
-    w = w !== undefined ? w : this._width;
-    h = h !== undefined ? h : this._height;
-    w !== undefined && (this.show.width = w);
-    h !== undefined && (this.show.height = h);
-    this.show.position.set(x || 0, y || 0);
+    w = w !== undefined ? w : o._width;
+    h = h !== undefined ? h : o._height;
+    return {
+      x: x || 0,
+      y: y || 0,
+      w: w,
+      h: h
+    }; // w !== undefined && (this.show.width = w);
+    // h !== undefined && (this.show.height = h);
+    // this.show.position.set(x || 0, y || 0);
   }
 
   get top() {
@@ -572,9 +625,12 @@ const creater = {
    */
   init: (type, o, data, parent) => {
     o.ni = new Ni(o, data, type, parent);
-    o.alpha = data.alpha || 1;
 
-    if (data.anchor != undefined) {
+    if (typeof data.alpha == "number") {
+      o.alpha = data.alpha;
+    }
+
+    if (o.anchor && data.anchor != undefined) {
       o.anchor.x = data.anchor[0];
       o.anchor.y = data.anchor[1];
     }
@@ -588,6 +644,17 @@ const creater = {
   container: (data, parent) => {
     let o = new Container();
     creater.init("container", o, data, parent);
+
+    if (data.mask) {
+      const graphics = new PIXI.Graphics(),
+            bounds = o.getBounds();
+      graphics.beginFill(0xFF3300);
+      graphics.drawRect(0, 0, data.width, data.height);
+      graphics.endFill();
+      parent.appendChild(graphics);
+      o.mask = graphics;
+    }
+
     return o;
   },
 
@@ -604,33 +671,66 @@ const creater = {
    * 	border-align:0.5
    * 	background-color:0x66CCFF
    * 	background-alpha:1
+   *  radius:0 圆角度数
    * }
    */
   rect: (data, parent) => {
-    let rectangle = new Graphics();
-    creater.init("rect", rectangle, data, parent);
-    rectangle.lineStyle(data["border-width"] || 0, data["border-color"] || 0, data["border-alpha"] || 1, data["border-align"] || 0.5);
-    rectangle.beginFill(data["background-color"] || 0, data["background-alpha"] || (data["background-color"] ? 1 : 0.0001));
-    rectangle.drawRect(0, 0, rectangle._width, rectangle._height);
-    rectangle.endFill();
-    return rectangle;
+    let rectangle,
+        rectTexture = Scene.getRectTexture(data.name),
+        o;
+
+    if (!rectTexture) {
+      rectangle = new Graphics();
+      creater.init("rect", rectangle, data, parent);
+      rectangle.lineStyle(data["border-width"] || 0, data["border-color"] || 0, data["border-alpha"] || 1, data["border-align"] || 0.5);
+      rectangle.beginFill(data["background-color"] || 0, data["background-alpha"] || (data["background-color"] ? 1 : 0.0001));
+
+      if (data.radius > 0) {
+        rectangle.drawRoundedRect(0, 0, rectangle._width, rectangle._height, data.radius);
+      } else {
+        rectangle.drawRect(0, 0, rectangle._width, rectangle._height);
+      }
+
+      rectangle.endFill();
+      rectTexture = rectangle.generateCanvasTexture();
+
+      if (data.name) {
+        Scene.setRectTexture(data.name, rectTexture);
+      }
+    }
+
+    o = new Sprite(rectTexture);
+
+    if (data.mask && data.mask.url) {
+      const mask = creater.sprite(data.mask, o);
+      o.mask = mask;
+    }
+
+    creater.init("rect", o, data, parent);
+    return o;
   },
 
   /**
    * @description 创建 PIXI.Sprite
+   * @param data {
+   * 		url: ""    //通过Spritesheet加载纹理
+   * 		netUrl: "" //通过网络直接加载纹理
+   * }
    */
   sprite: (data, parent) => {
-    let t = Scene.getTextureFromSpritesheet(data.url),
+    let t = data.url ? Scene.getTextureFromSpritesheet(data.url) : null,
         o;
 
-    if (!t) {
-      throw `Can't create the sprite by "${data.url}"`;
-    }
+    if (!t && !data.netUrl) {
+      return console.error(`Can't create the sprite by "${data.url}"`);
+    } else if (data.netUrl) {
+      o = new Sprite.from(data.netUrl);
+    } else if (t) {
+      o = new Sprite(t); //根据中心点调整sprite位置
 
-    o = new Sprite(t); //根据中心点调整sprite位置
-
-    if (t.defaultAnchor.x || t.defaultAnchor.y) {
-      o.position.set((data.x || 0) - data.width * t.defaultAnchor.x, (data.y || 0) - data.height * t.defaultAnchor.y);
+      if (t.defaultAnchor.x || t.defaultAnchor.y) {
+        o.position.set((data.x || 0) - data.width * t.defaultAnchor.x, (data.y || 0) - data.height * t.defaultAnchor.y);
+      }
     }
 
     creater.init("sprite", o, data, parent);
@@ -649,7 +749,26 @@ const creater = {
    * PIXI.TextStyle http://pixijs.download/release/docs/PIXI.TextStyle.html
    */
   text: (data, parent) => {
-    let o = new Text(data.text, data.style);
+    data.style.fontFamily = "zcool-gdh";
+    let o = new Text(data.text, data.style),
+        line;
+
+    if (data.style.align == "center" && parent) {
+      data.left = ((parent._width || parent.width) - o.width) / 2;
+    }
+
+    if (data.line == "under") {
+      line = creater.rect({
+        "name": "textline" + data.style.fill,
+        "width": o.width,
+        "height": 2,
+        "left": 0,
+        "top": o.height + 2,
+        "background-color": data.style.fill || "#000000"
+      }, o);
+      o.addChild(line);
+    }
+
     creater.init("text", o, data, parent);
     return o;
   },
@@ -708,15 +827,14 @@ const creater = {
   /**
    * @description 创建dragonbones
    */
-  dragonbones: (data, parent) => {
-    let o = DragonBones.create(data);
+  spine: (data, parent) => {
+    let o = Spine.create(data);
 
     if (!o) {
       return console.error(`Can't find the dragonbones data by "${data.url}".`);
     }
 
-    creater.init("dragonbones", o, data, parent);
-    o.ni.play();
+    creater.init("spine", o, data, parent);
     return o;
   }
 };

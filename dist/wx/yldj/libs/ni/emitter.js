@@ -2,16 +2,15 @@
 
 /****************** 导出 ******************/
 export default class Emitter {
-  /**
-   * @description 注册函数列表{key:[func1,func2,...]}
-   */
-  list = {};
+  constructor() {
+    this.list = {};
+  }
+
   /**
    * @description 注册全局广播函数
    * @param {string} key 函数注册的key,作为调用的唯一凭证
    * @param {Function} func 注册接收消息的函数
    */
-
   add(key, func) {
     if (!this.list[key]) {
       this.list[key] = [];
@@ -37,7 +36,7 @@ export default class Emitter {
 
     if (!evs) {
       // console.error(`There is no handler match '${key}'`);
-      return;
+      return r;
     }
 
     for (let i = 0, len = evs.length; i < len; i++) {
@@ -51,3 +50,10 @@ export default class Emitter {
 /****************** 本地 ******************/
 
 /****************** 立即执行 ******************/
+
+/**
+ * @description 注册全局事件触发器
+ */
+
+Emitter.global = void 0;
+Emitter.global = new Emitter();

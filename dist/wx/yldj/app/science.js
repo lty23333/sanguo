@@ -11,21 +11,12 @@ import { Global } from './global';
 
 /****************** 本地 ******************/
 class Science {
-  static width = 0;
-  static height = 0;
-  static science = [[], [], []]; //科技节点
-
+  //知识节点
+  // 通用窗口名字节点
+  // 通用窗口效果节点
   // 通用窗口消耗节点
-  static science_sprite = [];
-  static cur_scienceId = 0;
-  static coordinate = {
-    left: [0, 300, 0, 300, 0, 300, 0, 300],
-    top: [0, 0, 150, 150, 300, 300, 450, 450]
-  }; //科技按钮坐标
-
-  static unlock_science = [];
-  static scienceNode = []; //更新科技数量
-
+  //知识按钮坐标
+  //更新知识数量
   static updateScience(id, type) {
     if (type == 0) {
       if (DB.data.science[id][0] == 1 && Global.mainFace.id == 0) {
@@ -40,7 +31,7 @@ class Science {
         Science.updateScienceButton();
       }
     }
-  } //更新科技按钮
+  } //更新知识按钮
 
 
   static updateScienceButton() {
@@ -59,11 +50,31 @@ class Science {
 
 }
 /**
- * @description  科技按钮组件
+ * @description  知识按钮组件
  */
 
 
+Science.width = 0;
+Science.height = 0;
+Science.science = [[], [], []];
+Science.com_name = void 0;
+Science.com_effect = void 0;
+Science.com_cost = void 0;
+Science.science_sprite = [];
+Science.cur_scienceId = 0;
+Science.coordinate = {
+  left: [0, 300, 0, 300, 0, 300, 0, 300],
+  top: [0, 0, 150, 150, 300, 300, 450, 450]
+};
+Science.unlock_science = [];
+Science.scienceNode = [];
+
 class WscienceButton extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.backNode = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -92,7 +103,7 @@ class WscienceButton extends Widget {
 
 }
 /**
- * @description  科技界面组件
+ * @description  知识界面组件
  */
 
 
@@ -112,10 +123,15 @@ class WScience extends Widget {
     });
   }
 
-} //科技弹窗
+} //知识弹窗
 
 
 class WcomWindow extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -124,7 +140,7 @@ class WcomWindow extends Widget {
         effect = bcfg[id]["effect_type"];
     this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
     this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"]}`;
-    this.cfg.children[3].data.text = `消耗：${cost}科技`;
+    this.cfg.children[3].data.text = `消耗：${cost}知识`;
     Science.cur_scienceId = id;
   }
 
@@ -138,7 +154,7 @@ class WcomWindow extends Widget {
       arg: id
     }, data => {
       if (data.err) {
-        AppEmitter.emit("message", "科技不足！");
+        AppEmitter.emit("message", "知识不足！");
         return console.log(data.err.reson);
       }
 
@@ -152,7 +168,7 @@ class WcomWindow extends Widget {
       this.remove();
       Science.com_name.text = `${bcfg[id]["name"]}`;
       Science.com_effect.text = `效果：${bcfg[id]["effect_dis"]}`;
-      Science.com_cost.text = `消耗：${cost}科技`;
+      Science.com_cost.text = `消耗：${cost}知识`;
     });
   }
 
@@ -169,14 +185,14 @@ class WcomWindow extends Widget {
 
 }
 /**
- * @description 打开科技界面
+ * @description 打开知识界面
  */
 
 
 const open = () => {
   Global.mainFace.node = Scene.open("app-ui-science", Scene.root);
   Global.mainFace.id = 0;
-  Science.unlock_science = []; //显示解锁的科技按钮
+  Science.unlock_science = []; //显示解锁的知识按钮
 
   for (let i = 0; i < DB.data.science.length; i++) {
     if (DB.data.science[i][0] && !DB.data.science[i][1]) {
@@ -192,7 +208,7 @@ const open = () => {
 
 Widget.registW("app-ui-science", WScience);
 Widget.registW("app-ui-comscienceWindow", WcomWindow);
-Widget.registW("app-ui-scienceButton", WscienceButton); //初始化科技数据库 [是否解锁，等级]
+Widget.registW("app-ui-scienceButton", WscienceButton); //初始化知识数据库 [是否解锁，等级]
 
 const initScience = () => {
   let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
@@ -208,7 +224,7 @@ const initScience = () => {
 
 AppEmitter.add("intoScience", node => {
   open();
-}); //科技注册监听
+}); //知识注册监听
 
 const emtScience = () => {
   for (let i = DB.data.science.length - 1; i >= 0; i--) {

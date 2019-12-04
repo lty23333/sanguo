@@ -27,7 +27,7 @@ class People {
     static work_Cname =["空闲人口","农民","樵夫","学者","矿工"]
     static work_name  =["total","food","wood","sci","gold"]
     static work_top =[0,250,50,150,350]
-    static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1科技/秒","每个矿工+2黄金/秒"]
+    static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1知识/秒","每个矿工+2黄金/秒"]
 
 
     static eatFood(){
@@ -73,12 +73,13 @@ class WWork extends Widget{
         let id = props.id,
             name = People.work_name[id];
         super.setProps(props);
-        this.cfg.children[0].children[0].data.text = `${People.work_Cname[id]}(${DB.data.people[name][1]})`;
+        this.cfg.children[0].children[0].data.text = `${People.work_Cname[id]}\n(${DB.data.people[name][1]})`;
         this.cfg.data.top =  People.work_top[id];
         this.cfg.children[0].on = {"tap":{"func":"dis_work","arg":[id]}};
         this.cfg.children[1].props.on = {"tap":{"func":"people_plus","arg":[name]}};
         this.cfg.children[2].props.on = {"tap":{"func":"people_minus","arg":[name]}};
-        this.cfg.children[3].props.on = {"tap":{"func":"people_zero","arg":[name]}};
+        this.cfg.children[3].props.on = {"tap":{"func":"people_max","arg":[name]}};
+        this.cfg.children[4].props.on = {"tap":{"func":"people_zero","arg":[name]}};
 
     }
 
@@ -114,6 +115,15 @@ class WWork extends Widget{
             DB.data.people[id][1] = data.ok[0];
         })
     }
+    //人数全部
+    people_max (id){
+        Connect.request({type:"app/people@people_max",arg:id},(data) => {
+            if(data.err){
+                return console.log(data.err.reson);
+            }
+            DB.data.people[id][1] = data.ok[0];
+        })
+    }    
     added(node){   
         workNode[node.widget.props.id] = this.elements.get("button_work");    
     }

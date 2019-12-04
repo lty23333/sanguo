@@ -1,0 +1,52 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"buy","arg":[1001]}},
+    "data": {
+        "width": 160,
+        "height": 80,
+        "left": 75,
+        "top": 300
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 160,
+                "height": 80,
+                "left": 0,
+                "top": 0,
+                "background-color": "0x696969",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"goods",
+                "text":"粮食",
+                "left":20,
+                "top": 32,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 26, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"cost",
+                "text":"黄金",
+                "left":20,
+                "top": 90,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 26, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

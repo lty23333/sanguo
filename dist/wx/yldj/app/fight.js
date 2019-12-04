@@ -61,13 +61,9 @@ kill_die,
 cityId; //争夺城市的ID
 
 class Fight {
-  static pause = 1;
-  static events = []; //事件列表
-
-  static shake = 2; //震动次数
-
-  static shakeState = 4; //震动阶段
-
+  //事件列表
+  //震动次数
+  //震动阶段
   static updateHerolist() {
     if (Global.mainFace.id == 4) {
       initHero();
@@ -167,20 +163,26 @@ class Fight {
 
 }
 
+Fight.pause = 1;
+Fight.events = [];
+Fight.shake = 2;
+Fight.shakeState = 4;
+
 class Army {
   constructor(options) {
+    this.top = 0;
+    this.left = 0;
+    this.hp = 0;
+    this.max_hp = 0;
+    this.v = 5;
+    this.group = 0;
+    this.id = 0;
+
     for (let k in options) {
       this[k] = options[k];
     }
   }
 
-  top = 0;
-  left = 0;
-  hp = 0;
-  max_hp = 0;
-  v = 5;
-  group = 0;
-  id = 0;
 }
 /**
  * @description 显示事件处理
@@ -264,6 +266,11 @@ class WfightHp extends Widget {
 
 
 class WfightHero extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
@@ -304,6 +311,11 @@ class WfightHero extends Widget {
 
 
 class WfightAccount extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),

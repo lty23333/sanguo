@@ -4,12 +4,11 @@ import Loader from "./loader";
 
 export default class CfgMgr {
   //配置资源目录
-  static cfgDir = "app/cfg/";
+
   /**
    * @description 初始化配置表
    * @param data 配置数据{"cfg/xx":{"sheetName":{"keys":[],"values":{}}}}
    */
-
   static registCfg(data) {
     let _data;
 
@@ -23,9 +22,8 @@ export default class CfgMgr {
 
         delete data[k];
       }
-    }
+    } // console.log(caches);
 
-    console.log(caches);
   }
   /**
    * @description 获取某张配置表
@@ -45,6 +43,7 @@ export default class CfgMgr {
  * @example {"cfg/xx@sheetName":{},...}
  */
 
+CfgMgr.cfgDir = "app/cfg/";
 const caches = {};
 /**
  * @description 解析配置表数据，返回缓存结构

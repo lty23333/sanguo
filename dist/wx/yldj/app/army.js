@@ -15,9 +15,6 @@ let armyNode = [];
 let heroList = [];
 
 class Army {
-  static arms_Cname = ["步兵", "骑兵", "弓兵"];
-  static hero_top = [0, 50, 150, 250, 350, 450, 550, 650];
-
   static eatGold() {
     Connect.request({
       type: "app/res@eatGold",
@@ -43,7 +40,7 @@ class Army {
     if (Global.mainFace.id == 3) {
       for (let i = 0; i < heroList.length; i++) {
         if (heroNode[i] != undefined) {
-          heroNode[i].text = `${bcfg[heroList[i][0]]["name"]}(${heroList[i][1]}/${Math.floor((bcfg[heroList[i][0]]["command"] + DB.data.hero.add[0]) / 10)})`;
+          heroNode[i].text = `${bcfg[heroList[i][0]]["name"]}\n(${heroList[i][1]}/${bcfg[heroList[i][0]]["command"] + DB.data.hero.add[0]})`;
         }
       }
     }
@@ -55,15 +52,23 @@ class Army {
  */
 
 
+Army.arms_Cname = ["步兵", "骑兵", "弓兵"];
+Army.hero_top = [60, 160, 260, 360, 460, 560];
+
 class WHero extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.backNode = void 0;
+  }
+
   setProps(props) {
     let i = props.id,
         id = heroList[i][0],
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-        max = Math.floor((bcfg[id]["command"] + DB.data.hero.add[0]) / 10),
+        max = bcfg[id]["command"] + DB.data.hero.add[0],
         name = bcfg[id]["name"];
     super.setProps(props);
-    this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
+    this.cfg.children[0].children[0].data.text = `${name}\n(${heroList[i][1]}/${max})`;
     this.cfg.data.top = Army.hero_top[i + 1];
     this.cfg.children[0].on = {
       "tap": {
@@ -71,21 +76,27 @@ class WHero extends Widget {
         "arg": [i]
       }
     };
-    this.cfg.children[2].on = {
+    this.cfg.children[1].props.on = {
       "tap": {
         "func": "army_plus",
         "arg": [heroList[i][3]]
       }
     };
-    this.cfg.children[4].on = {
+    this.cfg.children[2].props.on = {
       "tap": {
         "func": "army_minus",
         "arg": [heroList[i][3]]
       }
     };
-    this.cfg.children[6].on = {
+    this.cfg.children[3].props.on = {
       "tap": {
-        "func": "army_zero",
+        "func": "army_max",
+        "arg": [heroList[i][3]]
+      }
+    };
+    this.cfg.children[4].props.on = {
+      "tap": {
+        "func": "hero_delete",
         "arg": [heroList[i][3]]
       }
     };
@@ -126,12 +137,22 @@ class WHero extends Widget {
       DB.data.hero.own[id][1] = data.ok[0];
       DB.data.army.cur[0] = data.ok[1];
     });
-  } //人数清0
+  } // //人数清0
+  // army_zero (id){
+  //     Connect.request({type:"app/army@army_zero",arg:id},(data) => {
+  //         if(data.err){
+  //             return console.log(data.err.reson);
+  //         }
+  //         DB.data.hero.own[id][1] = data.ok[0];
+  //         DB.data.army.cur[0] = data.ok[1];
+  //     })
+  // }
+  //满编
 
 
-  army_zero(id) {
+  army_max(id) {
     Connect.request({
-      type: "app/army@army_zero",
+      type: "app/army@army_max",
       arg: id
     }, data => {
       if (data.err) {
@@ -140,6 +161,17 @@ class WHero extends Widget {
 
       DB.data.hero.own[id][1] = data.ok[0];
       DB.data.army.cur[0] = data.ok[1];
+    });
+  } //革职
+
+
+  hero_delete(id) {
+    let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        name = bcfg[DB.data.hero.own[id][0]]["name"];
+    Scene.open(`app-ui-confirm`, Global.mainFace.node, null, {
+      text: `革职后，您将永远失去${name}。\n确认吗？`,
+      on: "hero_delete",
+      arg: [id]
     });
   }
 
@@ -157,10 +189,12 @@ class WArmy extends Widget {
   setProps(props) {
     super.setProps(props);
     this.cfg.children[1].data.text = `${DB.data.army.cur}`;
+    this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
   }
 
   added(node) {
     armyNode[0] = this.elements.get("army_number");
+    armyNode[1] = this.elements.get("hero_number");
   }
 
   army_buy() {
@@ -168,13 +202,15 @@ class WArmy extends Widget {
       type: "app/army@army_buy",
       arg: []
     }, data => {
-      if (data.err) {
+      if (data.err == 1) {
+        AppEmitter.emit("message", "黄金不足！");
         return console.log(data.err.reson);
+      } else {
+        DB.data.res.gold[1] = data.ok[0];
+        DB.data.army.total[0] = data.ok[1];
+        DB.data.army.cur[0] = data.ok[2];
+        AppEmitter.emit("message", "空闲士兵+1");
       }
-
-      DB.data.res.gold[1] = data.ok[0];
-      DB.data.army.total[0] = data.ok[1];
-      DB.data.army.cur[0] = data.ok[2];
     });
   }
 
@@ -182,18 +218,22 @@ class WArmy extends Widget {
 
 
 class WheroDis extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let i = props.id,
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         id = heroList[i][0],
         armsId = bcfg[id]["arms"],
-        max = Math.floor((bcfg[id]["command"] + DB.data.hero.add[0]) / 10),
+        max = bcfg[id]["command"] + DB.data.hero.add[0],
         name = bcfg[id]["name"];
     this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
     this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
     this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${bcfg[id]["number"] + DB.data.hero.own[heroList[i][3]][2]}（+${DB.data.hero.add[armsId]}）`;
-    this.cfg.children[4].data.text = `战斗力：${(bcfg[id]["command"] + DB.data.hero.add[0]) * (1 + (bcfg[id]["number"] + DB.data.hero.own[heroList[i][3]][2] + DB.data.hero.add[armsId])) / 10}`;
   }
 
 }
@@ -241,7 +281,7 @@ for (let i in bcfg) {
 
 
 DB.init("hero", {
-  upHero: [1],
+  MaxHero: [1, 1],
   own: [],
   enemy: [],
   left: leftHero,

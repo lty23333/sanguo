@@ -65,7 +65,7 @@ class Stage {
     static work_name = ["total","food","wood","sci","gold"]  //资源名
     static five = ["金","木","水","火","土"]
     static five_res = [[0,0,0,0.5],[0,0.5,0,0],[0,0,0.5,0],[-0.25,0,0,0],[0.5,0,0,0]]
-    static res_Cname = ["粮食","木材","科技","黄金","胜绩","败绩"]
+    static res_Cname = ["粮食","木材","知识","黄金","胜绩","败绩"]
     static season_Cname = ["春","夏","秋","冬"] 
     static face_name =["sceince","people","build","army","map"]
     static dayTime = 1500
@@ -99,13 +99,13 @@ class Stage {
         setTimeout(() => {
             Stage.messageList.splice(Stage.messageList.indexOf(MNode),1);
             Scene.remove(MNode);
-        }, 500);
+        }, 1500);
     }
 
     static runMessage(){
         for(let i=0;i<Stage.messageList.length;i++){
-            Stage.messageList[i].y -= 2
-            Stage.messageList[i].alpha -= 0.04
+            Stage.messageList[i].y -= 1.2
+            Stage.messageList[i].alpha -= 0.007
         }
     }
 
@@ -140,7 +140,7 @@ class Stage {
             mun = res[idType],
             people = DB.data.people[name]
         //解锁新资源
-        if(idType ==0 && DB.data.res[name][0]>0 && !Stage.resSprite[res_nameID]){
+        if(idType ==0 && DB.data.res[name][0]>=1 && !Stage.resSprite[res_nameID]){
             Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
         }
         //胜败绩根据其资源数值显示和消失
@@ -246,6 +246,25 @@ class Stage {
             })         
         }
 
+        //每季度刷新市场的价格
+        if(Math.ceil(date/100) > DB.data.shop.date[0]){
+            Connect.request(
+                {type:"app/shop@updateShop",arg:{}},
+                (data) => {
+                    let res = ["粮食","木材","知识"]
+                    if(data.err){
+                        return console.log(data.err.reson);
+                    }
+                    DB.data.shop.price = data.ok[1];
+                    DB.data.shop.date[0] = data.ok[2]
+                    if(data.ok[0]<3){
+                        addNews(`市场中的${res[data.ok[0]]}似乎卖得很便宜。`)
+                    }else{
+                        addNews(`有外来商贾高价收购${res[data.ok[0]-3]}。`)
+                    }
+                }
+            )        
+        }
 
     }
     //资源自动变化
@@ -387,6 +406,41 @@ class WRes extends Widget{
     }
 }
 /**
+ * @description  资源显示组件
+ */
+class WConfirm extends Widget{
+    node:any
+    setProps(props){
+        super.setProps(props);
+        this.cfg.children[2].data.text = `${props.text}`;
+        this.cfg.children[3].props.on =  {"tap":{"func":`${props.on}`,"arg":props.arg}};
+    }
+//将领革职
+    hero_delete(id){
+        let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        name = bcfg[DB.data.hero.own[id][0]]["name"]
+        Connect.request({type:"app/army@hero_delete",arg:[id]},(data) => {
+            let text = ["叹主不公，积怨成疾，郁郁而终。","被贬，翌日愤懑出走，不知所踪。","听闻被贬，不发一言，拂袖而去。"]
+
+             DB.data.hero.own = data.ok[0];
+             DB.data.army.cur[0] = data.ok[1];
+             this.remove();
+             AppEmitter.emit("message",`${name}已被革职！`);
+             addNews(`${name}${text[rand(text.length)-1]}`)
+             Scene.remove(Global.mainFace.node);
+             AppEmitter.emit("intoArmy");
+        })
+    }
+    remove(){
+        Scene.remove(this.node);
+    }
+    added(node){
+        this.node = node;
+    }
+}
+
+
+/**
  * @description  关卡界面组件
  */
 class WStage extends Widget{
@@ -524,6 +578,8 @@ Widget.registW("app-ui-back",WBack);
 Widget.registW("app-ui-message",WMessage);
 Widget.registW("app-ui-res",WRes);
 Widget.registW("app-ui-news",WNews);
+Widget.registW("app-ui-confirm",WConfirm);
+
 //注册循环
 
 Frame.add(()=>{

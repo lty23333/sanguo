@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"choose","arg":[1001]}},
     "data": {
-        "width": "500",
-        "height": "500",
+        "width": 500,
+        "height": 500,
         "left": 0,
         "top": 100
     },

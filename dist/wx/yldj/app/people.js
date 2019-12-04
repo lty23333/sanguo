@@ -13,12 +13,6 @@ let workNode = [];
 let peopleNode = [];
 
 class People {
-  static people_sprite = [];
-  static work_Cname = ["空闲人口", "农民", "樵夫", "学者", "矿工"];
-  static work_name = ["total", "food", "wood", "sci", "gold"];
-  static work_top = [0, 250, 50, 150, 350];
-  static work_dis = [0, "每个农民+8粮食/秒", "每个樵夫+1木材/秒", "每个学者+1科技/秒", "每个矿工+2黄金/秒"];
-
   static eatFood() {
     Connect.request({
       type: "app/res@eatFood",
@@ -63,12 +57,23 @@ class People {
  */
 
 
+People.people_sprite = [];
+People.work_Cname = ["空闲人口", "农民", "樵夫", "学者", "矿工"];
+People.work_name = ["total", "food", "wood", "sci", "gold"];
+People.work_top = [0, 250, 50, 150, 350];
+People.work_dis = [0, "每个农民+8粮食/秒", "每个樵夫+1木材/秒", "每个学者+1知识/秒", "每个矿工+2黄金/秒"];
+
 class WWork extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.backNode = void 0;
+  }
+
   setProps(props) {
     let id = props.id,
         name = People.work_name[id];
     super.setProps(props);
-    this.cfg.children[0].children[0].data.text = `${People.work_Cname[id]}(${DB.data.people[name][1]})`;
+    this.cfg.children[0].children[0].data.text = `${People.work_Cname[id]}\n(${DB.data.people[name][1]})`;
     this.cfg.data.top = People.work_top[id];
     this.cfg.children[0].on = {
       "tap": {
@@ -89,6 +94,12 @@ class WWork extends Widget {
       }
     };
     this.cfg.children[3].props.on = {
+      "tap": {
+        "func": "people_max",
+        "arg": [name]
+      }
+    };
+    this.cfg.children[4].props.on = {
       "tap": {
         "func": "people_zero",
         "arg": [name]
@@ -143,6 +154,20 @@ class WWork extends Widget {
 
       DB.data.people[id][1] = data.ok[0];
     });
+  } //人数全部
+
+
+  people_max(id) {
+    Connect.request({
+      type: "app/people@people_max",
+      arg: id
+    }, data => {
+      if (data.err) {
+        return console.log(data.err.reson);
+      }
+
+      DB.data.people[id][1] = data.ok[0];
+    });
   }
 
   added(node) {
@@ -180,6 +205,11 @@ class WPeople extends Widget {
 
 
 class WworkDis extends Widget {
+  constructor(...args) {
+    super(...args);
+    this.node = void 0;
+  }
+
   setProps(props) {
     super.setProps(props);
     let id = props.id;

@@ -10,6 +10,9 @@
             "es6":{
                 "mod":"es62es6"
             },
+            "es5":{
+                "mod":"es52es6"
+            },
             "xls":{
                 "mod":"xls2json"
             },
@@ -19,6 +22,12 @@
             "png":{
                 "mod":"pngmin",
                 "quality":60
+            },
+            "txt":{
+                "mod":"txt"
+            },
+            "ttf":{
+                "mod":"ttf"
             }
         },
         "depend":{
@@ -38,6 +47,9 @@
             "es6":{
                 "mod":"es62es5"
             },
+            "es5":{
+                "mod":"es52es5"
+            },
             "xls":{
                 "mod":"xls2json"
             },
@@ -51,6 +63,12 @@
             "jpg":{
                 "mod":"jpgmin",
                 "quality":60
+            },
+            "txt":{
+                "mod":"txt"
+            },
+            "ttf":{
+                "mod":"ttf"
             }
         },
         "depend":{

@@ -8,16 +8,17 @@ import Frame from "./frame";
 /****************** 导出 ******************/
 
 export default class DB {
-  static attrPrefix = "-_-"; //存储数据
-
+  //存储数据
   //数据库监听器
-  static emitter = new Emitter(); //初始化数据表
-
+  //初始化数据表
   static init(key, value) {
     addGetterSetter(DB.data, key, value);
   }
 
 }
+DB.attrPrefix = "-_-";
+DB.data = void 0;
+DB.emitter = new Emitter();
 ;
 /****************** 本地 ******************/
 
