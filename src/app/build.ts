@@ -15,7 +15,7 @@ import {addNews} from './stage';
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
-let buildNode // 建筑渲染节点
+
 
 class Build {
     static width = 0
@@ -37,6 +37,8 @@ class Build {
     static shopGoods = []
     static shopCost = []
     static totalNode 
+    static color = ["0xC0C0C0","0xffffff","0xff6347","0x98fb98"]
+    static hero_cost = [] //英雄消耗金币节点
 
     //更新建筑数量
     static updateBuild(id,type){
@@ -51,18 +53,90 @@ class Build {
                 let name = bcfg[`${id+1001}`]["name"]
             
                 if(Build.build[id][0] != undefined){
-                   Build.build[id][0].text = `${name}（${DB.data.build[id][1]}）`
+                   Build.build[id][0].text = `${name}(${DB.data.build[id][1]})`
                 }    
             }
         }
     }
-        
+    //按钮颜色改变
+    static updatebutton(type){
+        if(Global.mainFace.id ==2){
+            for(let i =0;i<DB.data.build.length;i++){
+                if(DB.data.build[i][0]>=1){
+                    let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+                    id = i+1001,
+                    bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
+                    cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
+                    enough = 1,
+                    cost_name = bcfg[id]["cost_type1"]
+
+                    if(DB.data.res[cost_name][1]<cost){
+                        enough = 0
+                    }
+                    if(Build.build[i][0].style.fill != Build.color[enough]){
+                        Build.build[i][0].style.fill = Build.color[enough];
+                    }
+                    if(id == Build.cur_buildId && Build.com_cost){
+                        if(Build.com_cost.style.fill != Build.color[enough+2]){
+                            Build.com_cost.style.fill = Build.color[enough+2];
+                        }
+                    }              
+                }
+
+                if(type =="food"){
+                    break;
+                }
+            }
+        }
+    }  
+    static updatehotel(){
+        if(Global.mainFace.id ==2){
+            if(Build.cur_buildId == 1009){
+                //刷新消耗更新
+                let enough = 3
+                if(DB.data.res.gold[1]<DB.data.hotel.price[0]){
+                    enough = 2
+                }
+                if( Build.hotel_update.style.fill != Build.color[enough]){
+                    Build.hotel_update.style.fill = Build.color[enough];
+                }
+                //购买英雄消耗颜色更新
+                for(let i=0;i< 3;i++){
+                    enough = 3
+                    if(Build.hero_cost[i]){
+                        if(DB.data.res.gold[1]<parseInt(Build.hero_cost[i].text)){
+                            enough = 2
+                        }
+                        if( Build.hero_cost[i].style.fill != Build.color[enough]){
+                            Build.hero_cost[i].style.fill = Build.color[enough];
+                        }
+                    }
+                }
+    
+            }
+        }
+    }
+    static updateshop(type,n,m){
+        if(Global.mainFace.id ==2){
+            if(Build.cur_buildId == 1014){
+                for(let i=n;i<m;i++){
+                    let enough = 3
+                    if(DB.data.res[type][1]<parseInt(Build.shopCost[i].text)){
+                        enough = 2
+                    }
+                    if( Build.shopCost[i].style.fill != Build.color[enough]){
+                        Build.shopCost[i].style.fill = Build.color[enough];
+                    }
+                }
+            }
+        }
+    }
+
+    
 }
-//随机数生成
-function rnd( seed ){
-    seed = ( seed * 9301 + 49297 ) % 233280; 
-    return seed / ( 233280.0 );
-};
+
+
+
 
 /**
  * @description  建筑按钮组件
@@ -72,12 +146,24 @@ class WbuildButton extends Widget{
     setProps(props){
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+            bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             id = props.id,
-            name = bcfg[id]["name"]
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+            name = bcfg[id]["name"],
+            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
+            color = 0,
+            cost_name = bcfg[id]["cost_type1"]
+
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`
         this.cfg.data.left = bcfg[id]["left"];
         this.cfg.data.top =  bcfg[id]["top"];
         this.cfg.on = {"tap":{"func":"addBuild","arg":[id]}};
+
+        //消耗加颜色
+        if(cost <= DB.data.res[cost_name][1]){
+            color += 1
+        }
+        this.cfg.children[1].data.style.fill = Build.color[color];
+        Build.cur_buildId = id  
 
     }
 
@@ -91,7 +177,7 @@ class WbuildButton extends Widget{
                 }else{
                     Scene.open(`app-ui-hotel`,this.backNode,null, {id:1009,backNode:this.backNode});
                     for(let i=0;i<data.ok[0].length;i++){
-                        Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:40+i*230});
+                        Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:40+i*230,index:i});
                     }
                 }  
             })         
@@ -109,7 +195,7 @@ class WbuildButton extends Widget{
 
     added(node){   
         Build.build[node.widget.props.id-1001] =[];
-        Build.build[node.widget.props.id-1001][0] = this.elements.get("button_add");    
+        Build.build[node.widget.props.id-1001][0] = this.elements.get("number_name");    
     }
 }
 
@@ -139,7 +225,9 @@ class Wgoods extends Widget{
     setProps(props){
         super.setProps(props);
         let goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
-            id = props.id
+            goods2= [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]],
+            id = props.id,
+            color = 2
 
         this.cfg.children[1].data.text = `${Math.ceil(DB.data.shop.price[id] * DB.data.shop.number[0])}${goods[id][1]}`;
         this.cfg.children[2].data.text = `${DB.data.shop.number[0]}${goods[id][0]}`;
@@ -147,20 +235,27 @@ class Wgoods extends Widget{
         this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
         this.cfg.data.left = 105 + id % 3 *190
         this.cfg.data.top = id<3?440:620
+        
+        //消耗加颜色
+        if(DB.data.shop.number[0] <= DB.data.res[goods2[id][0]][1]){
+            color += 1
+        }
+        this.cfg.children[2].data.style.fill = Build.color[color];
+
     }
     buy(id){
         let 
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
-            goods2= [["gold","food"],["gold","wood"],["gold","sic"],["food","gold"],["wood","gold"],["sic","gold"]]
+            goods2= [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]]
    
             Connect.request({type:"app/shop@buy",arg:id},(data) => {
                 if(data.err == 1){
                     AppEmitter.emit("message",`${goods[id][0]}不足!`);
                     return console.log(data.err.reson);
                 }else{
-                    DB.data.res[goods2[id][0]] = data.ok[0]
-                    DB.data.res[goods2[id][1]] = data.ok[1]
+                    DB.data.res[goods2[id][0]][1] = data.ok[0]
+                    DB.data.res[goods2[id][1]][1] = data.ok[1]
                     DB.data.shop.price[id] = data.ok[2]
                     Build.shopGoods[id].text = `${Math.ceil(DB.data.shop.price[id] * DB.data.shop.number[0])}${goods[id][1]}`
                     Build.shopCost[id].text = `${DB.data.shop.number[0]}${goods[id][0]}`
@@ -189,13 +284,20 @@ class Wshop extends Widget{
             id = 1014,
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
-            cost_name = bcfg[id]["cost_type1"]
+            cost_name = bcfg[id]["cost_type1"],
+            color = 2 
 
+            
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
         this.cfg.children[8].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[11].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
         this.cfg.children[13].data.text = `${bcfg[id]["dis"]}`;
 
+        //消耗加颜色
+        if(cost <= DB.data.res[cost_name][1]){
+            color += 1
+        }
+        this.cfg.children[11].data.style.fill = Build.color[color];
         Build.cur_buildId = id  
     }
     levelup(){
@@ -260,7 +362,8 @@ class Whero extends Widget{
     setProps(props){
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-            id = props.id
+            id = props.id,
+            color = 2
 
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
@@ -271,7 +374,11 @@ class Whero extends Widget{
         this.cfg.data.left = props.left;
 
         this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
-       
+
+        if(DB.data.res.gold[1] >= bcfg[id]["gold"]){
+            color += 1
+        }
+        this.cfg.children[4].data.style.fill = Build.color[color];
     }
     buy(id){
         let 
@@ -300,6 +407,7 @@ class Whero extends Widget{
     }  
     added(node){
         this.node = node;
+        Build.hero_cost[node.widget.props.id] = Build.com_cost = this.elements.get("cost");
     }
 } 
 //酒馆弹窗
@@ -312,7 +420,8 @@ class Whotel extends Widget{
             id = 1009,
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
-            cost_name = bcfg[id]["cost_type1"]
+            cost_name = bcfg[id]["cost_type1"],
+            color =2
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
         this.cfg.children[2].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
@@ -320,6 +429,17 @@ class Whotel extends Widget{
         this.cfg.children[6].data.text = `${DB.data.hotel.price[0]}黄金`;
         this.cfg.children[13].data.text = `${bcfg[id]["dis"]}`;
 
+        //消耗加颜色
+        if(cost <= DB.data.res[cost_name][1]){
+            color += 1
+        }
+        this.cfg.children[3].data.style.fill = Build.color[color];
+        //刷新加颜色
+        color = 2
+        if(DB.data.res.gold[1] >= DB.data.hotel.price[0]){
+            color += 1
+        }
+        this.cfg.children[6].data.style.fill = Build.color[color];
 
         Build.cur_buildId = id
        
@@ -367,15 +487,22 @@ class Whotel extends Widget{
                 AppEmitter.emit("message","黄金不足！");
                 return console.log(data.err.reson);
             }else{
+                DB.data.res.gold[1] = data.ok[1];
                 for(let i=0;i<3;i++){
                     if(Build.heroNode[i]!= undefined){
                         Scene.remove(Build.heroNode[i]);
                     }
-                    Build.heroNode[i] = Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node,left:90+i*230});
+                    Build.heroNode[i] = Scene.open(`app-ui-hero`,this.node,null, {id:data.ok[0][i],backNode:this.node,left:40+i*230,index:i});
                 }
-                DB.data.res.gold[1] = data.ok[1];
                 DB.data.hotel.price[0] = data.ok[2];
-                Build.hotel_update.text = `刷新：${DB.data.hotel.price[0]}黄金`;
+                Build.hotel_update.text = `${DB.data.hotel.price[0]}黄金`;
+                //颜色刷新
+                let color = 2
+                if(DB.data.res.gold[1] >= DB.data.hotel.price[0]){
+                    color += 1
+                }
+                Build.hotel_update.style.fill = Build.color[color];
+        
             }
         }) 
     }
@@ -402,8 +529,8 @@ class WcomWindow extends Widget{
             cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
             cost_name2 = bcfg[id]["cost_type2"],
-            effect = bcfg[id]["effect_type"],
-            cost2
+            cost2,
+            color = 2
         if(cost_name2){
            cost2 = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
         } 
@@ -420,6 +547,11 @@ class WcomWindow extends Widget{
         if(id == 1015){
             this.cfg.children[7].data.text = "建造条件";
         }
+        //消耗加颜色
+        if(cost <= DB.data.res[cost_name][1]){
+            color += 1
+        }
+        this.cfg.children[7].data.style.fill = Build.color[color];
        
     }
     levelup(){
@@ -460,10 +592,10 @@ class WcomWindow extends Widget{
                     DB.data.map.city[2] = data.ok[4];
                     //更新窗口信息
                     Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
-                    Build.com_effect.text = `效果：${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
-                    Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+                    Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
                     if(cost_name2){
-                        Build.com_cost.text = `消耗：${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
+                        Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
                     }
                     Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
                     AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
@@ -554,3 +686,28 @@ const emtBuild = () => {
         }
     } 
 }  
+
+//注册消耗木材监听
+DB.emitter.add(`res.wood.1`, () => {
+    Build.updatebutton("wood")
+    Build.updateshop("wood",4,5)
+});
+
+//注册消耗食物监听
+DB.emitter.add(`res.food.1`, () => {
+    Build.updatebutton("food")
+    Build.updateshop("food",3,4)
+});
+
+//注册消耗黄金监听
+DB.emitter.add(`res.gold.1`, () => {
+    Build.updateshop("gold",0,3)
+    Build.updatehotel()
+});
+
+//注册消耗知识监听
+DB.emitter.add(`res.sci.1`, () => {
+    Build.updateshop("sci",5,6)
+    Build.updatehotel()
+});
+

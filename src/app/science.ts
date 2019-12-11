@@ -29,6 +29,7 @@ class Science {
     static scienceNode = []
 
 
+
     //更新知识数量
     static updateScience(id,type){
         if(type ==0){
@@ -53,7 +54,34 @@ class Science {
         for(let i=0;i<Science.unlock_science.length;i++){
             Science.scienceNode[i]=Scene.open("app-ui-scienceButton", Global.mainFace.node,null, {id:Science.unlock_science[i],coordinate:i});
         }
-    }     
+    }    
+        //按钮颜色改变
+        static updatebutton(){
+            if(Global.mainFace.id ==0){
+                for(let i =0;i<DB.data.build.length;i++){
+                    if(DB.data.build[i][0]>=1){
+                        let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
+                        id = i+101,
+                        cost = bcfg[id][`cost`],
+                        enough = 1
+    
+                        if(DB.data.res.sci[1]<cost){
+                            enough = 0
+                        }
+                        if(Science.scienceNode[i].children[0].data.style.fill != Global.color[enough]){
+                            Science.scienceNode[i].children[0].data.style.fill = Global.color[enough];
+                        }
+                        if(id == Science.cur_scienceId && Science.com_cost){
+                            if(Science.com_cost.style.fill != Global.color[enough+2]){
+                                Science.com_cost.style.fill = Global.color[enough+2];
+                            }
+                        }              
+                    }else{
+                        break;
+                    }
+                }
+            }
+        }   
 }
 
 
@@ -67,11 +95,20 @@ class WscienceButton extends Widget{
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
             id = props.id,
-            name = bcfg[id]["name"]
+            name = bcfg[id]["name"],
+            cost = bcfg[id][`cost`],
+            color = 0
+
         this.cfg.children[0].data.text = `${name}`;
-        this.cfg.data.left = Science.coordinate.left[props.coordinate];
-        this.cfg.data.top =  Science.coordinate.top[props.coordinate];
+        this.cfg.data.left = Science.coordinate.left[props.coordinate]+140;
+        this.cfg.data.top =  Science.coordinate.top[props.coordinate]+400;
         this.cfg.on = {"tap":{"func":"unlockScience","arg":[id]}};
+
+        //消耗加颜色
+        if(cost <= DB.data.res.sci[1]){
+            color += 1
+        }
+        this.cfg.children[0].data.style.fill = Global.color[color];
     }
 
     unlockScience(type){
@@ -93,14 +130,6 @@ class WScience extends Widget{
     added(node){
         
     }
-    manfood_number(){
-        Connect.request({type:"app/res@manfood",arg:{}},(data) => {
-            if(data.err){
-                return console.log(data.err.reson);
-            }
-            DB.data.res.food[1] = data.ok;
-        })
-    }
 }
 
 //知识弹窗
@@ -112,12 +141,19 @@ class WcomWindow extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
             id = props.id,
             cost = bcfg[id][`cost`],  
-            effect = bcfg[id]["effect_type"]
+            color = 2
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
-        this.cfg.children[2].data.text = `效果：${bcfg[id]["effect_dis"]}`;
-        this.cfg.children[3].data.text = `消耗：${cost}知识`;
+        this.cfg.children[4].data.text = `${bcfg[id]["effect_dis"]}`;
+        this.cfg.children[7].data.text = `${cost}知识`;
+        this.cfg.children[9].data.text = `${bcfg[id]["dis"].replace(/\\n/,"\n")}`;
         Science.cur_scienceId = id
+
+        //消耗加颜色
+        if(cost <= DB.data.res.sci[1]){
+            color += 1
+        }
+        this.cfg.children[7].data.style.fill = Global.color[color];
        
     }
     levelup(){
@@ -211,4 +247,9 @@ const emtScience = () => {
 AppEmitter.add("initDB",(node)=>{
     initScience();
     emtScience();
+});
+
+//注册消耗知识监听
+DB.emitter.add(`res.sci.1`, () => {
+    Science.updatebutton()
 });

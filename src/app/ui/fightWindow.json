@@ -2,20 +2,24 @@
     "type": "container",
     "on":{"tap":{"func":"choose","arg":[1001]}},
     "data": {
-        "width": 500,
-        "height": 500,
-        "left": 0,
-        "top": 100
+        "width": 600,
+        "height": 530,
+        "left": 75,
+        "top": 430
     },
     "children":[
         {
             "type": "rect",
             "data": {
                 "width": 600,
-                "height": 550,
+                "height": 530,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
             }
         },
         {
@@ -30,29 +34,53 @@
                 }
             }
         },
-        {
-            "type": "text",
+        {   
+            "type": "container",
+            "on":{"tap":{"func":"choose","arg":[1001]}},
             "data": {
-                "id":"army1",
-                "text":"攻",
-                "left":50,
-                "top": 130,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "width": 240,
+                "height": 300,
+                "left": 10,
+                "top": 120
+            },
+            "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"army1",
+                        "text":"攻",
+                        "left":0,
+                        "top": 0,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
                 }
-            }
+            ]
         },
-        {
-            "type": "text",
+        {   
+            "type": "container",
+            "on":{"tap":{"func":"choose","arg":[1001]}},
             "data": {
-                "id":"army2",
-                "text":"防",
-                "left":340,
-                "top": 130,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                "width": 240,
+                "height": 300,
+                "left": 340,
+                "top": 120
+            },
+            "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"army2",
+                        "text":"防",
+                        "left":0,
+                        "top": 0,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
                 }
-            }
+            ]
         },
         {
             "type": "text",
@@ -60,35 +88,26 @@
                 "id":"army",
                 "text":"VS",
                 "left":265,
-                "top": 250,
+                "top": 230,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
-
         {
-            "type": "sprite",
-            "on":{"tap":{"func":"fight"}},
-            "data": {
-                "url": "images/ui/button_buy.png",
-                "width": 210,
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"fight"}},
+                "id":"button_fight",
+                "left": 300,
+                "top": 450,
+                "text": "出征",
+                "size":35,
+                "width": 200,
                 "height": 100,
-                "left": 200,
-                "top": 400
-            },
-            "children": [
-                {
-                    "type": "text",
-                    "data": {
-                        "id":"button_fight",
-                        "text": "出征",
-                        "style": {"fontSize":30,"fill":"#d9c6ad","strokeThickness":2},
-                        "left": 34,
-                        "top": 25
-                    }
-                }
-            ]
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75
+            }
         }
 
     ]

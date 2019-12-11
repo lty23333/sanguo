@@ -5,7 +5,7 @@
         "width": 220,
         "height": 350,
         "left": 20,
-        "top": 100
+        "top": 430
     },
     "children":[
         {
@@ -42,7 +42,7 @@
                 "id":"belong",
                 "text":"归属",
                 "left":10,
-                "top": 65,
+                "top": 75,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
                 }

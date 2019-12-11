@@ -3,16 +3,16 @@
     "data": {
         "width": 600,
         "height": 600,
-        "left": 80,
-        "top": 330
+        "left": 0,
+        "top": 0
     },
     "children":[
         {
             "type": "text",
             "data": {
                 "text":"空闲人口：",
-                "left":0,
-                "top": 0,
+                "left":50,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
@@ -23,8 +23,8 @@
             "data": {
                 "id":"people_number",
                 "text":"0",
-                "left":140,
-                "top": 0,
+                "left":190,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
@@ -35,8 +35,8 @@
             "data": {
                 "id":"people_/",
                 "text":"/",
-                "left":165,
-                "top": 0,
+                "left":215,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
@@ -47,11 +47,22 @@
             "data": {
                 "id":"people_max",
                 "text":"0",
-                "left":180,
-                "top": 0,
+                "left":230,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 323,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
             }
         }   
     ]

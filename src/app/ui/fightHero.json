@@ -1,41 +1,37 @@
 {   
     "type": "container",
     "data": {
-        "width": 50,
-        "height": 100,
-        "left": 50,
-        "top": 20
+        "anchor":[0.5,0],
+        "width": 200,
+        "height": 200,
+        "left": 0,
+        "top": 0
     },
     "children":[
         {
             "type": "rect",
             "data": {
-                "width": 104,
-                "height": 204,
+                "width": 200,
+                "height": 200,
                 "left": 0,
                 "top": 0,
-                "background-color": "0xfa8072"
-            }
-        },
-        {
-            "type": "rect",
-            "data": {
-                "width": 100,
-                "height": 200,
-                "left": 2,
-                "top": 2,
-                "background-color": "0xffffff"
+                "background-color": "0x696969",
+                "border-width":4,
+                "border-color":"0xfa8072",
+                "border-alpha":0.6,
+                "border-align":0
             }
         },
         {
             "type": "rect",
             "data": {
                 "id":"hp",
-                "width": 100,
-                "height": 0,
-                "left": 2,
-                "top": 2,
-                "background-color": "0x000000"
+                "width": 192,
+                "height": 200,
+                "left": 4,
+                "top": 200,
+                "anchor":[0,1],
+                "background-color": "0xffffff"
             }
         },
         {
@@ -43,10 +39,10 @@
             "data": {
                 "id":"name",
                 "text":"名字",
-                "left":20,
+                "left":0,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 60, "fill" : "0xffffff", "align" : "center","wordWrapWidth":30,"wordWrap":true
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },

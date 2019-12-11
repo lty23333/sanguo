@@ -349,10 +349,10 @@ const hero_choose = (param: any, callback) => {
     if(DB.hotel.price[0]  <= DB.res.gold[1] && param ==1){
         DB.res.gold[1] -= DB.hotel.price[0];
         DB.hotel.price[0] = 2* DB.hotel.price[0];
-        param = 2;
+        param = 3;
     } 
 
-    if(DB.hotel.date[0] < now && param == 2){
+    if((DB.hotel.date[0] < now && param == 2)|| param ==3){
         DB.hotel.date[0] = now;
         for(let i=0;i<3;i++){
             let num = 0,
@@ -582,7 +582,7 @@ const fight = (param: any, callback) => {
                     die = Math.ceil(damage/fighter[group][enemyId][2]);
                     fighter[group][enemyId][1] -= die
                 }
-                //战斗报文
+                //战斗报文 [攻武将ID，攻阵营，攻位置，防武将ID，防阵营，防位置，死伤数]
                 mess.push([fighter[oder[i][1]][oder[i][2]][0],oder[i][1],oder[i][2],fighter[group][enemyId][0],group,enemyId,die])
                 if(oder[i][1]){
                     kill_die[1][enemyId] += die
@@ -631,10 +631,15 @@ const fight = (param: any, callback) => {
 }
 
 const fightAccount = (param: any, callback) => {
-    let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
-        effect = bcfg[param.cityId]["effect_type"],
+    let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+
+    if(param.cityId>=20000){
+        bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+    }
+    let effect = bcfg[param.cityId]["effect_type"],
         effect_num = bcfg[param.cityId]["effect_number"],
         effect_end =[]
+
     if(param.isvic){
         let win = bcfg[param.cityId]["win"]
         //加胜绩
@@ -645,6 +650,7 @@ const fightAccount = (param: any, callback) => {
             DB.res.fail[1] = 0;
         }
         if(effect){
+            
             for(let i=0;i<effect_num.length;i++){
                 DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
                 effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
@@ -676,17 +682,17 @@ Connect.setTest("app/fight@fightAccount",fightAccount);
 /****************** shop ******************/
 //市场资源价格
 const buy = (param: any, callback) => {
-    let goods = [["gold","food"],["gold","wood"],["gold","sic"],["food","gold"],["wood","gold"],["sic","gold"]]
+    let goods = [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]]
 
 
     //购买某种商品后刷新价格
-    if(DB.res[goods[param][0]] >= DB.shop.price[param] * DB.shop.number[0]){
-        DB.res[goods[param][0]] -= DB.shop.number[0] 
-        DB.res[goods[param][1]] += Math.ceil(DB.shop.price[param] * DB.shop.number[0])
+    if(DB.res[goods[param][0]][1] >=  DB.shop.number[0]){
+        DB.res[goods[param][0]][1] -= DB.shop.number[0] 
+        DB.res[goods[param][1]][1] += Math.ceil(DB.shop.price[param] * DB.shop.number[0])
         DB.shop.price[param] = DB.shop.price[param] * 0.9
         saveDb("res",DB.res);
         saveDb("shop",DB.shop);
-        callback({ok:[DB.res[goods[param][0]],DB.res[goods[param][1]],DB.shop.price[param]]});
+        callback({ok:[DB.res[goods[param][0]][1],DB.res[goods[param][1]][1],DB.shop.price[param]]});
     }else{
         callback({err:1}); 
     }

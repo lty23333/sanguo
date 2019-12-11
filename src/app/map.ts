@@ -93,12 +93,12 @@ class WCity extends Widget{
         for(let i=1;i< army.length;i++){
             str1 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`
         }
-
+        str2 = bcfg[id]["reward_dis"];
         str1.slice(0,2);
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         this.cfg.children[2].data.text = `${bcfg[id]["belong"]}`;
         this.cfg.children[3].data.text = `${str1}`;
-        this.cfg.children[4].data.text = `${bcfg[id]["reward_dis"]}`;
+        this.cfg.children[4].data.text = `${str2.replace(/\\n/,"\n")}`;
 
         this.cfg.data.left += props.index * 200;
 
@@ -106,8 +106,12 @@ class WCity extends Widget{
        
     }
     choose(id){
-        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
-        Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
+        if(DB.data.hero.own[0]){
+            this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+            Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
+        }else{
+            AppEmitter.emit("message",`无可出战的军队！`);
+        }
         
     } 
     remove(){
@@ -150,8 +154,8 @@ class WfightWindow extends Widget{
         }
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
-        this.cfg.children[2].data.text = `攻${str1}`;
-        this.cfg.children[3].data.text = `守${str2}`;
+        this.cfg.children[2].children[0].data.text = `攻${str1}`;
+        this.cfg.children[3].children[0].data.text = `守${str2}`;
 
     }
     fight(){
@@ -175,11 +179,10 @@ class WfightWindow extends Widget{
             enemy[i][1] = DB.data.map.guard[this.props.index][i+1][1]
             //判断是否是城市
             if(this.props.id < 20000){
-                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]
+                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
             }else{
-                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[this.props.id]
+                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/100)]["attribute"]
             }
-            ["attribute"]
             enemy[i][3] = i+1
             enemy[i][4] = bcfg[enemy[i][0]]["arms"]
         }

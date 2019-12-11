@@ -3,8 +3,8 @@
     "data": {
         "width": 600,
         "height": 600,
-        "left": 30,
-        "top": 330
+        "left": 0,
+        "top": 0
     },
     "children":[
         
@@ -12,8 +12,8 @@
             "type": "text",
             "data": {
                 "text":"占领城市：",
-                "left":20,
-                "top": -15,
+                "left":50,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left","strokeThickness":2
                 }
@@ -24,8 +24,8 @@
             "data": {
                 "id":"city_number",
                 "text":"0",
-                "left":190,
-                "top": -15,
+                "left":220,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left","strokeThickness":2
                 }
@@ -36,8 +36,8 @@
             "data": {
                 "width": 10,
                  "height": 30,
-                 "left": 0,
-                 "top": -10,
+                 "left": 30,
+                 "top": 323,
                  "background-color": "0xffd700",
                  "alpha":0.75
             }
@@ -47,8 +47,8 @@
             "data": {
                 "width": 380,
                  "height": 10,
-                 "left": 320,
-                 "top": 0,
+                 "left": 350,
+                 "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75
             }

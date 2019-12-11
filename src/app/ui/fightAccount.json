@@ -3,18 +3,19 @@
     "data": {
         "width": 400,
         "height": 400,
-        "left": 400,
+        "left": 175,
         "top": 400
     },
     "children":[
         {
             "type": "rect",
             "data": {
-                "width": 750,
-                "height": 1334,
-                "left": 0,
-                "top": 0,
-                "background-color": "#d9c6ad"
+                "width": 950,
+                "height": 1534,
+                "left": -200,
+                "top": -600,
+                "background-color": "#d9c6ad",
+                "background-alpha":0.3
             }
         },
         {
@@ -73,9 +74,9 @@
                 "id":"name",
                 "text":"大胜",
                 "left":140,
-                "top": 20,
+                "top": -10,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -87,7 +88,7 @@
                 "left":20,
                 "top": 50,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -98,7 +99,7 @@
                 "left":20,
                 "top": 90,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -109,7 +110,7 @@
                 "left":20,
                 "top": 130,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -120,7 +121,7 @@
                 "left":20,
                 "top": 170,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -131,7 +132,7 @@
                 "left":20,
                 "top": 210,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },  {
@@ -142,7 +143,7 @@
                 "left":150,
                 "top": 50,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -153,7 +154,7 @@
                 "left":150,
                 "top": 90,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -164,7 +165,7 @@
                 "left":150,
                 "top": 130,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -175,7 +176,7 @@
                 "left":150,
                 "top": 170,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -186,18 +187,18 @@
                 "left":150,
                 "top": 210,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
             "type": "text",
             "data": {
                 "id":"die",
-                "text":"损失",
+                "text":"伤亡",
                 "left":280,
                 "top": 50,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -208,7 +209,7 @@
                 "left":280,
                 "top": 90,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -216,10 +217,10 @@
             "data": {
                 "id":"die2",
                 "text":"",
-                "left":140,
+                "left":280,
                 "top": 130,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -227,10 +228,10 @@
             "data": {
                 "id":"die3",
                 "text":"",
-                "left":140,
+                "left":280,
                 "top": 170,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, {
@@ -238,10 +239,10 @@
             "data": {
                 "id":"die4",
                 "text":"",
-                "left":140,
+                "left":280,
                 "top": 210,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -253,7 +254,7 @@
                 "left":50,
                 "top": 270,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         }, 
@@ -261,17 +262,13 @@
             "type":"app-ui-button",
             "props":{
                 "on":{"tap":{"func":"remove"}},
-                "url": "images/ui/button_buy.png",
                 "id":"button_levelup",
-                "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 63,
-                "top": 310,
+                "left": 200,
+                "top": 420,
                 "text": "继续",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "size":35,
+                "width": 200,
+                "height": 100
             }
         }
     ]

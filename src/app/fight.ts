@@ -7,7 +7,7 @@ import CfgMgr from '../libs/ni/cfgmrg';
 import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
-import {table} from "./formula";
+import {addFNews} from './stage';
 import {Global,rand} from './global';
 
 
@@ -61,13 +61,16 @@ class Fight {
             armysF = armys[fight_show[0][1]][fight_show[0][2]]
             armysT = armys[fight_show[0][4]][fight_show[0][5]]
             damage =  fight_show[0][6]
-            vx = (moverT[0]-moverF[0])/30
-            vy = (moverT[1]-moverF[1])/30
+            vx = (moverT[0]-moverF[0])/20
+            vy = (moverT[1]-moverF[1])/20
             state = "run1"
 
         }else if(state == "run1"){
-            if(armysF.top == moverT[1]){
+            if((armysF.top >= moverT[1] && vy >=0)||(armysF.top <= moverT[1] && vy <=0)){
                 state = "damage"
+                //战斗报文fight_show[攻武将ID，攻阵营，攻位置，防武将ID，防阵营，防位置，死伤数]
+
+                addFNews(``);
                 if(damageSprite){
                     damageSprite.ni.left = armysT.left;
                     damageSprite.ni.top =armysT.top +10;
@@ -93,15 +96,16 @@ class Fight {
                     Fight.shakeState = 4
                 }
             }else{
+                    let Cname = ["步","骑","弓"]
                     Fight.shake = 2;
                     state = "run2";
                     armysT.hp -= damage;
-                    numberNode[fight_show[0][4]][fight_show[0][5]] = armysT.max_hp - armysT.hp;
-                    hpNode[fight_show[0][4]][fight_show[0][5]].ni.height =  (armysT.max_hp - armysT.hp)/armysT.max_hp *200;
+                    numberNode[fight_show[0][4]][fight_show[0][5]].text =  `${armysT.hp} ${Cname[fighter[fight_show[0][4]][fight_show[0][5]][4]]}`;
+                    hpNode[fight_show[0][4]][fight_show[0][5]].scale.y =  armysT.hp/armysT.max_hp;
                     damageSprite.ni.top += 2000;
             }
         }else if(state == "run2"){
-            if(armysF.top == moverF[1]){
+            if((armysF.top >= moverF[1] && vy<=0)||(armysF.top <= moverF[1] && vy>=0)){
                 fight_show.splice(0,1);
                 if(fight_show[0]){
                     state = "start";
@@ -232,10 +236,9 @@ class WfightHero extends Widget{
 
         this.cfg.data.left = props.left;
         this.cfg.data.top = props.top;
-        this.cfg.children[3].data.text = `${name}`;
-        this.cfg.children[3].data.style.fontSize = size[name.length]
-        this.cfg.children[3].data.style.fill = `${Global.color[bcfg[heroId]["color"]]}`;
-        this.cfg.children[4].data.text = `${fighter[group][id][1]} ${Cname[fighter[group][id][4]]}`;    
+        this.cfg.children[2].data.text = `${name}`;
+        this.cfg.children[2].data.style.fill = `${Global.color[bcfg[heroId]["color"]]}`;
+        this.cfg.children[3].data.text = `${armys[group][id].max_hp} ${Cname[fighter[group][id][4]]}`;    
     }
     remove(){
         Scene.remove(this.node);   
@@ -257,6 +260,7 @@ class WfightAccount extends Widget{
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        bcfg3 = CfgMgr.getOne("app/cfg/city.json@rand"),
         result = [["惨胜","小胜","大捷"],["惜败","小败","大败"]],
         resultId = 0,
         kill_all = 0,
@@ -282,16 +286,21 @@ class WfightAccount extends Widget{
             this.cfg.children[13+i].data.text = `${kill_die[0][i]}`;
             kill_all += kill_die[0][i];
         }
-        this.cfg.children[17].data.text = `${kill_all}`;
+        this.cfg.children[16].data.text = `${kill_all}`;
         for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[18+i].data.text = `${kill_die[1][i]}`;
             die_all += kill_die[1][i];
         }
         this.cfg.children[21].data.text = `${die_all}`;
         if(isvic){
-            this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
+            if(cityId<20000){
+                this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
+            }else{
+                this.cfg.children[22].data.text = `${bcfg3[cityId]["reward_dis"]}`;
+            }
         }else{
             this.cfg.children[22].data.text = "      +50败绩";
+            this.cfg.children[22].data.style.fill = "0xff6347"
         }
     
 
@@ -310,8 +319,11 @@ class WfightAccount extends Widget{
             DB.data.res.fail[1] = data.ok[0];
             DB.data.res.win[1]  = data.ok[1];
             if(data.ok[2]){
-                let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
-                    effect = bcfg[cityId]["effect_type"],
+                let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+                if(cityId > 19999){
+                    bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+                }
+                let effect = bcfg[cityId]["effect_type"],
                     effect_num = bcfg[cityId]["effect_number"]
                     for(let i=0;i<effect_num.length;i++){
                         DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
@@ -355,8 +367,8 @@ const open = () => {
             if (!sitP[i][j]){sitP[i][j] = []}
             if (!attP[i][j]){attP[i][j] = []}
 
-            sitP[i][j].push(50 + 200 * j,520 - 500 * i)
-            attP[i][j].push(50 + 200 * j,sitP[i][j][1] + 200*(i?1:-1))
+            sitP[i][j].push(750/(fighter[i].length+1)*(j+1)-100  ,634 - 534 * i)
+            attP[i][j].push(sitP[i][j][0],sitP[i][j][1] + 200*(i?1:-1))
             if (!armys[i]){armys[i] = []}
             armys[i][j] = new Army({
                 left : sitP[i][j][0],

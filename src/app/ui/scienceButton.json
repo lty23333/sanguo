@@ -1,23 +1,28 @@
 {
-    "type": "sprite",
-    "on":{"tap":{"func":"addBuild","arg":[1001]}},
+    "type": "rect",
+    "on":{"tap":{"func":"army_plus"}},
     "data": {
-        "id": "button_sci",
-        "url": "images/ui/button_buy.png",
-        "width": 210,
+        "width": 200,
         "height": 100,
-        "left": 100,
-        "top": 770
+        "left": 200,
+        "top": -100,
+        "background-color": "#d9c6ad",
+        "background-alpha":0.75,
+        "border-width":2,
+        "border-color":"0xe6e6fa",
+        "border-alpha":0.6,
+        "border-align":0.5,
+        "radius":30
     },
     "children": [
+
         {
             "type": "text",
+            "id":"button_sci",
             "data": {
-                "id":"button_unlock",
                 "text": "button",
-                "style": {"fontSize":30,"fill":"#d9c6ad","strokeThickness":2},
-                "left": 34,
-                "top": 25
+                "top": 32,
+                "style": {"fontSize":35,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}
             }
         }
     ]

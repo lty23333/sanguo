@@ -1,9 +1,9 @@
 {   
     "type": "container",
     "data": {
-        "width": 600,
-        "height": 600,
-        "left": 0,
+        "width": 200,
+        "height": 90,
+        "left": 30,
         "top": 500
     },
     

@@ -25,8 +25,7 @@ let heroList = [];
 class Army {
     
     static arms_Cname =["步兵","骑兵","弓兵"]
-    static hero_top =[60,160,260,360,460,560]
-
+    static hero_top =[30,160,260,360,460,560]
 
     static eatGold(){
         Connect.request({type:"app/res@eatGold",arg:{}},(data) => {
@@ -51,6 +50,17 @@ class Army {
             }
         }
     }
+    static updatecost(){
+        if(Global.mainFace.id == 3){
+            let enough = 3
+            if(DB.data.res.gold[1]<parseInt(armyNode[2].text)){
+                enough = 2
+            }
+            if( armyNode[2].style.fill != Global.color[enough]){
+                armyNode[2].style.fill = Global.color[enough];
+            }
+        }
+    }
    
         
 }
@@ -67,7 +77,7 @@ class WHero extends Widget{
             name = bcfg[id]["name"];
         super.setProps(props);
         this.cfg.children[0].children[0].data.text = `${name}\n(${heroList[i][1]}/${max})`;
-        this.cfg.data.top =  Army.hero_top[i+1];
+        this.cfg.data.top =  Army.hero_top[i+1] +330;
         this.cfg.children[0].on = {"tap":{"func":"dis_hero","arg":[i]}};
         this.cfg.children[1].props.on = {"tap":{"func":"army_plus","arg":[heroList[i][3]]}};
         this.cfg.children[2].props.on = {"tap":{"func":"army_minus","arg":[heroList[i][3]]}};
@@ -141,14 +151,20 @@ class WHero extends Widget{
 class WArmy extends Widget{
     setProps(props){
         super.setProps(props);
-
+        let color = 2
         this.cfg.children[1].data.text = `${DB.data.army.cur}`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
+        //消耗加颜色
+        if(DB.data.res.gold[1]>=parseInt(this.cfg.children[3].data.text)){
+            color += 1
+        }
+        this.cfg.children[3].data.style.fill = Global.color[color];
 
     }
     added(node){
         armyNode[0] = this.elements.get("army_number");
         armyNode[1] = this.elements.get("hero_number");
+        armyNode[2] = this.elements.get("army_price");
     }
     army_buy(){
         Connect.request({type:"app/army@army_buy",arg:[]},(data) => {
@@ -246,3 +262,7 @@ AppEmitter.add("intoArmy",(node)=>{
     open();
 });
 
+//注册消耗黄金监听
+DB.emitter.add(`res.gold.1`, () => {
+    Army.updatecost()
+});

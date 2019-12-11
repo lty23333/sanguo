@@ -3,18 +3,22 @@
     "data": {
         "width": 400,
         "height": 400,
-        "left": 100,
-        "top": 100
+        "left": 175,
+        "top": 500
     },
     "children":[
         {
             "type": "rect",
             "data": {
                 "width": 400,
-                "height": 400,
+                "height": 430,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
             }
         },
         {
@@ -25,7 +29,29 @@
                 "left":140,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 100,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"学习效果",
+                "left":45,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -33,11 +59,33 @@
             "type": "text",
             "data": {
                 "id":"effect",
-                "text":"效果：",
-                "left":30,
-                "top": 100,
+                "text":"学习效果：",
+                "left":50,
+                "top": 150,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 200,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"学习消耗",
+                "left":45,
+                "top": 200,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -46,10 +94,10 @@
             "data": {
                 "id":"cost",
                 "text":"消耗：",
-                "left":30,
-                "top": 200,
+                "left":50,
+                "top": 250,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -57,17 +105,25 @@
             "type":"app-ui-button",
             "props":{
                 "on":{"tap":{"func":"levelup"}},
-                "url": "images/ui/button_buy.png",
-                "id":"button_levelup",
-                "anchor":[0.5,0.5],
-                "width": 214,
-                "height": 100,
-                "left": 100,
-                "top": 300,
+                "id":"cost",
+                "left": 200,
+                "top": 360,
                 "text": "学习",
-                "size":30,
-                "color":"#d9c6ad"
-            
+                "size":35,
+                "width": 200,
+                "height": 100
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"dis",
+                "text":"安得广厦千万间，大庇天下寒士俱欢颜！",
+                "left":0,
+                "top": 450,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 28, "fill" : "0xffffff", "align" : "center"
+                    ,"strokeThickness":2}
             }
         }
     ]

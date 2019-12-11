@@ -145,7 +145,7 @@
                         "height": 100,
                         "left": 300,
                         "top": 0,
-                        "background-color": "#d9c6ad"
+                        "background-color": "0x1F1F1F"
                     },
                     "children": [
                         {

@@ -3,16 +3,16 @@
     "data": {
         "width": 600,
         "height": 600,
-        "left": 30,
-        "top": 315
+        "left": 0,
+        "top": 0
     },
     "children":[
         {
             "type": "text",
             "data": {
                 "text":"空闲士兵：",
-                "left":20,
-                "top": 0,
+                "left":50,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}
@@ -23,8 +23,8 @@
             "data": {
                 "id":"army_number",
                 "text":"0",
-                "left":190,
-                "top": 0,
+                "left":220,
+                "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                 }
@@ -36,8 +36,8 @@
             "props":{
                 "on":{"tap":{"func":"army_buy"}},
                 "id":"number_name",
-                "left": 640,
-                "top": 30,
+                "left": 670,
+                "top": 345,
                 "text": "招兵",
                 "size":34,
                 "width": 150,
@@ -51,8 +51,8 @@
             "data": {
                 "id":"army_price",
                 "text":"50黄金",
-                "left":600,
-                "top": 70,
+                "left":630,
+                "top": 385,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 27, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}
@@ -63,8 +63,8 @@
             "data": {
                 "width": 10,
                  "height": 30,
-                 "left": 0,
-                 "top": 5,
+                 "left": 30,
+                 "top": 323,
                  "background-color": "0xffd700",
                  "alpha":0.75
             }
@@ -74,8 +74,8 @@
             "data": {
                 "width": 10,
                  "height": 30,
-                 "left": 0,
-                 "top": 60,
+                 "left": 30,
+                 "top": 375,
                  "background-color": "0xffd700",
                  "alpha":0.75
             }
@@ -84,8 +84,8 @@
             "type": "text",
             "data": {
                 "text":"将领数量：",
-                "left":20,
-                "top": 52,
+                "left":50,
+                "top": 367,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}
@@ -96,8 +96,8 @@
             "data": {
                 "id":"hero_number",
                 "text":"0/0",
-                "left":190,
-                "top": 52,
+                "left":220,
+                "top": 367,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                 }

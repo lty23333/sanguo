@@ -22,7 +22,8 @@
              "border-alpha":0.3,
              "border-align":0.5
         }
-    },     
+    },   
+      
     {
         "type": "text",
         "data": {

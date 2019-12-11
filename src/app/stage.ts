@@ -29,10 +29,8 @@ export const addFNews = (news) => {
 }
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
-    startNode, // 开始游戏界面
-    levelNode, // 等级节点 
-    levelupNode, //升级消耗节点
-    buildNode; // 建筑渲染节点
+    startNode // 开始游戏界面
+
 
 class Stage {
     static width = 0
@@ -79,7 +77,7 @@ class Stage {
     static timeInterval =  500; //增加资源的时间间隔
     static newsNode =[]; //新闻节点
     static newsFace = 0   //0-新闻，1-战报
-
+    static news_change = []
 
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
@@ -351,9 +349,19 @@ class WNews extends Widget{
        for(let i=1;i<8;i++){
            Stage.newsNode[i-1] = this.elements.get(`text${i}`);
        }
+       Stage.news_change[0] = this.elements.get("off0");
+       Stage.news_change[1] = this.elements.get("off1");
+       Stage.news_change[2] = this.elements.get("on0");
+       Stage.news_change[3] = this.elements.get("on1");
+
     }
+    //消息和战报切换
     change(faceID){
         if(Stage.newsFace != faceID){
+            Stage.news_change[faceID]["alpha"] = 0
+            Stage.news_change[Stage.newsFace]["alpha"] = 1
+            Stage.news_change[2+faceID]["alpha"] = 1
+            Stage.news_change[2+Stage.newsFace]["alpha"] = 0
             Stage.newsFace = faceID;
             Stage.updateNews();
         }
@@ -459,6 +467,8 @@ class WStage extends Widget{
         if(faceid != Global.mainFace.id && DB.data.face.unlock[faceid]){
             Scene.remove(Global.mainFace.node);
 
+            this.cfg.children[3].children[Global.mainFace.id].data["background-color"] = "#d9c6ad"
+            this.cfg.children[3].children[faceid].data["background-color"] ="0x1F1F1F"
             //
             if(faceid ==0){
                 AppEmitter.emit("intoScience");
@@ -543,7 +553,7 @@ const open = () => {
         }
     }
     Stage.updateNews();
-
+    
 
     // console.log(Stage.width,Stage.height);
 }
@@ -565,7 +575,7 @@ const start = () => {
 DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]});
 DB.init("date",{unlock:[0,0],day:[0]});
 //主界面解锁
-DB.init("face",{"unlock":[0,0,1,1,1]});
+DB.init("face",{"unlock":[1,0,1,1,1]});
 DB.init("event",{"next":[2001]});
 
 DB.init("news",[[],[]]);//新闻
