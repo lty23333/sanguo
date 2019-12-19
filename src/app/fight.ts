@@ -69,8 +69,15 @@ class Fight {
             if((armysF.top >= moverT[1] && vy >=0)||(armysF.top <= moverT[1] && vy <=0)){
                 state = "damage"
                 //战斗报文fight_show[攻武将ID，攻阵营，攻位置，防武将ID，防阵营，防位置，死伤数]
-
-                addFNews(``);
+                let character = ["A引军袭杀B","A与B交战","A与B遭遇，战至一处","A伏击B","A直取B大营","A驱兵攻B","A截住B去路"],
+                    result = ["斩首","杀敌","斩敌","削首","歼敌"],
+                    bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                    str = `${character[rand(character.length)-1]},${result[rand(result.length)-1]}${fight_show[0][6]}`
+                
+                str = str.replace("A",`${bcfg[fight_show[0][0]]["name"]}`) 
+                str = str.replace("B",`${bcfg[fight_show[0][3]]["name"]}`) 
+                
+                addFNews(`${fight_show[0][1]*4+2}${str}人。`);
                 if(damageSprite){
                     damageSprite.ni.left = armysT.left;
                     damageSprite.ni.top =armysT.top +10;
@@ -278,29 +285,29 @@ class WfightAccount extends Widget{
             resultId = 2
         }
 
-        this.cfg.children[6].data.text = `${result[Math.abs(isvic-1)][resultId]}`;
+        this.cfg.children[7].data.text = `${result[Math.abs(isvic-1)][resultId]}`;
         for(let i =0;i<fighter[0].length;i++){
-            this.cfg.children[8+i].data.text = `${bcfg2[fighter[0][i][0]]["name"]}`;
+            this.cfg.children[9+i].data.text = `${bcfg2[fighter[0][i][0]]["name"]}`;
         }
         for(let i =0;i<fighter[0].length;i++){
-            this.cfg.children[13+i].data.text = `${kill_die[0][i]}`;
+            this.cfg.children[14+i].data.text = `${kill_die[0][i]}`;
             kill_all += kill_die[0][i];
         }
-        this.cfg.children[16].data.text = `${kill_all}`;
+        this.cfg.children[17].data.text = `${kill_all}`;
         for(let i =0;i<fighter[0].length;i++){
-            this.cfg.children[18+i].data.text = `${kill_die[1][i]}`;
+            this.cfg.children[19+i].data.text = `${kill_die[1][i]}`;
             die_all += kill_die[1][i];
         }
-        this.cfg.children[21].data.text = `${die_all}`;
+        this.cfg.children[22].data.text = `${die_all}`;
         if(isvic){
             if(cityId<20000){
-                this.cfg.children[22].data.text = `${bcfg[cityId]["reward_dis"]}`;
+                this.cfg.children[23].data.text = `${bcfg[cityId]["reward_dis"].replace(/\\n/,"\n")}`;
             }else{
-                this.cfg.children[22].data.text = `${bcfg3[cityId]["reward_dis"]}`;
+                this.cfg.children[23].data.text = `${bcfg3[cityId]["reward_dis"].replace(/\\n/,"\n")}`;
             }
         }else{
-            this.cfg.children[22].data.text = "      +50败绩";
-            this.cfg.children[22].data.style.fill = "0xff6347"
+            this.cfg.children[23].data.text = "+50败绩";
+            this.cfg.children[23].data.style.fill = "0xff6347"
         }
     
 

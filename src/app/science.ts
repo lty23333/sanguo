@@ -72,8 +72,8 @@ class Science {
                             Science.scienceNode[i].children[0].data.style.fill = Global.color[enough];
                         }
                         if(id == Science.cur_scienceId && Science.com_cost){
-                            if(Science.com_cost.style.fill != Global.color[enough+2]){
-                                Science.com_cost.style.fill = Global.color[enough+2];
+                            if(Science.com_cost.style.fill != Global.color[6-enough*4]){
+                                Science.com_cost.style.fill = Global.color[6-enough*4];
                             }
                         }              
                     }else{
@@ -141,7 +141,7 @@ class WcomWindow extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
             id = props.id,
             cost = bcfg[id][`cost`],  
-            color = 2
+            color = 6
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         this.cfg.children[4].data.text = `${bcfg[id]["effect_dis"]}`;
@@ -151,7 +151,7 @@ class WcomWindow extends Widget{
 
         //消耗加颜色
         if(cost <= DB.data.res.sci[1]){
-            color += 1
+            color = 2
         }
         this.cfg.children[7].data.style.fill = Global.color[color];
        

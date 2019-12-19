@@ -25,7 +25,7 @@ date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
 face:{"unlock":[0,0,1,1,1]},
 science:[[1,0]],
-hero:{MaxHero:[1,1],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
 shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
@@ -431,11 +431,19 @@ const army_plus = (id: any, callback) => {
 
     if (a.cur[0] >0 ){
         if(max_army > DB.hero.own[id][1]){
-            DB.hero.own[id][1] += 1;
-            a.cur[0] -=1;
-            saveDb("army",DB.army); 
-            saveDb("hero",DB.hero); 
-            callback({ok:[DB.hero.own[id][1],a.cur[0]]}); 
+            if(DB.hero.MaxHero[2] >= DB.hero.MaxHero[0] && DB.hero.own[id][1] ==0 ){
+                callback({err:3}); 
+            }else{
+                if(DB.hero.own[id][1] ==0){
+                    DB.hero.MaxHero[2] +=1;
+                }
+                DB.hero.own[id][1] += 1;
+                a.cur[0] -=1;
+
+                saveDb("army",DB.army); 
+                saveDb("hero",DB.hero); 
+                callback({ok:[DB.hero.own[id][1],a.cur[0],DB.hero.MaxHero[2]]}); 
+            }
         }else{
             callback({err:2}); 
         }
@@ -447,22 +455,28 @@ const army_plus = (id: any, callback) => {
 const army_minus = (id: any, callback) => {       
     if (DB.hero.own[id][1] >0 ){
          DB.hero.own[id][1]  -= 1;
+         if(DB.hero.own[id][1] == 0){
+            DB.hero.MaxHero[2] -=1;
+         }
          DB.army.cur[0] +=1; 
          saveDb("army",DB.army);
          saveDb("hero",DB.hero);
 
     }               
-    callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]}); 
+    callback({ok:[DB.hero.own[id][1],DB.army.cur[0],DB.hero.MaxHero[2]]}); 
 }
 //删除将军
 const hero_delete = (id: any, callback) => {       
     if (DB.hero.own[id] ){
+         if( DB.hero.own[id][1]){
+            DB.hero.MaxHero[2] -=1;
+         }
          DB.army.cur[0] += DB.hero.own[id][1];
          DB.hero.own.splice(id,1);
          saveDb("hero",DB.hero);
          saveDb("army",DB.army);
     }               
-    callback({ok:[DB.hero.own,DB.army.cur[0]]}); 
+    callback({ok:[DB.hero.own,DB.army.cur[0],DB.hero.MaxHero[2]]}); 
 }
 // const army_zero = (id: any, callback) => {
 //     DB.army.cur[0] += DB.hero.own[id][1]; 
@@ -476,6 +490,9 @@ const army_max = (id: any, callback) => {
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         max_army = bcfg[DB.hero.own[id][0]]["command"] + DB.hero.add[0]
     if(a.cur[0] >0){
+        if( DB.hero.own[id][1] == 0){
+            DB.hero.MaxHero[2] +=1;
+        }
         if(a.cur[0] + DB.hero.own[id][1]> max_army){
             a.cur[0] -=  max_army + DB.hero.own[id][1];
             DB.hero.own[id][1] = max_army;
@@ -486,7 +503,7 @@ const army_max = (id: any, callback) => {
     }
     saveDb("army",DB.army);  
     saveDb("hero",DB.hero);          
-    callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]});
+    callback({ok:[DB.hero.own[id][1],DB.army.cur[0],DB.hero.MaxHero[2]]});
 }
 
     Connect.setTest("app/army@army_buy",army_buy);
@@ -563,7 +580,7 @@ const fight = (param: any, callback) => {
     
     while( ! (dead[0] == group_num[0]) && !(dead[1] == group_num[1]) ){
         for(let i = 0;i< oder.length;i++){
-            if(oder[i][0]){
+            if(fighter[oder[i][1]][oder[i][2]][1]){
                 let group = Math.abs(oder[i][1]-1),
                     rnd = cur[group].length-1,
                     enemyId = cur[group][rnd][5],
@@ -576,6 +593,7 @@ const fight = (param: any, callback) => {
                     fighter[group][enemyId][1] = 0;
                     cur[group].splice(rnd,1);
                     dead[group] += 1;
+                    
 
                 //没打死
                 }else{

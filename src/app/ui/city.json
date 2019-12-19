@@ -69,7 +69,7 @@
                 "left":20,
                 "top": 250,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xFFFF00", "align" : "center"
                 }
             }
         }

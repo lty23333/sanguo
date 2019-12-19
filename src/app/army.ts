@@ -52,9 +52,9 @@ class Army {
     }
     static updatecost(){
         if(Global.mainFace.id == 3){
-            let enough = 3
+            let enough = 2
             if(DB.data.res.gold[1]<parseInt(armyNode[2].text)){
-                enough = 2
+                enough = 6
             }
             if( armyNode[2].style.fill != Global.color[enough]){
                 armyNode[2].style.fill = Global.color[enough];
@@ -94,10 +94,15 @@ class WHero extends Widget{
     army_plus (id){
         Connect.request({type:"app/army@army_plus",arg:id},(data) => {
             if(data.err){
+                if(data.err == 3){
+                    AppEmitter.emit("message",`目前最多${DB.data.hero.MaxHero[0]}名将领同时带兵`);
+                }
                 return console.log(data.err.reson);
+            }else{
+                DB.data.hero.own[id][1] = data.ok[0];
+                DB.data.army.cur[0] = data.ok[1];
+                DB.data.hero.MaxHero[2] = data.ok[2];
             }
-            DB.data.hero.own[id][1] = data.ok[0];
-            DB.data.army.cur[0] = data.ok[1];
         })
   
     }
@@ -109,6 +114,7 @@ class WHero extends Widget{
             }
             DB.data.hero.own[id][1] = data.ok[0];
             DB.data.army.cur[0] = data.ok[1];
+            DB.data.hero.MaxHero[2] = data.ok[2];
         })
     }
     // //人数清0
@@ -129,6 +135,7 @@ class WHero extends Widget{
             }
             DB.data.hero.own[id][1] = data.ok[0];
             DB.data.army.cur[0] = data.ok[1];
+            DB.data.hero.MaxHero[2] = data.ok[2];
         })
     }
     //革职
@@ -151,12 +158,12 @@ class WHero extends Widget{
 class WArmy extends Widget{
     setProps(props){
         super.setProps(props);
-        let color = 2
+        let color = 6
         this.cfg.children[1].data.text = `${DB.data.army.cur}`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
         //消耗加颜色
         if(DB.data.res.gold[1]>=parseInt(this.cfg.children[3].data.text)){
-            color += 1
+            color = 2
         }
         this.cfg.children[3].data.style.fill = Global.color[color];
 
@@ -242,8 +249,8 @@ let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
 for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
-//初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]
-DB.init("hero",{MaxHero:[1,1],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
+//初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
+DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
 DB.init("army",{cur:[0],total:[0],price:[50]});
 
 //注册军队人口监听

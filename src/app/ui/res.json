@@ -8,26 +8,20 @@
     },
     "children":[
     
-     {
-        "type": "rect",
-        "data": {
-            "width": 552,
-             "height": 45,
-             "left": -11,
-             "top": -1,
-             "background-color": "0x000000",
-             "alpha":1
-        }
-    },
     {
         "type": "rect",
+        "on":{"tap":{"func":"dis_res","arg":[1]}},
         "data": {
             "width": 550,
              "height": 43,
              "left": -10,
              "top": 0,
              "background-color": "0xe6e6fa",
-             "alpha":0.2
+             "alpha":0.2,
+             "border-width":2,
+             "border-color":"0xe6e6fa",
+             "border-alpha":0.3,
+             "border-align":0.5
         }
     },
 
@@ -94,9 +88,33 @@
     {
         "type": "text",
         "data": {
-            "id":"addtion",
+            "id":"addtion0",
             "text":"",
             "left":440,
+            "top": 5,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"addtion1",
+            "text":"",
+            "left":470,
+            "top": 5,
+            "style":{
+                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+            }
+        }
+    },
+    {
+        "type": "text",
+        "data": {
+            "id":"addtion2",
+            "text":"",
+            "left":500,
             "top": 5,
             "style":{
                 "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"

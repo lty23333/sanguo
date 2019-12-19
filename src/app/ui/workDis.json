@@ -3,18 +3,23 @@
     "data": {
         "width": 400,
         "height": 400,
-        "left": 100,
-        "top": 0
+        "left": 175,
+        "top": 500
     },
     "children":[
         {
             "type": "rect",
             "data": {
                 "width": 400,
-                "height": 400,
+                "height": 300,
                 "left": 0,
                 "top": 0,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
+                
             }
         },
         {
@@ -25,7 +30,7 @@
                 "left":140,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -35,7 +40,7 @@
                 "id":"effect",
                 "text":"描述：",
                 "left":30,
-                "top": 200,
+                "top": 180,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

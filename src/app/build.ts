@@ -37,7 +37,6 @@ class Build {
     static shopGoods = []
     static shopCost = []
     static totalNode 
-    static color = ["0xC0C0C0","0xffffff","0xff6347","0x98fb98"]
     static hero_cost = [] //英雄消耗金币节点
 
     //更新建筑数量
@@ -73,12 +72,12 @@ class Build {
                     if(DB.data.res[cost_name][1]<cost){
                         enough = 0
                     }
-                    if(Build.build[i][0].style.fill != Build.color[enough]){
-                        Build.build[i][0].style.fill = Build.color[enough];
+                    if(Build.build[i][0].style.fill != Global.color[enough]){
+                        Build.build[i][0].style.fill = Global.color[enough];
                     }
                     if(id == Build.cur_buildId && Build.com_cost){
-                        if(Build.com_cost.style.fill != Build.color[enough+2]){
-                            Build.com_cost.style.fill = Build.color[enough+2];
+                        if(Build.com_cost.style.fill != Global.color[6-enough*4]){
+                            Build.com_cost.style.fill = Global.color[6-enough*4];
                         }
                     }              
                 }
@@ -93,22 +92,22 @@ class Build {
         if(Global.mainFace.id ==2){
             if(Build.cur_buildId == 1009){
                 //刷新消耗更新
-                let enough = 3
+                let enough = 2
                 if(DB.data.res.gold[1]<DB.data.hotel.price[0]){
-                    enough = 2
+                    enough = 6
                 }
-                if( Build.hotel_update.style.fill != Build.color[enough]){
-                    Build.hotel_update.style.fill = Build.color[enough];
+                if( Build.hotel_update.style.fill != Global.color[enough]){
+                    Build.hotel_update.style.fill = Global.color[enough];
                 }
                 //购买英雄消耗颜色更新
                 for(let i=0;i< 3;i++){
-                    enough = 3
+                    enough = 2
                     if(Build.hero_cost[i]){
                         if(DB.data.res.gold[1]<parseInt(Build.hero_cost[i].text)){
-                            enough = 2
+                            enough = 6
                         }
-                        if( Build.hero_cost[i].style.fill != Build.color[enough]){
-                            Build.hero_cost[i].style.fill = Build.color[enough];
+                        if( Build.hero_cost[i].style.fill != Global.color[enough]){
+                            Build.hero_cost[i].style.fill = Global.color[enough];
                         }
                     }
                 }
@@ -120,12 +119,12 @@ class Build {
         if(Global.mainFace.id ==2){
             if(Build.cur_buildId == 1014){
                 for(let i=n;i<m;i++){
-                    let enough = 3
+                    let enough = 2
                     if(DB.data.res[type][1]<parseInt(Build.shopCost[i].text)){
-                        enough = 2
+                        enough = 6
                     }
-                    if( Build.shopCost[i].style.fill != Build.color[enough]){
-                        Build.shopCost[i].style.fill = Build.color[enough];
+                    if( Build.shopCost[i].style.fill != Global.color[enough]){
+                        Build.shopCost[i].style.fill = Global.color[enough];
                     }
                 }
             }
@@ -162,8 +161,8 @@ class WbuildButton extends Widget{
         if(cost <= DB.data.res[cost_name][1]){
             color += 1
         }
-        this.cfg.children[1].data.style.fill = Build.color[color];
-        Build.cur_buildId = id  
+        this.cfg.children[1].data.style.fill = Global.color[color];
+
 
     }
 
@@ -240,7 +239,7 @@ class Wgoods extends Widget{
         if(DB.data.shop.number[0] <= DB.data.res[goods2[id][0]][1]){
             color += 1
         }
-        this.cfg.children[2].data.style.fill = Build.color[color];
+        this.cfg.children[2].data.style.fill = Global.color[color];
 
     }
     buy(id){
@@ -285,7 +284,7 @@ class Wshop extends Widget{
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
-            color = 2 
+            color = 6 
 
             
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
@@ -295,9 +294,9 @@ class Wshop extends Widget{
 
         //消耗加颜色
         if(cost <= DB.data.res[cost_name][1]){
-            color += 1
+            color = 2
         }
-        this.cfg.children[11].data.style.fill = Build.color[color];
+        this.cfg.children[11].data.style.fill = Global.color[color];
         Build.cur_buildId = id  
     }
     levelup(){
@@ -363,7 +362,7 @@ class Whero extends Widget{
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             id = props.id,
-            color = 2
+            color = 6
 
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
@@ -376,9 +375,9 @@ class Whero extends Widget{
         this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
 
         if(DB.data.res.gold[1] >= bcfg[id]["gold"]){
-            color += 1
+            color = 2
         }
-        this.cfg.children[4].data.style.fill = Build.color[color];
+        this.cfg.children[4].data.style.fill = Global.color[color];
     }
     buy(id){
         let 
@@ -407,7 +406,7 @@ class Whero extends Widget{
     }  
     added(node){
         this.node = node;
-        Build.hero_cost[node.widget.props.id] = Build.com_cost = this.elements.get("cost");
+        Build.hero_cost[node.widget.props.id]  = this.elements.get("cost");
     }
 } 
 //酒馆弹窗
@@ -421,7 +420,7 @@ class Whotel extends Widget{
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
-            color =2
+            color =6
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
         this.cfg.children[2].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
@@ -431,15 +430,15 @@ class Whotel extends Widget{
 
         //消耗加颜色
         if(cost <= DB.data.res[cost_name][1]){
-            color += 1
+            color = 2
         }
-        this.cfg.children[3].data.style.fill = Build.color[color];
+        this.cfg.children[3].data.style.fill = Global.color[color];
         //刷新加颜色
-        color = 2
+        color = 6
         if(DB.data.res.gold[1] >= DB.data.hotel.price[0]){
-            color += 1
+            color = 2
         }
-        this.cfg.children[6].data.style.fill = Build.color[color];
+        this.cfg.children[6].data.style.fill = Global.color[color];
 
         Build.cur_buildId = id
        
@@ -497,11 +496,11 @@ class Whotel extends Widget{
                 DB.data.hotel.price[0] = data.ok[2];
                 Build.hotel_update.text = `${DB.data.hotel.price[0]}黄金`;
                 //颜色刷新
-                let color = 2
+                let color = 6
                 if(DB.data.res.gold[1] >= DB.data.hotel.price[0]){
-                    color += 1
+                    color = 2
                 }
-                Build.hotel_update.style.fill = Build.color[color];
+                Build.hotel_update.style.fill = Global.color[color];
         
             }
         }) 
@@ -530,7 +529,7 @@ class WcomWindow extends Widget{
             cost_name = bcfg[id]["cost_type1"],
             cost_name2 = bcfg[id]["cost_type2"],
             cost2,
-            color = 2
+            color = 6
         if(cost_name2){
            cost2 = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
         } 
@@ -549,9 +548,9 @@ class WcomWindow extends Widget{
         }
         //消耗加颜色
         if(cost <= DB.data.res[cost_name][1]){
-            color += 1
+            color = 2
         }
-        this.cfg.children[7].data.style.fill = Build.color[color];
+        this.cfg.children[7].data.style.fill = Global.color[color];
        
     }
     levelup(){

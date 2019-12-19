@@ -1,0 +1,193 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 500,
+        "height": 500,
+        "left": 125,
+        "top": 500
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 500,
+                "height": 300,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"名字",
+                "left":140,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"number",
+                "text":"(0/0)",
+                "left":30,
+                "top": 80,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 130,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 180,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 180,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 230,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 230,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 280,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 280,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 330,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 330,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0",
+                "text":"",
+                "left":30,
+                "top": 380,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"arr0_number",
+                "text":"",
+                "left":470,
+                "top": 380,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
+                }
+            }
+        }
+    ]
+}

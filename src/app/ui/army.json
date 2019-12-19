@@ -36,12 +36,12 @@
             "props":{
                 "on":{"tap":{"func":"army_buy"}},
                 "id":"number_name",
-                "left": 670,
-                "top": 345,
+                "left": 650,
+                "top": 360,
                 "text": "招兵",
                 "size":34,
                 "width": 150,
-                "height": 80,
+                "height": 70,
                 "background-color":"#d9c6ad",
                 "background-alpha":0.75
             }
@@ -51,8 +51,8 @@
             "data": {
                 "id":"army_price",
                 "text":"50黄金",
-                "left":630,
-                "top": 385,
+                "left":605,
+                "top": 395,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 27, "fill" : "0xffffff", "align" : "left"
                     ,"strokeThickness":2}

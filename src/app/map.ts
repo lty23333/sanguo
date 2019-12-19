@@ -96,7 +96,12 @@ class WCity extends Widget{
         str2 = bcfg[id]["reward_dis"];
         str1.slice(0,2);
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
-        this.cfg.children[2].data.text = `${bcfg[id]["belong"]}`;
+        if(bcfg[id]["belong"]){
+            this.cfg.children[2].data.text = `${bcfg[id]["belong"]}`;
+        }else{
+            this.cfg.children[2].data.text = "";
+        }
+
         this.cfg.children[3].data.text = `${str1}`;
         this.cfg.children[4].data.text = `${str2.replace(/\\n/,"\n")}`;
 
@@ -106,7 +111,7 @@ class WCity extends Widget{
        
     }
     choose(id){
-        if(DB.data.hero.own[0]){
+        if(DB.data.hero.own[0][1]){
             this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
             Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
         }else{
@@ -165,12 +170,14 @@ class WfightWindow extends Widget{
             bcfg4 = CfgMgr.getOne("app/cfg/city.json@army")
 
         for(let i=0;i < DB.data.hero.MaxHero[0];i++){
-            if(!own[i]){own[i] = []}
-            own[i][0] = heroList[i][0]
-            own[i][1] = heroList[i][1]
-            own[i][4] = bcfg[own[i][0]]["arms"]
-            own[i][2] = 1 + (bcfg[own[i][0]]["number"]+heroList[i][2])/100 + DB.data.hero.add[own[i][4]]
-            own[i][3] = heroList[i][3]
+            if(heroList[i][1]){
+                if(!own[i]){own[i] = []}
+                own[i][0] = heroList[i][0]
+                own[i][1] = heroList[i][1]
+                own[i][4] = bcfg[own[i][0]]["arms"]
+                own[i][2] = 1 + (bcfg[own[i][0]]["number"]+heroList[i][2])/100 + DB.data.hero.add[own[i][4]]
+                own[i][3] = heroList[i][3]
+            }
         }
         let enemy = []
         for(let i=0;i < DB.data.map.guard[this.props.index].length-1;i++){

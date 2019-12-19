@@ -34,7 +34,7 @@
             "data": {
                 "width": 150,
                 "height": 200,
-                "left": 600,
+                "left": 580,
                 "top": 30
             },
             "children":[     
@@ -92,16 +92,40 @@
             },
             "children":[
                 {
-                    "type": "rect",
+                    "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[0]}},
                     "data": {
                         "width": 150,
                         "height": 100,
                         "left": 0,
-                        "top": 0,
-                        "background-color": "#d9c6ad"
+                        "top": 0
                     },
                     "children": [
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "off0",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "#d9c6ad",
+                                "alpha":1
+                            }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "on0",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "0x3c3c3c",
+                                "alpha":0
+                            }
+                        },
+
                         {
                             "type": "text",
                             "data": {
@@ -115,16 +139,40 @@
                     ]
                 },
                 {
-                    "type": "rect",
+                    "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[1]}},
                     "data": {
                         "width": 150,
                         "height": 100,
                         "left": 150,
-                        "top": 0,
-                        "background-color": "#d9c6ad"
+                        "top": 0
                     },
                     "children": [
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "off1",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "#d9c6ad",
+                                "alpha":1
+                            }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "on1",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "0x3c3c3c",
+                                "alpha":0
+                            }
+                        },
+ 
                         {
                             "type": "text",
                             "data": {
@@ -138,16 +186,40 @@
                     ]
                 },
                 {
-                    "type": "rect",
+                    "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[2]}},
                     "data": {
                         "width": 150,
                         "height": 100,
                         "left": 300,
-                        "top": 0,
-                        "background-color": "0x1F1F1F"
+                        "top": 0
                     },
                     "children": [
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "off2",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "#d9c6ad",
+                                "alpha":1
+                            }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "on2",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "0x3c3c3c",
+                                "alpha":1
+                            }
+                        },
+                        
                         {
                             "type": "text",
                             "data": {
@@ -161,16 +233,40 @@
                     ]
                 },
                 {
-                    "type": "rect",
+                    "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[3]}},
                     "data": {
                         "width": 150,
                         "height": 100,
                         "left": 450,
-                        "top": 0,
-                        "background-color": "#d9c6ad"
+                        "top": 0
                     },
                     "children": [
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "off3",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "#d9c6ad",
+                                "alpha":1
+                            }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "on3",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "0x3c3c3c",
+                                "alpha":0
+                            }
+                        },
+ 
                         {
                             "type": "text",
                             "data": {
@@ -184,16 +280,40 @@
                     ]
                 },
                 {
-                    "type": "rect",
+                    "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[4]}},
                     "data": {
                         "width": 150,
                         "height": 100,
                         "left": 600,
-                        "top": 0,
-                        "background-color": "#d9c6ad"
+                        "top": 0
                     },
                     "children": [
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "off4",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "#d9c6ad",
+                                "alpha":1
+                            }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "on4",
+                                "width": 150,
+                                "height": 100,
+                                "left": 0,
+                                "top": 0,
+                                "background-color": "0x3c3c3c",
+                                "alpha":0
+                            }
+                        },
+
                         {
                             "type": "text",
                             "data": {
@@ -264,8 +384,65 @@
                 
            
             ]
+        },
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"pause_button"}},
+            "data": {
+                "id":"pause_button",
+                "width": 150,
+                "height": 70,
+                "left": 580,
+                "top": 240,
+                "background-color": "#d9c6ad",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30,
+                "alpha":1
+            },
+            "children": [
+        
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "暂停",
+                        "top":20,
+                        "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}
+                    }
+                }
+            ]
+        },
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"restart_button"}},
+            "data": {
+                "id":"restart_button",
+                "width": 150,
+                "height": 70,
+                "left": 800,
+                "top": 240,
+                "background-color": "#d9c6ad",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xFFFF00",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
+            },
+            "children": [
+        
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "开始",
+                        "top":20,
+                        "style": {"fontSize":30,"fill":"0xFFFF00","strokeThickness":2, "align" : "center"}
+                    }
+                }
+            ]
         }
-
-
     ]
 }

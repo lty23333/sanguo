@@ -19,6 +19,7 @@ export const addNews = (news) => {
     }else{
         DB.data.news[0].splice(-1,1);
     }
+    Stage.change_Newsface(0);
 }
 export const addFNews = (news) => {
     if(DB.data.news[1].length<25){
@@ -26,6 +27,7 @@ export const addFNews = (news) => {
     }else{
         DB.data.news[1].splice(-1,1);
     }
+    Stage.change_Newsface(1);
 }
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
@@ -78,6 +80,9 @@ class Stage {
     static newsNode =[]; //新闻节点
     static newsFace = 0   //0-新闻，1-战报
     static news_change = []
+    static face_button = []
+    static pause_button
+    static restart_button
 
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
@@ -114,23 +119,45 @@ class Stage {
         let len = DB.data.news[type].length
         if(len < 7){
             for(let i=0;i<len;i++){
-                Stage.newsNode[i].text = DB.data.news[type][len-1-i];
+                let news = DB.data.news[type][len-1-i],
+                    color =parseInt(news[0])
+                if(!isNaN(color)){
+                    Stage.newsNode[i].style.fill = Global.color[color]
+                    Stage.newsNode[i].text = news;
+                    Stage.newsNode[i].text = Stage.newsNode[i].text.substring(1);
+                }else{
+                    Stage.newsNode[i].style.fill = Global.color[1]
+                    Stage.newsNode[i].text = news;
+                }
             }
             for(let i=len;i<7;i++){
                 Stage.newsNode[i].text = ""
             }
         }else{
             for(let i=0;i<7;i++){
-                Stage.newsNode[i].text = DB.data.news[type][6-i];
+                let news = DB.data.news[type][6-i],
+                    color =parseInt(news[0])
+                if(!isNaN(color)){
+                    Stage.newsNode[i].style.fill = Global.color[color]
+                    Stage.newsNode[i].text = news;
+                    Stage.newsNode[i].text = Stage.newsNode[i].text.substring(1);
+                }else{
+                    Stage.newsNode[i].style.fill = Global.color[1]
+                    Stage.newsNode[i].text = news;
+                }
+
+
             }
         }
 
         if(type && !len){
-            Stage.newsNode[0].text = "幸无战事,得以休想生息。"
+            Stage.newsNode[0].text = "5幸无战事,得以休想生息。"
         }
-
+    }
+    static Newscolor(){
 
     }
+
     //更新资源显示
     static updateRes(res_nameID,idType){
         let name = Stage.res_name[res_nameID],
@@ -157,6 +184,44 @@ class Stage {
         if((idType ==1 || idType == 2|| idType == 4)&&( Stage.res[name][idType]!= undefined) ){
             Stage.res[name][idType].text = `${mun.toFixed(1)}` ;
         }
+
+        //显示加成的文字
+        let addtion = [],
+            times = 1
+        if(idType ==4){
+            if(res[4]){
+                let str = res[4]>0?"春":"冬"
+                addtion.push([`${str}`,res[4]>0?2:6]);
+            }
+        }
+        if(res_nameID < 4 ){
+            if(DB.data.res.win[1] >0){
+                times += 0.5;
+                addtion.push(["胜",2]);
+            }
+            if(DB.data.res.fail[1] >0){
+                times += -0.25;
+                addtion.push(["败",6]);
+            }
+            let five = Math.ceil(DB.data.date.day[0]/400) % 5,
+                five_times = Stage.five_res[five][res_nameID]
+            if(DB.data.date.unlock[1] && five_times){
+                times += five_times 
+                addtion.push([`${Stage.five[five]}`,five_times>0?2:6]);
+            }
+        }
+        Stage.res[name][10]
+        for(let i=0;i<3;i++){
+            if(Stage.res[name][10+i]){
+                if(addtion[i]){
+                    Stage.res[name][10+i].text = addtion[i][0];
+                    Stage.res[name][10+i].style.fill =  Global.color[addtion[i][1]];           
+                }else{
+                    Stage.res[name][10+i].text = ""
+                } 
+            }
+        }
+
         //增加或减少百分比
         if((idType == 4)&&( Stage.res[name][idType]!= undefined) ){
             if(mun>0){
@@ -168,6 +233,7 @@ class Stage {
         if(idType >2){
             if(Stage.res[name][7] != undefined){
                 let change = (res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6])
+                change = change * times;
                 if (change>=0){
                     Stage.res[name][7].text = `+${change.toFixed(1)}/秒`;
                 }else{
@@ -175,6 +241,8 @@ class Stage {
                 }
             }
         }
+        
+
     }
 
     //地图添加据点
@@ -310,12 +378,23 @@ class Stage {
                 Stage.day.text = `${season} ${DB.data.date.day[0] % 100}天`
                 //新年弹出新闻信息
                 if(DB.data.date.day[0] % 400 == 1){
-                    addNews(`--------------第${Math.ceil(DB.data.date.day[0]/400)}年-------------`)
+                    addNews(`5--------------第${Math.ceil(DB.data.date.day[0]/400)}年-------------`)
                 }
             })
             Stage.nextDay += Stage.dayTime; 
         }
  
+    }
+
+    static change_Newsface(faceID){
+        if(Stage.newsFace != faceID){
+            Stage.news_change[faceID]["alpha"] = 0
+            Stage.news_change[Stage.newsFace]["alpha"] = 1
+            Stage.news_change[2+faceID]["alpha"] = 1
+            Stage.news_change[2+Stage.newsFace]["alpha"] = 0
+            Stage.newsFace = faceID;
+            Stage.updateNews();
+        }
     }
 
    
@@ -326,7 +405,8 @@ class Stage {
 class WBack extends Widget{
     node: any
     remove(){
-        Scene.remove(this.node);   
+        Scene.remove(this.node);  
+        start(); 
     }  
     added(node){
         this.node = node;
@@ -357,60 +437,81 @@ class WNews extends Widget{
     }
     //消息和战报切换
     change(faceID){
-        if(Stage.newsFace != faceID){
-            Stage.news_change[faceID]["alpha"] = 0
-            Stage.news_change[Stage.newsFace]["alpha"] = 1
-            Stage.news_change[2+faceID]["alpha"] = 1
-            Stage.news_change[2+Stage.newsFace]["alpha"] = 0
-            Stage.newsFace = faceID;
-            Stage.updateNews();
-        }
+        Stage.change_Newsface(faceID);
     }
 }
 /**
  * @description  资源显示组件
  */
 class WRes extends Widget{
+    backNode :any
     setProps(props){
         super.setProps(props);
         let id = props.id,
             name = Stage.res_name[id],
             Cname =Stage.res_Cname[id],
             res = DB.data.res[name],
-            people = DB.data.people[name]
-        this.cfg.children[2].data.text = `${Cname}:`;
-        this.cfg.children[3].data.text = DB.data.res[name][1];
-        this.cfg.children[5].data.text = DB.data.res[name][2];
+            people = DB.data.people[name],
+            addtion = []
+  
+        this.cfg.children[1].data.text = `${Cname}:`;
+        this.cfg.children[2].data.text = DB.data.res[name][1];
+        this.cfg.children[4].data.text = DB.data.res[name][2];
         let change = (res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6]),
         times = 1
+        
+        if(res[4]){
+            let str = res[4]>0?"春":"冬"
+            addtion.push([`${str}`,res[4]>0?2:6]);
+        }
+
+
 //胜败和五行影响
         if(id < 4 ){
             if(DB.data.res.win[1] >0){
                 times += 0.5;
+                addtion.push(["胜",2]);
             }
             if(DB.data.res.fail[1] >0){
                 times += -0.25;
+                addtion.push(["败",6]);
             }
-            times += Stage.five_res[Math.ceil(DB.data.date.day[0]/400) % 5][id]
+            let five = Math.ceil(DB.data.date.day[0]/400) % 5,
+                five_times = Stage.five_res[five][id]
+            if(DB.data.date.unlock[1] && five_times){
+                times += five_times 
+                addtion.push([`${Stage.five[five]}`,five_times>0?2:6]);
+            }
             change = change * times;
         }
 
         if (change>=0){
-            this.cfg.children[6].data.text = `+${change.toFixed(0)}/秒`;
+            this.cfg.children[5].data.text = `+${change.toFixed(0)}/秒`;
         }else{
-            this.cfg.children[6].data.text = `${change.toFixed(0)}/秒`;
+            this.cfg.children[5].data.text = `${change.toFixed(0)}/秒`;
         }
+        for(let i=0;i<addtion.length;i++){
+            this.cfg.children[6+i].data.text = addtion[i][0];
+            this.cfg.children[6+i].data.style.fill =  Global.color[addtion[i][1]];
+        }
+ 
 
-        this.cfg.children[7].data.text = DB.data.res[name][4];
         this.cfg.data.top = Math.min(id*50 +30,230);
-        
+        this.cfg.children[0].on = {"tap":{"func":"dis_res","arg":[id]}};  
+    }
+    dis_res(type){
+        pause();
+        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        Scene.open(`app-ui-resDis`,this.backNode, null, {id:type});
     }
     added(node){
         let name = Stage.res_name[this.props.id]
         Stage.res[name][1] = this.elements.get("number");
         Stage.res[name][2] = this.elements.get("max");
         Stage.res[name][7] = this.elements.get("change");
-        Stage.res[name][4]=  this.elements.get("addtion");      
+        Stage.res[name][10]=  this.elements.get("addtion0");
+        Stage.res[name][11]=  this.elements.get("addtion1");
+        Stage.res[name][12]=  this.elements.get("addtion2");      
     }
 }
 /**
@@ -432,6 +533,7 @@ class WConfirm extends Widget{
 
              DB.data.hero.own = data.ok[0];
              DB.data.army.cur[0] = data.ok[1];
+             DB.data.hero.MaxHero[2] = data.ok[2];
              this.remove();
              AppEmitter.emit("message",`${name}已被革职！`);
              addNews(`${name}${text[rand(text.length)-1]}`)
@@ -446,7 +548,65 @@ class WConfirm extends Widget{
         this.node = node;
     }
 }
+/**
+ * @description  资源详情显示组件
+ */
+class WResdis extends Widget{
+    node:any
+    setProps(props){
+        super.setProps(props);
+        let id = props.id,
+            name = Stage.res_name[id],
+            Cname =Stage.res_Cname[id],
+            res = DB.data.res[name],
+            people = DB.data.people[name],
+            dis = []
 
+        dis.push([`${Cname}`,`(${res[1]}/${res[2]})`])
+        if(res[3]){
+            dis.push(["果园生产：",`+${res[3]*(res[4]+1)}/秒`]);
+        }
+        if(people[1]){
+            dis.push(["人口生产：",`+${people[1]*people[2]*(1+people[3])}/秒`]);
+        }
+        if(res[5]){
+            dis.push(["消耗：",`-${res[5] *(1+res[6])}/秒`]);
+        }
+        if(res[4]){
+            let str = res[4]>0?"春":"冬"
+            dis.push([`${str}季：`,`果园生产${res[4]>0?"+":""}${res[4]*100}%`,res[4]>0?2:6]);
+        }
+//胜败和五行影响
+        if(id < 4 ){
+            if(DB.data.res.win[1] >0){
+                dis.push(["胜绩：",`总生产+50%`,2]);
+            }
+            if(DB.data.res.fail[1] >0){
+                dis.push(["败绩：",`总生产-25%`,6]);
+            }
+            let five = Math.ceil(DB.data.date.day[0]/400) % 5,
+                five_times = Stage.five_res[five][id]
+            if(DB.data.date.unlock[1] && five_times){
+                dis.push([`${Stage.five[five]}年：`,`总生产${five_times>0?"+":""}${five_times*100}%`,five_times>0?2:6]);
+            }
+        }
+        for(let i=0;i<dis.length;i++){
+            this.cfg.children[i*2+1].data.text = dis[i][0]
+            if(dis[i][2]){
+                this.cfg.children[i*2+1].data.style.fill = Global.color[dis[i][2]]
+                this.cfg.children[i*2+2].data.style.fill = Global.color[dis[i][2]] 
+            }
+            this.cfg.children[i*2+2].data.text = dis[i][1]
+        }
+        this.cfg.children[0].data.height =  90 + dis.length * 50
+    }
+    remove(){
+        Scene.remove(this.node);
+    }
+    added(node){
+        this.node = node;
+    }
+}
 
 /**
  * @description  关卡界面组件
@@ -458,17 +618,34 @@ class WStage extends Widget{
     end(){
         Stage.up = Date.now();
     }
+    pause_button(){
+       pause();
+       Stage.pause_button.ni.left = 800
+       Stage.restart_button.ni.left= 580
+    }
+    restart_button(){
+        start();
+        Stage.pause_button.ni.left = 580
+        Stage.restart_button.ni.left= 800
+    }
+
     added(node){    
         Stage.year=  this.elements.get("year");
         Stage.day=  this.elements.get("day");
+        Stage.pause_button =  this.elements.get("pause_button");
+        Stage.restart_button =  this.elements.get("restart_button");
+        for(let i=0;i<5;i++){
+            Stage.face_button[i]=  this.elements.get(`on${i}`); 
+        }
+
     }
     //切换主界面
     changeFace(faceid){
         if(faceid != Global.mainFace.id && DB.data.face.unlock[faceid]){
             Scene.remove(Global.mainFace.node);
 
-            this.cfg.children[3].children[Global.mainFace.id].data["background-color"] = "#d9c6ad"
-            this.cfg.children[3].children[faceid].data["background-color"] ="0x1F1F1F"
+            Stage.face_button[Global.mainFace.id]["alpha"]  = 0;
+            Stage.face_button[faceid]["alpha"]  = 1;
             //
             if(faceid ==0){
                 AppEmitter.emit("intoScience");
@@ -564,7 +741,10 @@ const openStart = () => {
 const pause = () => {
     Stage.pause = 1;
 }    
+//恢复暂停
 const start = () => {
+    Stage.time = Date.now();
+    Stage.nextDay = Date.now();
     Stage.pause = 0;
 } 
 
@@ -587,6 +767,7 @@ Widget.registW("app-ui-start",WStart);
 Widget.registW("app-ui-back",WBack);
 Widget.registW("app-ui-message",WMessage);
 Widget.registW("app-ui-res",WRes);
+Widget.registW("app-ui-resDis",WResdis);
 Widget.registW("app-ui-news",WNews);
 Widget.registW("app-ui-confirm",WConfirm);
 
