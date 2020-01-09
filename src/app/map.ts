@@ -25,10 +25,10 @@ class Map {
     //更新据点
     static updateGuard(){
         let time = [15,50,100]
-        let newDate =DB.data.date.day[0]+Math.ceil(time[DB.data.map.guard.length]*(700+rand(600)/1000))
+        let newDate =DB.data.date.day[0]+Math.ceil(time[DB.data.map.guard.length]*((700+rand(600))/1000))
         //更新下一次时间
-        if( (newDate < DB.data.map.date[0] || DB.data.map.date[0] < DB.data.date.day[0])&& DB.data.map.guard.length<3 ){
-            Connect.request({type:"app/map@date_update",arg:{date:newDate}},(data) => {
+        if( (newDate < DB.data.map.date[0] || DB.data.map.date[0] <= DB.data.date.day[0])&& DB.data.map.guard.length<3 ){
+            Connect.request({type:"app/map@date_update",arg:newDate},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
                 }
@@ -89,6 +89,7 @@ class WCity extends Widget{
             bcfg = CfgMgr.getOne("app/cfg/city.json@city")
         }else{
             bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+
         }   
         for(let i=1;i< army.length;i++){
             str1 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`
@@ -105,13 +106,13 @@ class WCity extends Widget{
         this.cfg.children[3].data.text = `${str1}`;
         this.cfg.children[4].data.text = `${str2.replace(/\\n/,"\n")}`;
 
-        this.cfg.data.left += props.index * 200;
+        this.cfg.data.left += props.index * 230;
 
         this.cfg.on = {"tap":{"func":"choose","arg":[id]}};
        
     }
     choose(id){
-        if(DB.data.hero.own[0][1]){
+        if(DB.data.hero.own[0] && DB.data.hero.own[0][1]){
             this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
             Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
         }else{
@@ -175,7 +176,7 @@ class WfightWindow extends Widget{
                 own[i][0] = heroList[i][0]
                 own[i][1] = heroList[i][1]
                 own[i][4] = bcfg[own[i][0]]["arms"]
-                own[i][2] = 1 + (bcfg[own[i][0]]["number"]+heroList[i][2])/100 + DB.data.hero.add[own[i][4]]
+                own[i][2] = 1 + (Math.floor(bcfg[own[i][0]]["number"]+heroList[i][2]))/100 + DB.data.hero.add[own[i][4]]
                 own[i][3] = heroList[i][3]
             }
         }

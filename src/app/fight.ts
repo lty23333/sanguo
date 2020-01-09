@@ -9,7 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {addFNews} from './stage';
 import {Global,rand} from './global';
-
+import {addNews} from './stage';
 
 /****************** 导出 ******************/
 
@@ -318,8 +318,14 @@ class WfightAccount extends Widget{
         AppEmitter.emit("stageStart"); 
         AppEmitter.emit(`${faceName[lastFace]}`);
         Fight.pause = 1;
+        let index = [],
+             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+             arms = ["步兵","骑兵","弓兵"]
+        for(let i=0;i<fighter[0].length;i++){
+            index.push(fighter[0][i][3])
+        }
         //发放战斗奖励
-        Connect.request({type:"app/fight@fightAccount",arg:{isvic:isvic,cityId:cityId}},(data) => {
+        Connect.request({type:"app/fight@fightAccount",arg:{isvic:isvic,cityId:cityId,heroIndex:index}},(data) => {
             if(data.err){
                 return console.log(data.err.reson);
             }
@@ -336,6 +342,15 @@ class WfightAccount extends Widget{
                         DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                     }  
             }
+            //将领数值
+
+            for(let i=0;i<index.length;i++){
+                if(Math.floor(data.ok[3][index[i]][2]) > Math.floor(DB.data.hero.own[index[i]][2])){
+                    let id = DB.data.hero.own[index[i]][0]
+                    addNews(`久历沙场，${bcfg[id]["name"]}的${arms[bcfg[id]["arms"]]}能力+1`);
+                }
+            }
+            DB.data.hero.own = data.ok[3];
         })
     }
 

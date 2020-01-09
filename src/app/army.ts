@@ -205,7 +205,7 @@ class WheroDis extends Widget{
         
         this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
-        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2]}（+${DB.data.hero.add[armsId]}）`;
+        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2])}（+${DB.data.hero.add[armsId]}）`;
     }
 } 
 
@@ -249,7 +249,7 @@ let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
 for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
-//初始化英雄数据库 own：[[武将ID，带兵数量，兵种属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
+//初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
 DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
 DB.init("army",{cur:[0],total:[0],price:[50]});
 

@@ -255,10 +255,10 @@ class Stage {
                     return console.log(data.err.reson);
                 }
                 DB.data.map.guard = data.ok[0];
-                if(data.ok[0][0][0]<20000){
-                    addNews(`斥候已经侦察好了前往${bcfg[data.ok[0][0][0]]["name"]}的道路。`);
+                if(data.ok[1]<20000){
+                    addNews(`斥候已经侦察好了前往${bcfg[data.ok[1]]["name"]}的道路。`);
                 }else{
-                    addNews(bcfg1[data.ok[0][0][0]]["dis"]);
+                    addNews(bcfg1[data.ok[1]]["dis"]);
                 }
 
             })

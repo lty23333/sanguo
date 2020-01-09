@@ -518,12 +518,14 @@ const guard_add = (id: any, callback) => {
         let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
             bcfg2 = CfgMgr.getOne("app/cfg/city.json@rand"),
             bcfg3 = CfgMgr.getOne("app/cfg/city.json@army"),
-            guard ,
+            guard = [],
             guardId
         //随机据点
         if(rand(3)>1){
           guardId = 20000 +rand(3);
-          guard = bcfg3[DB.date.day[0]]["army"] 
+          for(let i=0;i<bcfg3[Math.ceil(DB.date.day[0]/400)]["army"].length;i++){
+            guard.push([bcfg2[guardId]["army"],bcfg3[Math.ceil(DB.date.day[0]/400)]["army"][i]])
+          }
         //城市据点
         }else{
           guardId = DB.map.city[1] + 1;
@@ -644,7 +646,7 @@ const fight = (param: any, callback) => {
     saveDb("hero",DB.hero);
     saveDb("army",DB.army);
     saveDb("map",DB.map);
-    callback({ok:[isvic,mess,DB.hero.own,enemyType1,DB.army.total[0],kill_die]});
+    callback({ok:[isvic,mess,JSON.parse(JSON.stringify(DB.hero.own)),enemyType1,DB.army.total[0],kill_die]});
 
 }
 
@@ -675,9 +677,27 @@ const fightAccount = (param: any, callback) => {
             }   
 
         }
+        //加武将能力
+        let a = [300,200,90,80,70,50,30,0],
+            b = [0.01,0.03,0.06,0.1,0.2,0.3,0.5,0.8]
+        for(let i =0;i<param.heroIndex.length;i++){
+            let hero = DB.hero.own[param.heroIndex[i]], 
+                bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                num = bcfg[hero[0]]["number"],
+                add = []
+            for(let j =0;j<a.length;j++){
+                if (num+hero[2]>a[j]){
+                    hero[2] +=b[j]  
+                    break;
+                }
+            }
+        }
+        
+        
+        saveDb("hero",DB.hero);
         saveDb("map",DB.map);
         saveDb("res",DB.res);
-        callback({ok:[DB.res.fail[1],DB.res.win[1],effect_end]});
+        callback({ok:[DB.res.fail[1],DB.res.win[1],effect_end,JSON.parse(JSON.stringify(DB.hero.own))]});
     }else{
         //加败绩
         let fail = 50
