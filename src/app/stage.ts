@@ -11,7 +11,6 @@ import {table} from "./formula";
 import {Global,rand} from './global';
 
 
-
 /****************** 导出 ******************/
 export const addNews = (news) => {
     if(DB.data.news[0].length<25){
@@ -185,40 +184,20 @@ class Stage {
             Stage.res[name][idType].text = `${mun.toFixed(1)}` ;
         }
 
-        //显示加成的文字
-        let addtion = [],
-            times = 1
-        if(idType ==4){
-            if(res[4]){
-                let str = res[4]>0?"春":"冬"
-                addtion.push([`${str}`,res[4]>0?2:6]);
-            }
-        }
+        //计算加成
+        let  times = 1
+
         if(res_nameID < 4 ){
             if(DB.data.res.win[1] >0){
                 times += 0.5;
-                addtion.push(["胜",2]);
             }
             if(DB.data.res.fail[1] >0){
                 times += -0.25;
-                addtion.push(["败",6]);
             }
             let five = Math.ceil(DB.data.date.day[0]/400) % 5,
                 five_times = Stage.five_res[five][res_nameID]
             if(DB.data.date.unlock[1] && five_times){
                 times += five_times 
-                addtion.push([`${Stage.five[five]}`,five_times>0?2:6]);
-            }
-        }
-        Stage.res[name][10]
-        for(let i=0;i<3;i++){
-            if(Stage.res[name][10+i]){
-                if(addtion[i]){
-                    Stage.res[name][10+i].text = addtion[i][0];
-                    Stage.res[name][10+i].style.fill =  Global.color[addtion[i][1]];           
-                }else{
-                    Stage.res[name][10+i].text = ""
-                } 
             }
         }
 
@@ -332,6 +311,39 @@ class Stage {
             )        
         }
 
+        //显示加成的文字
+        let addtion = [[],[],[],[]],
+            res = DB.data.res
+        if(res.food[4]){
+            let str = res.food[4]>0?"春":"冬"
+            addtion[0].push([`${str}`,res.food[4]>0?2:6]);
+        }
+        for(let i=0;i<4;i++){
+            let name = Stage.res_name[i]
+            if(DB.data.res.win[1] >0){
+                addtion[i].push(["胜",2]);
+            }
+            if(DB.data.res.fail[1] >0){
+                addtion[i].push(["败",6]);
+            }
+            let five = Math.ceil(DB.data.date.day[0]/400) % 5,
+                five_times = Stage.five_res[five][i]
+            if(DB.data.date.unlock[1] && five_times){
+                addtion[i].push([`${Stage.five[five]}`,five_times>0?2:6]);
+            }
+        
+            for(let j=0;j<3;j++){
+                if(Stage.res[name][10+j]){
+                    if(addtion[i][j]){
+                        Stage.res[name][10+j].text = addtion[i][j][0];
+                        Stage.res[name][10+j].style.fill =  Global.color[addtion[i][j][1]];           
+                    }else{
+                        Stage.res[name][10+j].text = ""
+                    } 
+                }
+            }
+        }        
+
     }
     //资源自动变化
     static ChangeResource(typename){
@@ -352,6 +364,12 @@ class Stage {
             for(let i = Stage.res_name.length - 1; i >= 0; i--){
                 Stage.ChangeResource(Stage.res_name[i]);
             }  
+            Connect.request({type:"app/hero@hurt",arg:[]},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }
+                DB.data.hero.own = data.ok[0];
+            })
             Stage.time +=Stage.timeInterval;
         }
         //处理弹出消息

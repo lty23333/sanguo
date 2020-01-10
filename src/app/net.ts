@@ -25,7 +25,7 @@ date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
 face:{"unlock":[0,0,1,1,1]},
 science:[[1,0]],
-hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0],hurt:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
 hotel:{date:[0],price:[10]},
 shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
@@ -123,6 +123,10 @@ const add_res = (param: any, callback) => {
         }
     }
     DB.res[param][1] = number;
+    
+
+
+
     saveDb("res",DB.res);
     callback({ok:DB.res[param][1]}); 
 }
@@ -392,10 +396,10 @@ const hero_buy = (id: any, callback) => {
             if(DB.hero.own.length < DB.hero.MaxHero[1]){
                 DB.res.gold[1] = DB.res.gold[1] -gold;
                 DB.hero.choose.splice(choose_id,1);
-                DB.hero.own.push([id,0,0,DB.hero.own.length]);
+                DB.hero.own.push([id,0,0,DB.hero.own.length,0]);
                 saveDb("hero",DB.hero);   
                 saveDb("res",DB.res);
-                callback({ok:[DB.res.gold[1],DB.hero.choose,DB.hero.own,choose_id]});
+                callback({ok:[DB.res.gold[1],JSON.parse(JSON.stringify(DB.hero.choose)),JSON.parse(JSON.stringify(DB.hero.own)),choose_id]});
             }else{
                 callback({err:2}); 
             }
@@ -405,6 +409,18 @@ const hero_buy = (id: any, callback) => {
 
 }
 
+const hero_hurt = (id: any, callback) => { 
+    let health = []
+    for(let i=0;i<DB.hero.hurt.length;i++){
+        if(DB.hero.own[i] && DB.hero.own[i][4]>0){
+            DB.hero.own[i][4] -= 0.5;
+        }
+    }
+    saveDb("hero",DB.hero);
+    callback({ok:[JSON.parse(JSON.stringify(DB.hero.own))]});
+}
+
+Connect.setTest("app/hero@hurt",hero_hurt);
 Connect.setTest("app/hero@choose",hero_choose);
 Connect.setTest("app/hero@buy",hero_buy);
 /****************** army ******************/
@@ -429,7 +445,9 @@ const army_plus = (id: any, callback) => {
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         max_army = bcfg[DB.hero.own[id][0]]["command"] + DB.hero.add[0]
 
-    if (a.cur[0] >0 ){
+    if (DB.hero.own[id][4] >0 ){
+        callback({err:4}); 
+    }else if (a.cur[0] >0 ){
         if(max_army > DB.hero.own[id][1]){
             if(DB.hero.MaxHero[2] >= DB.hero.MaxHero[0] && DB.hero.own[id][1] ==0 ){
                 callback({err:3}); 
@@ -505,6 +523,8 @@ const army_max = (id: any, callback) => {
     saveDb("hero",DB.hero);          
     callback({ok:[DB.hero.own[id][1],DB.army.cur[0],DB.hero.MaxHero[2]]});
 }
+
+
 
     Connect.setTest("app/army@army_buy",army_buy);
     Connect.setTest("app/army@army_plus",army_plus);
@@ -677,19 +697,21 @@ const fightAccount = (param: any, callback) => {
             }   
 
         }
-        //加武将能力
+        //加武将能力,添加受伤状态
         let a = [300,200,90,80,70,50,30,0],
             b = [0.01,0.03,0.06,0.1,0.2,0.3,0.5,0.8]
         for(let i =0;i<param.heroIndex.length;i++){
             let hero = DB.hero.own[param.heroIndex[i]], 
                 bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-                num = bcfg[hero[0]]["number"],
-                add = []
+                num = bcfg[hero[0]]["number"]
             for(let j =0;j<a.length;j++){
                 if (num+hero[2]>a[j]){
                     hero[2] +=b[j]  
                     break;
                 }
+            }
+            if(hero[1] == 0){
+                hero[4] = 100
             }
         }
         
@@ -707,8 +729,16 @@ const fightAccount = (param: any, callback) => {
             DB.res.fail[1] += fail -DB.res.win[1];
             DB.res.win[1] = 0;
         }
+        for(let i =0;i<param.heroIndex.length;i++){
+            let hero = DB.hero.own[param.heroIndex[i]]
+            if(hero[1] == 0){
+                hero[4] = 100
+            }
+        }
+
+        saveDb("hero",DB.hero);
         saveDb("res",DB.res);
-        callback({ok:[DB.res.fail[1],DB.res.win[1]]});
+        callback({ok:[DB.res.fail[1],DB.res.win[1],[],JSON.parse(JSON.stringify(DB.hero.own))]});
     }
 
 

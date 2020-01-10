@@ -343,7 +343,7 @@ class WfightAccount extends Widget{
                     }  
             }
             //将领数值
-
+            if(data.ok[3]){
             for(let i=0;i<index.length;i++){
                 if(Math.floor(data.ok[3][index[i]][2]) > Math.floor(DB.data.hero.own[index[i]][2])){
                     let id = DB.data.hero.own[index[i]][0]
@@ -351,6 +351,7 @@ class WfightAccount extends Widget{
                 }
             }
             DB.data.hero.own = data.ok[3];
+           }
         })
     }
 

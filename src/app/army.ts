@@ -7,7 +7,6 @@ import CfgMgr from '../libs/ni/cfgmrg';
 import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
-import {table} from "./formula";
 import {Global} from './global';
 import {addNews} from './stage';
 
@@ -17,7 +16,7 @@ import {addNews} from './stage';
 /****************** 本地 ******************/
 let heroNode = [];
 let armyNode = [];
-let heroList = [];
+let hurtNode = []
 
     
 
@@ -43,9 +42,18 @@ class Army {
     static updateHero(){
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
         if(Global.mainFace.id == 3){
-            for(let i=0;i<heroList.length;i++){
+            for(let i=0;i<DB.data.hero.own.length;i++){
+                let id = DB.data.hero.own[i][0]
                 if(heroNode[i]!= undefined){
-                    heroNode[i].text = `${bcfg[heroList[i][0]]["name"]}\n(${heroList[i][1]}/${bcfg[heroList[i][0]]["command"] + DB.data.hero.add[0]})`
+                    heroNode[i].text = `${bcfg[DB.data.hero.own[i][0]]["name"]}`
+                    heroNode[i].style.fill = Global.color[bcfg[id]["color"]]
+                    if(DB.data.hero.own[i][4]>0){
+                        hurtNode[i].text = `(伤${100-DB.data.hero.own[i][4]}%)`
+                        hurtNode[i].style.fill = Global.color[6]
+                    }else{
+                        hurtNode[i].text = `(${DB.data.hero.own[i][1]}/${bcfg[id]["command"] + DB.data.hero.add[0]})`
+                        hurtNode[i].style.fill = Global.color[1]
+                    }
                 }
             }
         }
@@ -71,19 +79,24 @@ class WHero extends Widget{
     backNode :any
     setProps(props){
         let i = props.id,
-            id = heroList[i][0],
+            id = DB.data.hero.own[i][0],
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             max = bcfg[id]["command"] + DB.data.hero.add[0],
             name = bcfg[id]["name"];
         super.setProps(props);
-        this.cfg.children[0].children[0].data.text = `${name}\n(${heroList[i][1]}/${max})`;
+        this.cfg.children[0].children[0].data.text = `${name}`;
+        this.cfg.children[0].children[0].data.style.fill = Global.color[bcfg[id]["color"]]
         this.cfg.data.top =  Army.hero_top[i+1] +330;
         this.cfg.children[0].on = {"tap":{"func":"dis_hero","arg":[i]}};
-        this.cfg.children[1].props.on = {"tap":{"func":"army_plus","arg":[heroList[i][3]]}};
-        this.cfg.children[2].props.on = {"tap":{"func":"army_minus","arg":[heroList[i][3]]}};
-        this.cfg.children[3].props.on = {"tap":{"func":"army_max","arg":[heroList[i][3]]}};
-        this.cfg.children[4].props.on = {"tap":{"func":"hero_delete","arg":[heroList[i][3]]}};
-
+        this.cfg.children[1].props.on = {"tap":{"func":"army_plus","arg":[DB.data.hero.own[i][3]]}};
+        this.cfg.children[2].props.on = {"tap":{"func":"army_minus","arg":[DB.data.hero.own[i][3]]}};
+        this.cfg.children[3].props.on = {"tap":{"func":"army_max","arg":[DB.data.hero.own[i][3]]}};
+        this.cfg.children[4].props.on = {"tap":{"func":"hero_delete","arg":[DB.data.hero.own[i][3]]}};
+        if(DB.data.hero.own[i][4]>0){
+            this.cfg.children[0].children[1].data.text = `(伤${100-DB.data.hero.own[i][4]}%)`
+        }else{
+            this.cfg.children[0].children[1].data.text = `(${DB.data.hero.own[i][1]}/${max})`
+        }
     }
 
     dis_hero(type){
@@ -92,10 +105,13 @@ class WHero extends Widget{
     }
     //加1个人
     army_plus (id){
+        let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
         Connect.request({type:"app/army@army_plus",arg:id},(data) => {
             if(data.err){
                 if(data.err == 3){
                     AppEmitter.emit("message",`目前最多${DB.data.hero.MaxHero[0]}名将领同时带兵`);
+                }else if(data.err == 4){
+                    AppEmitter.emit("message",`${bcfg[DB.data.hero.own[id][0]]["name"] }正在养伤，无法带兵。`);
                 }
                 return console.log(data.err.reson);
             }else{
@@ -146,8 +162,9 @@ class WHero extends Widget{
         Scene.open(`app-ui-confirm`, Global.mainFace.node, null, {text:`革职后，您将永远失去${name}。\n确认吗？`,on:"hero_delete",arg:[id]});
     }
 
-    added(node){   
-        heroNode[node.widget.props.id] = this.elements.get("button_army");    
+    added(node){
+        hurtNode[node.widget.props.id] = this.elements.get("button_hurt");   
+        heroNode[node.widget.props.id] = this.elements.get("button_hero");    
     }
 }
 
@@ -198,14 +215,14 @@ class WheroDis extends Widget{
         super.setProps(props);
         let i = props.id,
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-            id = heroList[i][0],
+            id = DB.data.hero.own[i][0],
             armsId = bcfg[id]["arms"],
             max = bcfg[id]["command"] + DB.data.hero.add[0],
             name = bcfg[id]["name"];
         
-        this.cfg.children[1].data.text = `${name}(${heroList[i][1]}/${max})`;
+        this.cfg.children[1].data.text = `${name}(${DB.data.hero.own[i][1]}/${max})`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
-        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[heroList[i][3]][2])}（+${DB.data.hero.add[armsId]}）`;
+        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[DB.data.hero.own[i][3]][2])}（+${DB.data.hero.add[armsId]}）`;
     }
 } 
 
@@ -218,18 +235,8 @@ const open = () => {
     Global.mainFace.id = 3;
     //显示解锁的工作按钮
 
-    heroList = DB.data.hero.own;
-    let t
-    for(let i=0; i<heroList.length;i++ ){
-        for(let j=i; j<heroList.length;j++ ){
-            if(heroList[i][1]<heroList[j][1]){
-                t = heroList[i];
-                heroList[i] = heroList[j];
-                heroList[j] = t;
-            }
-        }
-    }
-    for(let i=0; i<heroList.length;i++ ){
+
+    for(let i=0; i<DB.data.hero.own.length;i++ ){
       Scene.open("app-ui-armyButton", Global.mainFace.node,null, {id:i});
     }
 }
@@ -249,7 +256,7 @@ let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
 for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
-//初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
+//初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
 DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
 DB.init("army",{cur:[0],total:[0],price:[50]});
 
@@ -272,4 +279,9 @@ AppEmitter.add("intoArmy",(node)=>{
 //注册消耗黄金监听
 DB.emitter.add(`res.gold.1`, () => {
     Army.updatecost()
+});
+
+//注册将领受伤监听
+DB.emitter.add(`hero.own`, () => {
+    Army.updateHero()
 });

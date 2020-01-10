@@ -25,10 +25,22 @@
                     {
                         "type": "text",
                         "data": {
-                            "id":"button_army",
+                            "id":"button_hero",
                             "text":"英雄",
                             "left":0,
                             "top": 10,
+                            "style":{
+                                "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                            }
+                        }
+                    },
+                    {
+                        "type": "text",
+                        "data": {
+                            "id":"button_hurt",
+                            "text":"0/0",
+                            "left":0,
+                            "top": 45,
                             "style":{
                                 "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                             }
@@ -96,6 +108,6 @@
                     "background-alpha":0.75,
                     "color":"0xDC143C"
                 }
-            }        
+            }    
     ]
 }

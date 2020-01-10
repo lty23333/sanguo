@@ -108,7 +108,8 @@ const ptFrom = {
  */
 class WUser extends Widget{
     login(){
-        initLocal(loginCallback);
+        // initLocal(loginCallback);
+        loginCallback();
     }
 
 }
@@ -151,7 +152,7 @@ const login = (account: string, password: string, callback: Function) => {
  * @description 登录回调
  * @param err 错误信息
  */
-const loginCallback = (err) => {
+const loginCallback = (err?) => {
     if(err){
         return console.log(err);
     }
