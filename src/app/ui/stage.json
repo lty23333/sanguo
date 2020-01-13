@@ -45,7 +45,7 @@
                  "width": 150,
                  "height": 150,
                  "left": 0,
-                  "top": 35,
+                  "top": 45,
                   "background-color": "#d9c6ad",
                   "alpha":0.8,
                   "border-width":2,
@@ -60,10 +60,10 @@
                 "data": {
                     "id":"year",
                     "text":"",
-                    "left":20,
-                    "top": 35,
+                    "left":25,
+                    "top": 100,
                     "style":{
-                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                     }
                 }
             },
@@ -71,11 +71,11 @@
                 "type": "text",
                 "data": {
                     "id":"day",
-                    "text":"时间",
-                    "left":10,
+                    "text":"",
+                    "left":25,
                     "top": 70,
                     "style":{
-                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                     }
                 }
             }
@@ -446,23 +446,24 @@
         },
         {
             "type": "rect",
-            "on":{"tap":{"func":"restart_button"}},
+            "on":{"tap":{"func":"pause_button"}},
             "data": {
-                "id":"restart_button",
+                "id":"pause_button",
                 "width": 150,
                 "height": 50,
-                "left": 800,
-                "top": 0,
+                "left": 580,
+                "top": 10,
                 "background-color": "#d9c6ad",
-                "background-alpha":0.4
+                "background-alpha":0.4,
+                "alpha":1
             },
             "children": [
         
                 {
                     "type": "text",
                     "data": {
-                        "text": "敌袭 100天",
-                        "top":10,
+                        "text": "和平",
+                        "top":20,
                         "style": {"fontSize":30,"fill":"0xFFFF00","strokeThickness":2, "align" : "center"}
                     }
                 }
