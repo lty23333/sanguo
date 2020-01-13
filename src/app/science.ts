@@ -24,9 +24,10 @@ class Science {
     static  com_cost// 通用窗口消耗节点
     static science_sprite =[]
     static cur_scienceId = 0
-    static coordinate = {left:[0,300,0,300,0,300,0,300],top:[0,0,150,150,300,300,450,450]}//知识按钮坐标
+    static coordinate = {left:[0,0,0,0,0,300,0,300],top:[0,200,400,600,300,300,450,450]}//知识按钮坐标
     static unlock_science = []
     static scienceNode = []
+    static textNode = []
 
 
 
@@ -58,18 +59,18 @@ class Science {
         //按钮颜色改变
         static updatebutton(){
             if(Global.mainFace.id ==0){
-                for(let i =0;i<DB.data.build.length;i++){
-                    if(DB.data.build[i][0]>=1){
+                for(let i =0;i<DB.data.science.length;i++){
+                    if(DB.data.science[i][0]>=1){
                         let bcfg = CfgMgr.getOne("app/cfg/science.json@science"),
-                        id = i+101,
+                        id = i+100,
                         cost = bcfg[id][`cost`],
                         enough = 1
     
                         if(DB.data.res.sci[1]<cost){
                             enough = 0
                         }
-                        if(Science.scienceNode[i].children[0].data.style.fill != Global.color[enough]){
-                            Science.scienceNode[i].children[0].data.style.fill = Global.color[enough];
+                        if(Science.textNode[i] && Science.textNode[i].style.fill != Global.color[enough]){
+                            Science.textNode[i].style.fill = Global.color[enough];
                         }
                         if(id == Science.cur_scienceId && Science.com_cost){
                             if(Science.com_cost.style.fill != Global.color[6-enough*4]){
@@ -117,7 +118,7 @@ class WscienceButton extends Widget{
     }
 
     added(node){   
- 
+        Science.textNode[node.widget.props.id-100] =  this.elements.get("button_sci");
     }
 }
 

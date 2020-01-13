@@ -19,7 +19,7 @@ const saveDb = (key,data) => {
     localStorage.setItem(key,JSON.stringify(data));
 }
 
-let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
+let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[1,100,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
 build:[[1,0]],
 date:{unlock:[0,0],day:[0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
@@ -29,7 +29,7 @@ hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],ad
 hotel:{date:[0],price:[10]},
 shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0,10000,0],attack:[[]],guard:[]}
+map:{date:[1],city:[0,10000,0,10],attack:[[]],guard:[]}
 }
 
 const initScience = () => {
@@ -213,7 +213,7 @@ const levelup = (id: any, callback) => {
 
     let  bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
          bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-         cost1 = bcfg2[DB.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],         
+         cost1 = bcfg2[DB.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],         
          cost_name1 = bcfg[id]["cost_type1"],
          cost_name2 = bcfg[id]["cost_type2"],
          num1 = DB.res[cost_name1][1],
@@ -225,20 +225,20 @@ const levelup = (id: any, callback) => {
          cost2,
          num2
     if(cost_name2){
-        cost2 = bcfg2[DB.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
+        cost2 = bcfg2[DB.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
         num2 = DB.res[cost_name2][1];
     }
          
-    if (DB.map.city[2] >= DB.map.city[0]*10+100 ){
+    if (DB.map.city[2] >= DB.map.city[0]*DB.map.city[3]+100 ){
         callback({err:1}); 
     }else if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
         //山路特殊处理
-        if(id == 1015 && DB.build[1][1] <5){
+        if(id == 1014 && DB.build[1][1] <5){
             callback({err:3}); 
             return;
         }
             num1 -= cost1;
-            DB.build[id-1001][1] += 1;
+            DB.build[id-1000][1] += 1;
             DB.res[cost_name1][1] = num1;
             DB.map.city[2] += 1;
             if(cost_name2){
@@ -253,7 +253,7 @@ const levelup = (id: any, callback) => {
             }                      
             saveDb("build",DB.build);
             saveDb("res",DB.res);
-            callback({ok:[DB.build[id-1001][1],num1,effect_end,cost_name2?num2:null,DB.map.city[2]]}); 
+            callback({ok:[DB.build[id-1000][1],num1,effect_end,cost_name2?num2:null,DB.map.city[2]]}); 
     }else{
         callback({err:2}); 
     }

@@ -43,13 +43,13 @@ class Build {
     static updateBuild(id,type){
         if(type ==0){
             if(DB.data.build[id][0] >=1 && Global.mainFace.id ==2){
-                Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:id+1001});
+                Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:id+1000});
             }
         }
         if(type ==1){
             let bcfg = CfgMgr.getOne("app/cfg/build.json@build")
             if(bcfg!= undefined && Global.mainFace.id == 2){
-                let name = bcfg[`${id+1001}`]["name"]
+                let name = bcfg[`${id+1000}`]["name"]
             
                 if(Build.build[id][0] != undefined){
                    Build.build[id][0].text = `${name}(${DB.data.build[id][1]})`
@@ -63,9 +63,9 @@ class Build {
             for(let i =0;i<DB.data.build.length;i++){
                 if(DB.data.build[i][0]>=1){
                     let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
-                    id = i+1001,
+                    id = i+1000,
                     bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-                    cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
+                    cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
                     enough = 1,
                     cost_name = bcfg[id]["cost_type1"]
 
@@ -90,7 +90,7 @@ class Build {
     }  
     static updatehotel(){
         if(Global.mainFace.id ==2){
-            if(Build.cur_buildId == 1009){
+            if(Build.cur_buildId == 1007){
                 //刷新消耗更新
                 let enough = 2
                 if(DB.data.res.gold[1]<DB.data.hotel.price[0]){
@@ -117,7 +117,7 @@ class Build {
     }
     static updateshop(type,n,m){
         if(Global.mainFace.id ==2){
-            if(Build.cur_buildId == 1014){
+            if(Build.cur_buildId == 1013){
                 for(let i=n;i<m;i++){
                     let enough = 2
                     if(DB.data.res[type][1]<parseInt(Build.shopCost[i].text)){
@@ -148,11 +148,11 @@ class WbuildButton extends Widget{
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             id = props.id,
             name = bcfg[id]["name"],
-            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
+            cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],
             color = 0,
             cost_name = bcfg[id]["cost_type1"]
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`
         this.cfg.data.left = bcfg[id]["left"];
         this.cfg.data.top =  bcfg[id]["top"];
         this.cfg.on = {"tap":{"func":"addBuild","arg":[id]}};
@@ -169,7 +169,7 @@ class WbuildButton extends Widget{
     addBuild(type){
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         //如果是酒馆，则特殊处理
-        if(type==1009){
+        if(type==1007){
             Connect.request({type:"app/hero@choose",arg:2},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
@@ -180,7 +180,7 @@ class WbuildButton extends Widget{
                     }
                 }  
             })         
-        }else if(type==1014){
+        }else if(type==1013){
             Scene.open(`app-ui-shop`,this.backNode,null, {id:1014});
             for(let i=0;i<6;i++){
                 Build.goodsNode[i] =Scene.open(`app-ui-shop_goods`,this.backNode,null, {id:i});
@@ -193,8 +193,8 @@ class WbuildButton extends Widget{
     }
 
     added(node){   
-        Build.build[node.widget.props.id-1001] =[];
-        Build.build[node.widget.props.id-1001][0] = this.elements.get("number_name");    
+        Build.build[node.widget.props.id-1000] =[];
+        Build.build[node.widget.props.id-1000][0] = this.elements.get("number_name");    
     }
 }
 
@@ -280,14 +280,14 @@ class Wshop extends Widget{
     setProps(props){
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
-            id = 1014,
+            id = 1013,
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
+            cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
             color = 6 
 
             
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
         this.cfg.children[8].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[11].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
         this.cfg.children[13].data.text = `${bcfg[id]["dis"]}`;
@@ -303,7 +303,7 @@ class Wshop extends Widget{
         let id = Build.cur_buildId,
             bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
+            cost = bcfg2[DB.data.build[id-1000][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
             cost_name = bcfg[id]["cost_type1"],
             goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
             effect = bcfg[id]["effect_type"]
@@ -323,11 +323,11 @@ class Wshop extends Widget{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                         }
                     }   
-                    DB.data.build[id-1001][1] = data.ok[0];
+                    DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
        
                     //更新窗口信息
-                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
                     AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
@@ -416,13 +416,13 @@ class Whotel extends Widget{
     setProps(props){
         super.setProps(props);
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
-            id = 1009,
+            id = 1007,
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
+            cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
             color =6
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
         this.cfg.children[2].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[3].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
         this.cfg.children[6].data.text = `${DB.data.hotel.price[0]}黄金`;
@@ -447,7 +447,7 @@ class Whotel extends Widget{
         let id = Build.cur_buildId,
             bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
+            cost = bcfg2[DB.data.build[id-1000][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
             cost_name = bcfg[id]["cost_type1"],
             effect = bcfg[id]["effect_type"]
    
@@ -466,12 +466,12 @@ class Whotel extends Widget{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                         }
                     }   
-                    DB.data.build[id-1001][1] = data.ok[0];
+                    DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
                     DB.data.map.city[2] = data.ok[4];
        
                     //更新窗口信息
-                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
                     AppEmitter.emit("message","酒馆+1");
@@ -525,16 +525,16 @@ class WcomWindow extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             id = props.id,
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
+            cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
             cost_name2 = bcfg[id]["cost_type2"],
             cost2,
             color = 6
         if(cost_name2){
-           cost2 = bcfg2[DB.data.build[id-1001][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
+           cost2 = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number2"];
         } 
 
-        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+        this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
         this.cfg.children[4].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[7].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
         this.cfg.children[9].data.text = bcfg[id]["dis"];
@@ -543,7 +543,7 @@ class WcomWindow extends Widget{
         } 
         Build.cur_buildId = id
 
-        if(id == 1015){
+        if(id == 1014){
             this.cfg.children[7].data.text = "建造条件";
         }
         //消耗加颜色
@@ -557,13 +557,13 @@ class WcomWindow extends Widget{
         let id = Build.cur_buildId,
             bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
-            cost = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
+            cost = bcfg2[DB.data.build[id-1000][1]+2][`a${id}`]*bcfg[id]["cost_number1"],   
             cost_name = bcfg[id]["cost_type1"],
             cost_name2 = bcfg[id]["cost_type2"],
             effect = bcfg[id]["effect_type"],
             cost2
         if(cost_name2){
-           cost2 = bcfg2[DB.data.build[id-1001][1]+2][`a${id}`]*bcfg[id]["cost_number2"];
+           cost2 = bcfg2[DB.data.build[id-1000][1]+2][`a${id}`]*bcfg[id]["cost_number2"];
         }
             Connect.request({type:"app/build@levelup",arg:id},(data) => {
                 if(data.err == 1){
@@ -583,14 +583,14 @@ class WcomWindow extends Widget{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                         }
                     }   
-                    DB.data.build[id-1001][1] = data.ok[0];
+                    DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
                     if(data.ok[3]!=null){
                         DB.data.res[cost_name2][1] = data.ok[3];
                     }
                     DB.data.map.city[2] = data.ok[4];
                     //更新窗口信息
-                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1001][1]})`;
+                    Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
                     if(cost_name2){
@@ -632,10 +632,10 @@ const open = () => {
     //显示解锁的建筑按钮
     for(let i=0; i<DB.data.build.length;i++ ){
         if(DB.data.build[i][0]){
-            Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1001});
+            Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1000});
         }
     }
-    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
+    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*DB.data.map.city[3]+100}`
 
 }
 

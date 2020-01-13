@@ -2,8 +2,8 @@
     "type": "rect",
     "on":{"tap":{"func":"army_plus"}},
     "data": {
-        "width": 200,
-        "height": 100,
+        "width": 500,
+        "height": 180,
         "left": 200,
         "top": -100,
         "background-color": "#d9c6ad",
@@ -21,8 +21,8 @@
             "id":"button_sci",
             "data": {
                 "text": "button",
-                "top": 32,
-                "style": {"fontSize":35,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}
+                "top": 60,
+                "style": {"fontSize":45,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}
             }
         }
     ]

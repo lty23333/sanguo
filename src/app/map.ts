@@ -242,8 +242,8 @@ Widget.registW("app-ui-map",WMap);
 Widget.registW("app-ui-fightWindow",WfightWindow);
 Widget.registW("app-ui-city",WCity);
 //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
-//city:[占领城市数量，，所有建筑数量]
-DB.init("map",{date:[1],city:[0,10000,0],attack:[[]],guard:[]});
+//city:[占领城市数量，，所有建筑数量，每个城市增加的建筑]
+DB.init("map",{date:[1],city:[0,10000,0,10],attack:[[]],guard:[]});
 
 
 
