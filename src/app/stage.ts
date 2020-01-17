@@ -82,6 +82,7 @@ class Stage {
     static face_button = []
     static pause_button
     static restart_button
+    static warning_button
 
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
@@ -111,6 +112,25 @@ class Stage {
         }
     }
 
+    //更新预警
+    static updateWarning(){
+        let text = ""
+
+        if(DB.data.hero.enemy.length){
+            text = "被入侵"
+            Stage.warning_button.style.fill = Global.color[6]
+            Stage.warning_button.ni.left = 30
+        }else if(DB.data.date.warning[1] && DB.data.date.warning[0]){
+            text = `${DB.data.date.warning[1] - DB.data.date.day[0]}天敌袭`
+            Stage.warning_button.style.fill = Global.color[6]
+            Stage.warning_button.ni.left = 10
+        }else{
+            text = "和平"
+            Stage.warning_button.style.fill = Global.color[5]
+            Stage.warning_button.ni.left = 45
+        }
+        Stage.warning_button.text = text;
+    }
 
     //更新消息显示
     static updateNews(){
@@ -261,7 +281,11 @@ class Stage {
                     if(data.err){
                         return console.log(data.err.reson);
                     }
-                    DB.data[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] = data.ok[0];
+                    if(bcfg[eventId]["class"] == 1 ){
+                        DB.data.hero.enemy = data.ok[0];          
+                    }else{
+                        DB.data[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] = data.ok[0];
+                    }
                     if(news){
                         news = news.replace("{{number}}",bcfg[eventId]["number"])
                         addNews(news);   
@@ -630,6 +654,22 @@ class WResdis extends Widget{
  * @description  关卡界面组件
  */
 class WStage extends Widget{
+    backNode :any
+    setProps(props){
+        super.setProps(props);
+        let text = ""
+        //预警文字初始化
+        if(DB.data.hero.enemy.length){
+            text = "被入侵"
+        }else if(DB.data.date.warning[1] && DB.data.date.warning[0]){
+            text = `${DB.data.date.warning[1] - DB.data.date.day[0]}天敌袭`
+        }else{
+            text = "和平"
+            this.cfg.children[6].children[0].data.style.fill = Global.color[5]
+        }
+        this.cfg.children[6].children[0].data.text = text;
+        
+    }
     start(){
         Stage.down = Date.now();
     }
@@ -652,6 +692,7 @@ class WStage extends Widget{
         Stage.day=  this.elements.get("day");
         Stage.pause_button =  this.elements.get("pause_button");
         Stage.restart_button =  this.elements.get("restart_button");
+        Stage.warning_button =  this.elements.get("warning_button");
         for(let i=0;i<5;i++){
             Stage.face_button[i]=  this.elements.get(`on${i}`); 
         }
@@ -682,10 +723,61 @@ class WStage extends Widget{
             }
         }
     }
+    //预警按钮
+    warning(){
+        if(DB.data.hero.enemy.length){
+            let isarmy =0;
+            for(let i = 0;i<DB.data.hero.own.length;i++){
+                if(DB.data.hero.own[0] && DB.data.hero.own[0][1]){
+                    isarmy = 1
+                }  
+            }
+            if(isarmy){
+                this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+                Scene.open("app-ui-fightWindow", this.backNode,null,{id:99999,index:-1,name:`边境城市`});
+            }else{
+                AppEmitter.emit("message",`无可出战的军队！`);
+            }
+        }else{
+            this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+            Scene.open(`app-ui-warning`,this.backNode, null, {});
+        }
+    }
 }
 
+/**
+ * @description 预警弹窗
+ */
+class WWarning extends Widget{
+    setProps(props){
+        super.setProps(props);
+        if(DB.data.date.warning[0] && DB.data.date.warning[1]){
+            this.cfg.children[1].data.text = `敌袭预警`;
+            this.cfg.children[1].data.style.fill = Global.color[6];
+            this.cfg.children[2].data.text = "情报表示，不久将有敌军入侵。"
+        }else{
+            this.cfg.children[1].data.text = `和平`;
+            this.cfg.children[1].data.style.fill = Global.color[5];
+            this.cfg.children[2].data.text = "境内没有成气候的敌人。"
 
-
+        }
+        
+    }
+}
+/**
+ * @description 失败结局
+ */
+class WResult extends Widget{
+    setProps(props){
+        super.setProps(props);
+        let text = [["兵败如山倒，残存亦末路。","“我。。又失败了吗？”","你颓然倒地，心中满是不甘。","仿佛有无数次失败身死之情交叠于身。","“咦，‘又’？”","“我为什么要说‘又’？”"," 。。。"],
+                   ["最高坚持115年，便是115个轮回币。","你死死攥着手中的硬币，深知那是翻盘的最后本钱。","此刻，你已回想起了一切。","豁然开朗之后，便只剩下一个疑问。。。","那么，","再来一次，","是否便能改变一切？"]]
+             
+            for(let i = 1;i<8;i++){
+                this.cfg.children[i].data.text = `敌袭预警`;
+            }        
+    }
+}
 
 
 /**
@@ -771,7 +863,8 @@ const start = () => {
 
 //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
 DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[1,100,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]});
-DB.init("date",{unlock:[0,0],day:[0]});
+//warning:[解锁预警，预警时间]
+DB.init("date",{unlock:[0,0],day:[0],warning:[1,0]});
 //主界面解锁
 DB.init("face",{"unlock":[1,0,1,1,1]});
 DB.init("event",{"next":[2001]});
@@ -788,6 +881,7 @@ Widget.registW("app-ui-res",WRes);
 Widget.registW("app-ui-resDis",WResdis);
 Widget.registW("app-ui-news",WNews);
 Widget.registW("app-ui-confirm",WConfirm);
+Widget.registW("app-ui-warning",WWarning);
 
 //注册循环
 
@@ -828,7 +922,16 @@ DB.emitter.add(`res.gold.1`, () => {
 DB.emitter.add(`date.day.0`, () => {
         Stage.guardAdd()
         Stage.eventTrigger()
+        Stage.updateWarning()
     });
+//注册预警监听
+DB.emitter.add(`date.warning.0`, () => {
+    Stage.updateWarning()
+});
+DB.emitter.add(`date.warning.1`, () => {
+    Stage.updateWarning()
+});
+
 //注册工作监听
 for(let i = 1; i <5; i++){
     for(let j = 1; j <4; j++){
@@ -850,6 +953,9 @@ DB.emitter.add(`news`, () => {
 AppEmitter.add(`message`, (str) => {
     Stage.updateMessage(str);
 });
+
+
+
 // //重新开始，重置数据库
 // AppEmitter.add("initDB",(node)=>{
 //     Stage.initDB();

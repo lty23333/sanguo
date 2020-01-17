@@ -1,0 +1,114 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"remove"}},
+    "data": {
+        "width": 750,
+        "height": 1334,
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 750,
+                "height": 1334,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "alpha":1
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text0",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text1",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 450,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text2",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text3",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text4",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text5",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text6",
+                "text":"点击空白处关闭",
+                "left":200,
+                "top": 400,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                },
+                "alpha":0
+            }
+        }
+    ]
+}

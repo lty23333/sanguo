@@ -330,6 +330,14 @@ class Wshop extends Widget{
                     Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    let num = DB.data.map.city[2],
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    Build.totalNode.text = `${num}/${max}`
+                    if(num >=  max){
+                        Build.totalNode.style.fill = Global.color[6]
+                    }else{
+                        Build.totalNode.style.fill = Global.color[1]
+                    }
                     AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
                     
                     //更新商品价格
@@ -474,6 +482,14 @@ class Whotel extends Widget{
                     Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    let num = DB.data.map.city[2],
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    Build.totalNode.text = `${num}/${max}`
+                    if(num >=  max){
+                        Build.totalNode.style.fill = Global.color[6]
+                    }else{
+                        Build.totalNode.style.fill = Global.color[1]
+                    }
                     AppEmitter.emit("message","酒馆+1");
                 }
             })    
@@ -596,7 +612,14 @@ class WcomWindow extends Widget{
                     if(cost_name2){
                         Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
                     }
-                    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*10+100}`
+                    let num = DB.data.map.city[2],
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    Build.totalNode.text = `${num}/${max}`
+                    if(num >=  max){
+                        Build.totalNode.style.fill = Global.color[6]
+                    }else{
+                        Build.totalNode.style.fill = Global.color[1]
+                    }
                     AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
 
                     //山路特殊处理
@@ -635,7 +658,14 @@ const open = () => {
             Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1000});
         }
     }
-    Build.totalNode.text = `${DB.data.map.city[2]}/${DB.data.map.city[0]*DB.data.map.city[3]+100}`
+    let num = DB.data.map.city[2],
+        max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+    Build.totalNode.text = `${num}/${max}`
+    if(num >=  max){
+        Build.totalNode.style.fill = Global.color[6]
+    }else{
+        Build.totalNode.style.fill = Global.color[1]
+    }
 
 }
 

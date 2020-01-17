@@ -48,7 +48,7 @@
                     "type": "text",
                     "data": {
                         "id":"army1",
-                        "text":"攻",
+                        "text":"我军",
                         "left":0,
                         "top": 0,
                         "style":{
@@ -72,7 +72,7 @@
                     "type": "text",
                     "data": {
                         "id":"army2",
-                        "text":"防",
+                        "text":"敌军",
                         "left":0,
                         "top": 0,
                         "style":{
@@ -107,6 +107,36 @@
                 "height": 100,
                 "background-color":"#d9c6ad",
                 "background-alpha":0.75
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"fight"}},
+                "id":"button_fight",
+                "left": 450,
+                "top": 450,
+                "text": "割地求和",
+                "color":"0xff6347",
+                "size":35,
+                "width": 200,
+                "height": 100,
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75,
+                "alpha":0
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"dis",
+                "text":"以地事秦，犹抱薪救火，薪不尽，火不灭。",
+                "left":0,
+                "top": 540,
+                "alpha":0,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 28, "fill" : "0xffffff", "align" : "center"
+                }
             }
         }
 

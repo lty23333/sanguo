@@ -1,0 +1,50 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 475,
+        "height": 300,
+        "left": 140,
+        "top": 600
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 470,
+                "height": 200,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "alpha":1,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.3,
+                "border-align":0.5
+           }      
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"title",
+                "text":"",
+                "left":30,
+                "top": 25,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text",
+                "text":"",
+                "left":30,
+                "top": 120,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        }
+    ]
+}

@@ -21,15 +21,15 @@ const saveDb = (key,data) => {
 
 let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[1,100,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
 build:[[1,0]],
-date:{unlock:[0,0],day:[0]},
+date:{unlock:[0,0],day:[0],warning:[0,0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
 face:{"unlock":[0,0,1,1,1]},
 science:[[1,0]],
-hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0],hurt:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
 hotel:{date:[0],price:[10]},
 shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0,10000,0,10],attack:[[]],guard:[]}
+map:{date:[1],city:[0,10000,0,10,0],attack:[[]],guard:[]}
 }
 
 const initScience = () => {
@@ -229,7 +229,7 @@ const levelup = (id: any, callback) => {
         num2 = DB.res[cost_name2][1];
     }
          
-    if (DB.map.city[2] >= DB.map.city[0]*DB.map.city[3]+100 ){
+    if (DB.map.city[2] >= (DB.map.city[0] - DB.map.city[4])*DB.map.city[3]+100 ){
         callback({err:1}); 
     }else if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
         //山路特殊处理
@@ -339,9 +339,13 @@ const people_max = (id: any, callback) => {
 /****************** event ******************/
 const eventtrigger = (eventId: any, callback) => {       
     let bcfg = CfgMgr.getOne("app/cfg/event.json@event")
-
-    DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] += bcfg[eventId].number;            
-    callback({ok:[DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]]]}); 
+    if(bcfg[eventId]["class"] == 1 ){
+        DB.hero.enemy = bcfg[eventId].type;            
+        callback({ok:[DB.hero.enemy]}); 
+    }else{
+        DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] += bcfg[eventId].number;            
+        callback({ok:[DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]]]});
+    }
 }
 
 Connect.setTest("app/event@eventtrigger",eventtrigger);
@@ -411,7 +415,7 @@ const hero_buy = (id: any, callback) => {
 
 const hero_hurt = (id: any, callback) => { 
     let health = []
-    for(let i=0;i<DB.hero.hurt.length;i++){
+    for(let i=0;i<DB.hero.own.length;i++){
         if(DB.hero.own[i] && DB.hero.own[i][4]>0){
             DB.hero.own[i][4] -= 0.5;
         }
@@ -666,7 +670,7 @@ const fight = (param: any, callback) => {
     saveDb("hero",DB.hero);
     saveDb("army",DB.army);
     saveDb("map",DB.map);
-    callback({ok:[isvic,mess,JSON.parse(JSON.stringify(DB.hero.own)),enemyType1,DB.army.total[0],kill_die]});
+    callback({ok:[isvic,mess,JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(enemyType1)),DB.army.total[0],kill_die]});
 
 }
 
@@ -689,13 +693,11 @@ const fightAccount = (param: any, callback) => {
             DB.res.win[1] += win -DB.res.fail[1];
             DB.res.fail[1] = 0;
         }
-        if(effect){
-            
+        if(effect){           
             for(let i=0;i<effect_num.length;i++){
                 DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
                 effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
             }   
-
         }
         //加武将能力,添加受伤状态
         let a = [300,200,90,80,70,50,30,0],
@@ -744,9 +746,18 @@ const fightAccount = (param: any, callback) => {
 
 }
 
+const lose = (param: any, callback) => {
+    if(DB.map.city[4]){
+        callback({err:1});
+    }else{
+       DB.map.city[4] += Math.ceil(DB.map.city[0]/2) 
+       callback({ok:[DB.map.city[4]]});
+    }
+}
+
 Connect.setTest("app/fight@fight",fight);
 Connect.setTest("app/fight@fightAccount",fightAccount);
-
+Connect.setTest("app/fight@lose",lose);
 /****************** shop ******************/
 //市场资源价格
 const buy = (param: any, callback) => {

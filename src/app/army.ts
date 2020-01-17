@@ -69,7 +69,9 @@ class Army {
             }
         }
     }
-   
+    static updatePrice(){
+        armyNode[2].text = `${DB.data.army.price[0]}黄金`
+    }
         
 }
 /**
@@ -177,6 +179,7 @@ class WArmy extends Widget{
         super.setProps(props);
         let color = 6
         this.cfg.children[1].data.text = `${DB.data.army.cur}`;
+        this.cfg.children[3].data.text = `${DB.data.army.price[0]}黄金`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
         //消耗加颜色
         if(DB.data.res.gold[1]>=parseInt(this.cfg.children[3].data.text)){
@@ -284,4 +287,9 @@ DB.emitter.add(`res.gold.1`, () => {
 //注册将领受伤监听
 DB.emitter.add(`hero.own`, () => {
     Army.updateHero()
+});
+
+//注册将领受伤监听
+DB.emitter.add(`army.price.0`, () => {
+    Army.updatePrice()
 });

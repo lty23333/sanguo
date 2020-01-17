@@ -446,15 +446,15 @@
         },
         {
             "type": "rect",
-            "on":{"tap":{"func":"pause_button"}},
+            "on":{"tap":{"func":"warning"}},
             "data": {
-                "id":"pause_button",
+                "id":"warning",
                 "width": 150,
                 "height": 50,
                 "left": 580,
-                "top": 10,
+                "top": 20,
                 "background-color": "#d9c6ad",
-                "background-alpha":0.4,
+                "background-alpha":0.8,
                 "alpha":1
             },
             "children": [
@@ -462,9 +462,11 @@
                 {
                     "type": "text",
                     "data": {
+                        "id":"warning_button",
                         "text": "和平",
-                        "top":20,
-                        "style": {"fontSize":30,"fill":"0xFFFF00","strokeThickness":2, "align" : "center"}
+                        "top":5,
+                        "left": 0,
+                        "style": {"fontSize":30,"fill":"0xff6347","strokeThickness":2, "align" : "center"}
                     }
                 }
             ]

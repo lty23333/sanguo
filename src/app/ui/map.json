@@ -32,6 +32,18 @@
             }
         },
         {
+            "type": "text",
+            "data": {
+                "id":"city_reduce",
+                "text":"",
+                "left":285,
+                "top": 315,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xff6347", "align" : "left","strokeThickness":2
+                }
+            }
+        },
+        {
             "type": "rect",
             "data": {
                 "width": 10,

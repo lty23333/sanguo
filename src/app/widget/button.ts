@@ -27,7 +27,7 @@ class Button extends Widget{
     */
     setProps(props){
         super.setProps(props);
-        const cfg = this.cfg,text = cfg.children[0].data,dk = ["id","width","height","left","top","background-color","background-alpha","radius"];
+        const cfg = this.cfg,text = cfg.children[0].data,dk = ["id","width","height","left","top","background-color","background-alpha","radius","alpha"];
         for(let i = 0, len = dk.length; i < len; i++){
             if(props[dk[i]] != undefined){
                 cfg.data[dk[i]] = props[dk[i]];

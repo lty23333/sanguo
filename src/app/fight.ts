@@ -14,8 +14,7 @@ import {addNews} from './stage';
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
-let heroList = [],  //己方英雄列表
-    lastFace,        //上一个界面
+let lastFace,        //上一个界面
     enemyType,       //敌人种类,-1是入侵的，0,1,2代表第几个据点
     faceName = ["intoScience", "intoPeople","intoBuild","intoArmy","intoMap"],
     fighter,         //参战数据[[[id,num,add+1,位置,兵种],[己方]],[[敌方],[方]]]
@@ -49,11 +48,6 @@ class Fight {
 
 
 
-    static updateHerolist(){
-        if(Global.mainFace.id == 4){
-            initHero();
-        }
-    }
     static run(){
         if(state == "start"){
             moverF = sitP[fight_show[0][1]][fight_show[0][2]]
@@ -360,20 +354,7 @@ class WfightAccount extends Widget{
         this.node = node;
     }
 } 
-//初始化英雄列表
-const initHero = () => {
-    heroList = DB.data.hero.own;
-    let t
-    for(let i=0; i<heroList.length;i++ ){
-        for(let j=i; j<heroList.length;j++ ){
-            if(heroList[i][1]<heroList[j][1]){
-                t = heroList[i];
-                heroList[i] = heroList[j];
-                heroList[j] = t;
-            }
-        }
-    }
-}
+
 /**
  * @description 打开战斗界面
  */
@@ -411,7 +392,11 @@ const open = () => {
         isvic = data.ok[0];
         fight_show = data.ok[1];
         DB.data.hero.own = data.ok[2];
-        DB.data.map.guard = data.ok[3];
+        if(enemyType>-1){
+            DB.data.map.guard = data.ok[3]; 
+        }else{
+            DB.data.hero.enemy = data.ok[3]; 
+        }
         DB.data.army.total[0] = data.ok[4];
         kill_die = data.ok[5];
         Fight.pause = 0;
