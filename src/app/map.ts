@@ -250,12 +250,14 @@ class WfightWindow extends Widget{
     lose(){
         Connect.request({type:"app/fight@lose",arg:[]},(data) => {
             if(data.err == 1){
-                
+                AppEmitter.emit("stagePause");
+                Scene.open("app-ui-result", Scene.root);
             }else{
                 DB.data.map.city[4] = data.ok[0]
             }
-        }
+        })
     } 
+
     added(node){
         this.node = this.props.backNode;;
     }

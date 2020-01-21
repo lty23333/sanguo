@@ -30,7 +30,8 @@ export const addFNews = (news) => {
 }
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
-    startNode // 开始游戏界面
+    startNode, // 开始游戏界面
+    circleNode // 轮回商店界面
 
 
 class Stage {
@@ -770,15 +771,75 @@ class WWarning extends Widget{
 class WResult extends Widget{
     setProps(props){
         super.setProps(props);
-        let text = [["兵败如山倒，残存亦末路。","“我。。又失败了吗？”","你颓然倒地，心中满是不甘。","仿佛有无数次失败身死之情交叠于身。","“咦，‘又’？”","“我为什么要说‘又’？”"," 。。。"],
-                   ["最高坚持115年，便是115个轮回币。","你死死攥着手中的硬币，深知那是翻盘的最后本钱。","此刻，你已回想起了一切。","豁然开朗之后，便只剩下一个疑问。。。","那么，","再来一次，","是否便能改变一切？"]]
+        let text = ["兵败如山倒，残存亦末路。","“我。。又失败了吗？”","你颓然倒地，心中满是不甘。","仿佛有无数次失败身死之情交叠于身。","“咦，‘又’？”","“我为什么要说‘又’？”"," 。。。"]
              
-            for(let i = 1;i<8;i++){
-                this.cfg.children[i].data.text = `敌袭预警`;
-            }        
+            for(let i = 0;i<text.length;i++){
+                this.cfg.children[i+1].data.text = text[i];
+                for(let j = 1;j<6;i++)
+                    setTimeout(() => {
+                        this.cfg.children[i+1].data.alpha = j*0.2
+                    }, 200*j +i*1000);  
+            }
+   
+    }
+    next(){
+        let text = ["最高坚持115年，便是115个轮回币。","你死死攥着手中的硬币，深知那是翻盘的最后本钱。","此刻，你已回想起了一切。","豁然开朗之后，便只剩下一个疑问。。。","那么，","再来一次，","是否便能改变一切？"]
+        if(this.cfg.children[8].data.alpha == 1){
+            this.cfg.children[8].data.alpha == 0
+            this.cfg.children[9].data.alpha == 1
+            this.cfg.children[10].data.alpha == 1
+
+            for(let i = 0;i<text.length;i++){
+                this.cfg.children[i+1].data.text = text[i];
+                for(let j = 1;j<6;i++)
+                    setTimeout(() => {
+                        this.cfg.children[i+1].data.alpha = j*0.2
+                    }, 200*j +i*1000);  
+            }
+
+        }
+    }
+    restart(){
+        this.remove();
+        circleNode =Scene.open(`app-ui-circle`,Scene.root, null, {});
+        Scene.open(`app-ui-circle_shop`,circleNode, null, {});
+
+    }
+    main(){
+        this.remove();
+        openStart();
+    }
+    //场外数据保存与场景清楚
+    remove(){
+        Scene.root.removeChildren();
+        Connect.request({type:"app/circle@update",arg:[]},(data) => {
+            if(data.err){
+                return console.log(data.err.reson);
+            }else{
+                DB.data.circle = data.ok[0];
+            }
+        })
+
     }
 }
+/**
+ * @description 轮回商店界面
+ */
+class WCircle extends Widget{
+    node:any
+    setProps(props){
+        super.setProps(props);
+        
+    }
 
+    open(id){
+        Scene.open(`app-ui-circle_${id}`,circleNode);
+        Scene.remove(this.node);
+    }
+    added(node){
+        this.node = node;
+    }
+}
 
 /**
  * @description 开始游戏界面
@@ -791,13 +852,17 @@ class WStart extends Widget{
 
     //重新开始
     startGame(){
-        Scene.remove(startNode);
-        open();
-        AppEmitter.emit("intoBuild"); 
-        startNode = null;
-        Stage.pause = 0;  
-        Stage.time = Date.now() + Stage.timeInterval;
-        Stage.nextDay = Date.now() + Stage.dayTime;
+        Connect.request({type:"app/circle@read",arg:[]},(data) => {
+            let d = JSON.parse(data.ok);
+            for(let i in d){
+                for(let j in d[i]){
+                    DB.data.cirlce[i][j] = d[i][j];
+                }
+            }
+        })   
+        circleNode =Scene.open(`app-ui-circle`,Scene.root, null, {});
+        Scene.open(`app-ui-circle_shop`,circleNode, null, {});
+
     }
     //继续游戏
     continue(){
@@ -817,14 +882,9 @@ class WStart extends Widget{
             }
         })
     
-        Scene.remove(startNode);
-        open();
-        AppEmitter.emit("intoBuild"); 
-        startNode = null;
-        Stage.pause = 0;  
-        Stage.time = Date.now() + Stage.timeInterval;
-        Stage.nextDay = Date.now() + Stage.dayTime;
+        begin();
     }
+
 }
 
 /**
@@ -858,6 +918,16 @@ const start = () => {
     Stage.pause = 0;
 } 
 
+const begin = () => {
+    Scene.remove(startNode);
+    open();
+    AppEmitter.emit("intoBuild"); 
+    startNode = null;
+    Stage.pause = 0;  
+    Stage.time = Date.now() + Stage.timeInterval;
+    Stage.nextDay = Date.now() + Stage.dayTime;
+}    
+
 
 /****************** 立即执行 ******************/
 
@@ -870,7 +940,7 @@ DB.init("face",{"unlock":[1,0,1,1,1]});
 DB.init("event",{"next":[2001]});
 
 DB.init("news",[[],[]]);//新闻
-
+DB.init("circle",{coin:[0],own:[],year:[0]});//轮回币，上一局将领，最高纪录年
 
 //注册组件
 Widget.registW("app-ui-stage",WStage);
@@ -882,7 +952,7 @@ Widget.registW("app-ui-resDis",WResdis);
 Widget.registW("app-ui-news",WNews);
 Widget.registW("app-ui-confirm",WConfirm);
 Widget.registW("app-ui-warning",WWarning);
-
+Widget.registW("app-ui-result",WResult);
 //注册循环
 
 Frame.add(()=>{

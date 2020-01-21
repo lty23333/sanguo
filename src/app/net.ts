@@ -20,7 +20,7 @@ const saveDb = (key,data) => {
 }
 
 let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[1,100,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
-build:[[1,0]],
+build:[],
 date:{unlock:[0,0],day:[0],warning:[0,0]},
 people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
 face:{"unlock":[0,0,1,1,1]},
@@ -29,7 +29,8 @@ hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],ad
 hotel:{date:[0],price:[10]},
 shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
 army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0,10000,0,10,0],attack:[[]],guard:[]}
+map:{date:[1],city:[0,10000,0,10,0],attack:[[]],guard:[]},
+circle:{coin:[0],own:[],year:[0]}
 }
 
 const initScience = () => {
@@ -60,6 +61,8 @@ const initDB = () => {
     initHero();
 }
 
+
+
 const read_all = (param: any, callback) => {
     let r = "",rs;
     for (let k in DB){
@@ -72,7 +75,30 @@ const read_all = (param: any, callback) => {
     callback({ok:`{${r}}`});
 }
 
+
 Connect.setTest("app/all@read",read_all);
+/****************** circle ******************/
+const update = (param: any, callback) => {   
+    DB.circle.year[0] = Math.ceil(DB.date.day[0]/400) >DB.circle.year[0]?Math.ceil(DB.date.day[0]/400):DB.circle.year[0]
+    DB.circle.coin[0] = DB.circle.year[0]
+    DB.circle.own = JSON.parse(JSON.stringify(DB.hero.own))
+    saveDb("circle",DB.circle);
+    callback({ok:JSON.parse(JSON.stringify(DB.circle))});
+}
+const read = (param: any, callback) => {   
+    let r = "",rs;
+    for (let k in DB.circle){
+        rs = localStorage["circle"][k];
+        if(rs){
+            DB.circle[k] = JSON.parse(rs);
+        }
+        r = `${r}${r?",":""}"${k}":${rs||JSON.stringify(DB.circle[k])}`
+    }
+    callback({ok:`{${r}}`});
+}
+
+Connect.setTest("app/circle@update",update);
+Connect.setTest("app/circle@read",read);
 /****************** date ******************/
 const update_date = (param: any, callback) => {   
      DB.date.day[0] += 1;

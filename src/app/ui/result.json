@@ -109,6 +109,91 @@
                 },
                 "alpha":0
             }
+        },
+
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"next"}},
+            "data": {
+                "width": 204,
+                "height": 104,
+                "left": 275,
+                "top": 1000,
+                "background-color": "0x696969",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30,
+                "alpha":1
+            },
+            "children": [
+        
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "继续",
+                        "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
+                    }
+                }
+            ]
+        }, 
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"restart"}},
+            "data": {
+                "width": 204,
+                "height": 104,
+                "left": 150,
+                "top": 1000,
+                "background-color": "0x696969",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30,
+                "alpha":0
+            },
+            "children": [
+        
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "再来一次",
+                        "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
+                    }
+                }
+            ]
+        }, 
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"main"}},
+            "data": {
+                "width": 204,
+                "height": 104,
+                "left": 400,
+                "top": 1000,
+                "background-color": "0x696969",
+                "background-alpha":0.4,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30,
+                "alpha":0
+            },
+            "children": [
+        
+                {
+                    "type": "text",
+                    "data": {
+                        "text": "主界面",
+                        "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
+                    }
+                }
+            ]
         }
     ]
 }

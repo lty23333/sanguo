@@ -1,0 +1,285 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 750,
+        "height": 1334,
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"open","arg":["res"]}},
+            "data": {
+                "width": 220,
+                "height": 300,
+                "left": 0,
+                "top": 0,
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
+            },
+            "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"name",
+                        "text":"天时",
+                        "left":10,
+                        "top": 20,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"dis",
+                        "text":"开局时，直接获得兑换的资源。",
+                        "left":10,
+                        "top": 75,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"open","arg":["build"]}},
+            "data": {
+                "width": 220,
+                "height": 300,
+                "left": 0,
+                "top": 0,
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
+            },
+            "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"name",
+                        "text":"地利",
+                        "left":10,
+                        "top": 20,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"dis",
+                        "text":"开局时，直接获得兑换的建筑。",
+                        "left":10,
+                        "top": 75,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"open","arg":["hero"]}},
+            "data": {
+                "width": 220,
+                "height": 300,
+                "left": 0,
+                "top": 0,
+                "background-color":"#d9c6ad",
+                "background-alpha":0.75,
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5,
+                "radius":30
+            },
+            "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"name",
+                        "text":"人和",
+                        "left":10,
+                        "top": 20,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"dis",
+                        "text":"兑换前世的将领继续跟随你。",
+                        "left":10,
+                        "top": 75,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"text0",
+                        "text":"",
+                        "left":10,
+                        "top": 320,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                }
+            ]
+        }
+     
+    ]
+}
