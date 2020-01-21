@@ -31,7 +31,8 @@ export const addFNews = (news) => {
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
     startNode, // 开始游戏界面
-    circleNode // 轮回商店界面
+    circleNode, // 轮回商店界面
+    circleFaceNode //轮回购买界面
 
 
 class Stage {
@@ -84,6 +85,7 @@ class Stage {
     static pause_button
     static restart_button
     static warning_button
+    static shopText = [[],[],[]] //轮回商店说明节点
 
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
@@ -801,8 +803,8 @@ class WResult extends Widget{
     }
     restart(){
         this.remove();
-        circleNode =Scene.open(`app-ui-circle`,Scene.root, null, {});
-        Scene.open(`app-ui-circle_shop`,circleNode, null, {});
+        circleNode = Scene.open(`app-ui-circle`,Scene.root, null, {});
+        Scene.open(`app-ui-circleShop`,circleNode, null, {});
 
     }
     main(){
@@ -825,7 +827,7 @@ class WResult extends Widget{
 /**
  * @description 轮回商店界面
  */
-class WCircle extends Widget{
+class WCircleShop extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
@@ -833,12 +835,18 @@ class WCircle extends Widget{
     }
 
     open(id){
-        Scene.open(`app-ui-circle_${id}`,circleNode);
-        Scene.remove(this.node);
+        let good = [[0,1,2,3],[1000,1005,1007],[]]
+        good[2] = DB.data.circle.own
+        circleFaceNode = Scene.open(`app-ui-circleFace`,circleNode);
+        for(let i=0;i<good[id].length;i++){
+            Scene.open(`app-ui-circleGood`,circleFaceNode,null,{type:id,index:i});
+        }
     }
     added(node){
         this.node = node;
+
     }
+    
 }
 
 /**
@@ -953,6 +961,10 @@ Widget.registW("app-ui-news",WNews);
 Widget.registW("app-ui-confirm",WConfirm);
 Widget.registW("app-ui-warning",WWarning);
 Widget.registW("app-ui-result",WResult);
+Widget.registW("app-ui-circleShop",WCircleShop);
+Widget.registW("app-ui-circleFace",WCircleFace);
+Widget.registW("app-ui-circleGood",WCircleGood);
+
 //注册循环
 
 Frame.add(()=>{

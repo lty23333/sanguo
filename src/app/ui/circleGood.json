@@ -1,0 +1,108 @@
+{   
+    "type": "container",
+    "on":{"tap":{"func":"remove"}},
+    "data": {
+        "width": 750,
+        "height": 1334,
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "width": 240,
+                 "height": 90,
+                 "left": 80,
+                 "top": 300,
+                 "background-color": "#d9c6ad",
+                 "background-alpha":0.75,
+                 "border-width":2,
+                 "border-color":"0xe6e6fa",
+                 "border-alpha":0.5,
+                 "border-align":0.5
+            },"children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"name",
+                        "text":"128粮食",
+                        "left":0,
+                        "top": 30,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"dis",
+                        "text":"0",
+                        "left":0,
+                        "top": 70,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"cost",
+                        "text":"1轮回币",
+                        "left":0,
+                        "top": 100,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type":"app-ui-button",
+                    "props":{
+                        "on":{"tap":{"func":"res_plus","arg":[0]}},
+                        "id":"button_+",
+                        "left": 0,
+                        "top": 140,
+                        "text": "+",
+                        "size":35,
+                        "width": 80,
+                        "height": 80,
+                        "background-color":"#d9c6ad",
+                        "background-alpha":0.75
+                    }
+                },
+                {
+                    "type":"app-ui-button",
+                    "props":{
+                        "on":{"tap":{"func":"res_minus","arg":[0]}},
+                        "id":"button_-",
+                        "left": 170,
+                        "top": 140,
+                        "text": "-",
+                        "size":35,
+                        "width": 80,
+                        "height": 80,
+                        "background-color":"#d9c6ad",
+                        "background-alpha":0.75
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"number",
+                        "text":"0",
+                        "left":0,
+                        "top": 150,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                }
+            ]
+        }     
+
+     
+    ]
+}

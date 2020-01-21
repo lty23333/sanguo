@@ -9,7 +9,7 @@
     "children":[
         {
             "type": "rect",
-            "on":{"tap":{"func":"open","arg":["res"]}},
+            "on":{"tap":{"func":"open","arg":[0]}},
             "data": {
                 "width": 220,
                 "height": 300,
@@ -51,7 +51,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text00",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -63,7 +63,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text01",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -75,7 +75,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text02",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -87,7 +87,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text03",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -100,7 +100,7 @@
         },
         {
             "type": "rect",
-            "on":{"tap":{"func":"open","arg":["build"]}},
+            "on":{"tap":{"func":"open","arg":[1]}},
             "data": {
                 "width": 220,
                 "height": 300,
@@ -142,7 +142,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text10",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -154,7 +154,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text11",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -166,7 +166,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text12",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -178,7 +178,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text13",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -191,7 +191,7 @@
         },
         {
             "type": "rect",
-            "on":{"tap":{"func":"open","arg":["hero"]}},
+            "on":{"tap":{"func":"open","arg":[2]}},
             "data": {
                 "width": 220,
                 "height": 300,
@@ -233,7 +233,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text20",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -245,7 +245,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text21",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -257,7 +257,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text22",
                         "text":"",
                         "left":10,
                         "top": 320,
@@ -269,7 +269,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"text0",
+                        "id":"text23",
                         "text":"",
                         "left":10,
                         "top": 320,
