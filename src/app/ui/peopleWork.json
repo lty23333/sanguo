@@ -27,7 +27,7 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"button_people",
+                        "id":"button_work",
                         "text":"工作",
                         "left":0,
                         "top": 10,

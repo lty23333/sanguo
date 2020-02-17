@@ -42,11 +42,17 @@ class Build {
     //更新建筑数量
     static updateBuild(id,type){
         if(type ==0){
-            if(DB.data.build[id][0] >=1 && Global.mainFace.id ==2){
-                Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:id+1000});
+            if(DB.data.build[id][0] >=1){
+                if(Global.mainFace.id ==2){
+                  if(id != 2){ //用住房解锁学堂单独处理
+                    Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:id+1000});
+                  }
+                }else{
+                    DB.data.face.new[2] = 1
+                }
             }
         }
-        if(type ==1){
+        if(type ==1 && id != 14){  //排除山路
             let bcfg = CfgMgr.getOne("app/cfg/build.json@build")
             if(bcfg!= undefined && Global.mainFace.id == 2){
                 let name = bcfg[`${id+1000}`]["name"]
@@ -72,7 +78,7 @@ class Build {
                     if(DB.data.res[cost_name][1]<cost){
                         enough = 0
                     }
-                    if(Build.build[i][0].style.fill != Global.color[enough]){
+                    if(Build.build[i][0] && Build.build[i][0].style.fill != Global.color[enough]){
                         Build.build[i][0].style.fill = Global.color[enough];
                     }
                     if(id == Build.cur_buildId && Build.com_cost){
@@ -131,10 +137,10 @@ class Build {
         }
     }
 
-    
+
 }
 
-
+ 
 
 
 /**
@@ -161,12 +167,16 @@ class WbuildButton extends Widget{
         if(cost <= DB.data.res[cost_name][1]){
             color += 1
         }
+        if(id==1014 && DB.data.build[0][1]<5){
+            color = 0
+        }
         this.cfg.children[1].data.style.fill = Global.color[color];
 
 
     }
 
     addBuild(type){
+        AppEmitter.emit("stagePause");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         //如果是酒馆，则特殊处理
         if(type==1007){
@@ -208,13 +218,19 @@ class WBuild extends Widget{
         Build.totalNode = this.elements.get("build_number");
     }
     manfood_number(){
-        Connect.request({type:"app/res@manfood",arg:{}},(data) => {
-            if(data.err){
-                return console.log(data.err.reson);
-            }
-            DB.data.res.food[1] = data.ok;
-            AppEmitter.emit("message","粮食+2");
-        })
+        if(DB.data.fore.pause[0] == 0){
+            Connect.request({type:"app/res@manfood",arg:{}},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }
+                DB.data.res.food[1] = data.ok[0];
+                DB.data.build[0][0] = data.ok[1];
+                DB.data.build[14][0] = data.ok[2];
+                AppEmitter.emit("message","粮食+2");
+            })
+        }else{
+            AppEmitter.emit("message","暂停时不能采集野果");
+        }
     }
 }
 //市场资源弹窗
@@ -317,11 +333,7 @@ class Wshop extends Widget{
                     return console.log(data.err.reson);
                 }else{
                     for(let i=0;i<effect.length;i++){
-                        if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
-    
-                        }else{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                        }
                     }   
                     DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
@@ -404,6 +416,8 @@ class Whero extends Widget{
                     Build.heroNode.splice(data.ok[3],1);
                     this.remove();
                     AppEmitter.emit("message",`${bcfg[id]["name"]}加入麾下`);
+                    //军队红点
+                    DB.data.face.new[3] = 1
 
                 }
             })    
@@ -559,14 +573,20 @@ class WcomWindow extends Widget{
         } 
         Build.cur_buildId = id
 
-        if(id == 1014){
-            this.cfg.children[7].data.text = "建造条件";
-        }
         //消耗加颜色
         if(cost <= DB.data.res[cost_name][1]){
             color = 2
         }
         this.cfg.children[7].data.style.fill = Global.color[color];
+        if(id == 1014){
+            this.cfg.children[6].data.text = "建造条件";
+            this.cfg.children[7].data.text = "建造5座果园";
+            if(DB.data.build[0][1]<5){
+                this.cfg.children[7].data.style.fill = Global.color[6];
+
+            }
+        }
+
        
     }
     levelup(){
@@ -593,11 +613,7 @@ class WcomWindow extends Widget{
                     return console.log(data.err.reson);  
                 }else{
                     for(let i=0;i<effect.length;i++){
-                        if (Number(effect[i][2]) == 0 && DB.data[effect[i][0]][effect[i][1]][effect[i][2]] == 1){
-    
-                        }else{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                        }
                     }   
                     DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
@@ -609,6 +625,13 @@ class WcomWindow extends Widget{
                     Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    //消耗的颜色
+                    if(cost>DB.data.res[`${bcfg[id]["cost_type1"]}`][1]){
+                        Build.com_cost.style.fill = Global.color[6]
+                    }else{
+                        Build.com_cost.style.fill = Global.color[2]
+                    }
+
                     if(cost_name2){
                         Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
                     }
@@ -623,8 +646,13 @@ class WcomWindow extends Widget{
                     AppEmitter.emit("message",`${bcfg[id]["name"]}+1`);
 
                     //山路特殊处理
-                    if(id == 1015){
-                        addNews(`村民偶于山间得良木，献之。（木材+${bcfg[id]["effect_number"][0]}）`);
+                    if(id == 1014){
+                        addNews(`有村民偶得良木于山间，献之。（木材+${bcfg[id]["effect_number"][3]}）`);
+                        Scene.remove(this.node);
+                        AppEmitter.emit("stageStart");  
+                    }
+                    if(id == 1000 && DB.data.build[0][1] == 5){
+                        Build.build[14][0].style.fill = Global.color[1];
                     }
                 }
             })    
@@ -647,11 +675,7 @@ class WcomWindow extends Widget{
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-build", Scene.root);
     Global.mainFace.id = 2;
-     DB.data.build[8][0]=1;
-     DB.data.build[13][0]=1;
-     for(let i= 0;i<13;i++){
-        DB.data.build[i][0]=1;
-     }
+
     //显示解锁的建筑按钮
     for(let i=0; i<DB.data.build.length;i++ ){
         if(DB.data.build[i][0]){
@@ -691,9 +715,10 @@ const initBuild = () => {
         tempDB.push([0,0]);
     }
     DB.init("build", tempDB);
+    DB.init("hotel",{date:[0],price:[10]});
+    DB.init("shop",{date:[0],price:[0,0,0,0,0,0],number:[100]})
+
 };
-DB.init("hotel",{date:[0],price:[10]});
-DB.init("shop",{date:[0],price:[0,0,0,0,0,0],number:[100]})
 
 //注册页面打开事件
 AppEmitter.add("intoBuild",(node)=>{

@@ -30,18 +30,17 @@ class Science {
     static textNode = []
 
 
-
     //更新知识数量
     static updateScience(id,type){
         if(type ==0){
             if(DB.data.science[id][0]==1 && Global.mainFace.id ==0){
-                Science.unlock_science.push(id+101);
+                Science.unlock_science.push(id+100);
                 Science.updateScienceButton();
             }
         }
         if(type ==1){
             if(DB.data.science[id][1] && Global.mainFace.id == 0){
-                Science.unlock_science.splice(Science.unlock_science.indexOf(id+101),1);   
+                Science.unlock_science.splice(Science.unlock_science.indexOf(id+100),1);   
                 Science.updateScienceButton();        
             }
         }
@@ -113,6 +112,7 @@ class WscienceButton extends Widget{
     }
 
     unlockScience(type){
+        AppEmitter.emit("stagePause");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         Scene.open(`app-ui-comscienceWindow`,this.backNode, null, {id:type,backNode:this.backNode});
     }
@@ -171,7 +171,7 @@ class WcomWindow extends Widget{
                 for(let i=0;i<effect.length;i++){
                     DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                 }   
-                DB.data.science[id-101][1] = data.ok[0];
+                DB.data.science[id-100][1] = data.ok[0];
                 DB.data.res.sci[1] = data.ok[1];
 
                 //更新窗口信息
@@ -202,7 +202,7 @@ const open = () => {
     //显示解锁的知识按钮
     for(let i=0; i<DB.data.science.length;i++ ){
         if(DB.data.science[i][0] && !DB.data.science[i][1]){
-            Science.unlock_science.push(i+101);
+            Science.unlock_science.push(i+100);
         }
     }
     Science.updateScienceButton(); 

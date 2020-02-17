@@ -26,6 +26,12 @@ class Army {
     static arms_Cname =["步兵","骑兵","弓兵"]
     static hero_top =[30,160,260,360,460,560]
 
+    static initDB(){
+        //初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
+        DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
+        DB.init("army",{cur:[0],total:[0],price:[50]});
+    }
+    
     static eatGold(){
         Connect.request({type:"app/res@eatGold",arg:{}},(data) => {
             if(data.err){
@@ -149,18 +155,23 @@ class WHero extends Widget{
     army_max (id){
         Connect.request({type:"app/army@army_max",arg:id},(data) => {
             if(data.err){
-                return console.log(data.err.reson);
+                if(data.err == 3){
+                    AppEmitter.emit("message",`目前最多${DB.data.hero.MaxHero[0]}名将领同时带兵`);
+                }else if(data.err == 4){
+                    AppEmitter.emit("message",`${bcfg[DB.data.hero.own[id][0]]["name"] }正在养伤，无法带兵。`);
+                }
+            }else{
+                DB.data.hero.own[id][1] = data.ok[0];
+                DB.data.army.cur[0] = data.ok[1];
+                DB.data.hero.MaxHero[2] = data.ok[2];   
             }
-            DB.data.hero.own[id][1] = data.ok[0];
-            DB.data.army.cur[0] = data.ok[1];
-            DB.data.hero.MaxHero[2] = data.ok[2];
         })
     }
     //革职
     hero_delete (id){
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             name = bcfg[DB.data.hero.own[id][0]]["name"];
-
+        AppEmitter.emit("stagePause");
         Scene.open(`app-ui-confirm`, Global.mainFace.node, null, {text:`革职后，您将永远失去${name}。\n确认吗？`,on:"hero_delete",arg:[id]});
     }
 
@@ -259,9 +270,6 @@ let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
 for(let i in bcfg ){
     leftHero[bcfg[i]["color"]].push(i);
 }
-//初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
-DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
-DB.init("army",{cur:[0],total:[0],price:[50]});
 
 //注册军队人口监听
     DB.emitter.add(`army.cur.0`, () => {
@@ -292,4 +300,9 @@ DB.emitter.add(`hero.own`, () => {
 //注册将领受伤监听
 DB.emitter.add(`army.price.0`, () => {
     Army.updatePrice()
+});
+
+ //初始化数据库
+ AppEmitter.add("initDB",(node)=>{
+    Army.initDB();
 });

@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"remove"}},
     "data": {
-        "width": 750,
-        "height": 1334,
+        "width": 200,
+        "height": 90,
         "left": 0,
         "top": 0
     },
@@ -11,10 +11,10 @@
         {
             "type": "rect",
             "data": {
-                "width": 240,
-                 "height": 90,
-                 "left": 80,
-                 "top": 300,
+                "width": 200,
+                 "height": 120,
+                 "left": 0,
+                 "top": 0,
                  "background-color": "#d9c6ad",
                  "background-alpha":0.75,
                  "border-width":2,
@@ -28,7 +28,7 @@
                         "id":"name",
                         "text":"128粮食",
                         "left":0,
-                        "top": 30,
+                        "top": 50,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
                         }
@@ -37,10 +37,22 @@
                 {
                     "type": "text",
                     "data": {
-                        "id":"dis",
-                        "text":"0",
+                        "id":"dis0",
+                        "text":"",
                         "left":0,
-                        "top": 70,
+                        "top": 50,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"dis1",
+                        "text":"",
+                        "left":0,
+                        "top": 80,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                         }
@@ -52,7 +64,7 @@
                         "id":"cost",
                         "text":"1轮回币",
                         "left":0,
-                        "top": 100,
+                        "top": 130,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                         }
@@ -61,14 +73,14 @@
                 {
                     "type":"app-ui-button",
                     "props":{
-                        "on":{"tap":{"func":"res_plus","arg":[0]}},
+                        "on":{"tap":{"func":"plus"}},
                         "id":"button_+",
-                        "left": 0,
-                        "top": 140,
+                        "left": 30,
+                        "top": 200,
                         "text": "+",
                         "size":35,
-                        "width": 80,
-                        "height": 80,
+                        "width": 60,
+                        "height": 60,
                         "background-color":"#d9c6ad",
                         "background-alpha":0.75
                     }
@@ -76,14 +88,14 @@
                 {
                     "type":"app-ui-button",
                     "props":{
-                        "on":{"tap":{"func":"res_minus","arg":[0]}},
+                        "on":{"tap":{"func":"minus"}},
                         "id":"button_-",
                         "left": 170,
-                        "top": 140,
+                        "top": 200,
                         "text": "-",
                         "size":35,
-                        "width": 80,
-                        "height": 80,
+                        "width": 60,
+                        "height": 60,
                         "background-color":"#d9c6ad",
                         "background-alpha":0.75
                     }
@@ -94,7 +106,7 @@
                         "id":"number",
                         "text":"0",
                         "left":0,
-                        "top": 150,
+                        "top": 180,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
                         }

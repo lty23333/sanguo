@@ -7,7 +7,7 @@
         "left": 0,
         "top": 0
     },
-    "children":[
+    "children":[ 
         {
             "type": "sprite",
             "data": {
@@ -52,34 +52,46 @@
                   "border-color":"0xe6e6fa",
                   "border-alpha":0.3,
                   "border-align":0.5
-               }
-            }, 
-             
-            {
-                "type": "text",
-                "data": {
-                    "id":"year",
-                    "text":"",
-                    "left":25,
-                    "top": 100,
-                    "style":{
-                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+               },
+               "children":[
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"day",
+                        "text":"",
+                        "left":25,
+                        "top": 70,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"year",
+                        "text":"",
+                        "left":25,
+                        "top": 110,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
+                    }
+                },
+                {
+                    "type": "text",
+                    "data": {
+                        "id":"fiveYear",
+                        "text":"",
+                        "left":25,
+                        "top": 150,
+                        "style":{
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                        }
                     }
                 }
-            },
-            {
-                "type": "text",
-                "data": {
-                    "id":"day",
-                    "text":"",
-                    "left":25,
-                    "top": 70,
-                    "style":{
-                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                    }
-                }
-            }
-           
+               ]
+            }           
          ]
         },
         {   
@@ -129,12 +141,36 @@
                         {
                             "type": "text",
                             "data": {
-                                "id":"button_autfood_number",
+                                "id":"face_text0",
                                 "text": "科技",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
                                 "top": 35
                             }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "new0",
+                                "width": 32,
+                                "height": 32,
+                                "left": 1115,
+                                "top": 10,
+                                "background-color": "0xff6347",
+                                "alpha":1
+                            },
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "data": {
+                                        "id":"newtext",
+                                        "text": "新",
+                                        "style": {"fontSize":24,"fill":"0xffffff", "align" : "center"},
+                                        "left": 50,
+                                        "top": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -176,12 +212,36 @@
                         {
                             "type": "text",
                             "data": {
-                                "id":"button_autfood_number",
+                                "id":"face_text1",
                                 "text": "人口",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
                                 "top": 35
                             }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "new1",
+                                "width": 32,
+                                "height": 32,
+                                "left": 1115,
+                                "top": 10,
+                                "background-color": "0xff6347",
+                                "alpha":1
+                            },
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "data": {
+                                        "id":"newtext",
+                                        "text": "新",
+                                        "style": {"fontSize":24,"fill":"0xffffff", "align" : "center"},
+                                        "left": 50,
+                                        "top": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -223,12 +283,36 @@
                         {
                             "type": "text",
                             "data": {
-                                "id":"button_autfood_number",
+                                "id":"face_text2",
                                 "text": "建筑",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
                                 "top": 35
                             }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "new2",
+                                "width": 32,
+                                "height": 32,
+                                "left": 1115,
+                                "top": 10,
+                                "background-color": "0xff6347",
+                                "alpha":1
+                            },
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "data": {
+                                        "id":"newtext",
+                                        "text": "新",
+                                        "style": {"fontSize":24,"fill":"0xffffff", "align" : "center"},
+                                        "left": 50,
+                                        "top": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -270,12 +354,36 @@
                         {
                             "type": "text",
                             "data": {
-                                "id":"button_autfood_number",
+                                "id":"face_text3",
                                 "text": "军队",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
                                 "top": 35
                             }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "new3",
+                                "width": 32,
+                                "height": 32,
+                                "left": 1115,
+                                "top": 10,
+                                "background-color": "0xff6347",
+                                "alpha":1
+                            },
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "data": {
+                                        "id":"newtext",
+                                        "text": "新",
+                                        "style": {"fontSize":24,"fill":"0xffffff", "align" : "center"},
+                                        "left": 50,
+                                        "top": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -317,12 +425,36 @@
                         {
                             "type": "text",
                             "data": {
-                                "id":"button_autfood_number",
-                                "text": "地图",
+                                "id":"face_text4",
+                                "text": "出征",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
                                 "top": 35
                             }
+                        },
+                        {
+                            "type": "rect",
+                            "data": {
+                                "id": "new4",
+                                "width": 32,
+                                "height": 32,
+                                "left": 1115,
+                                "top": 10,
+                                "background-color": "0xff6347",
+                                "alpha":1
+                            },
+                            "children": [
+                                {
+                                    "type": "text",
+                                    "data": {
+                                        "id":"newtext",
+                                        "text": "新",
+                                        "style": {"fontSize":24,"fill":"0xffffff", "align" : "center"},
+                                        "left": 50,
+                                        "top": 0
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },

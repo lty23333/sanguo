@@ -112,9 +112,9 @@
         {
             "type":"app-ui-button",
             "props":{
-                "on":{"tap":{"func":"fight"}},
+                "on":{"tap":{"func":"lose"}},
                 "id":"button_fight",
-                "left": 450,
+                "left": 1450,
                 "top": 450,
                 "text": "割地求和",
                 "color":"0xff6347",
@@ -123,7 +123,7 @@
                 "height": 100,
                 "background-color":"#d9c6ad",
                 "background-alpha":0.75,
-                "alpha":0
+                "alpha":1
             }
         },
         {

@@ -327,7 +327,7 @@ class WfightAccount extends Widget{
             DB.data.res.win[1]  = data.ok[1];
             if(data.ok[2]){
                 let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
-                if(cityId > 19999){
+                if(cityId > 19999 && cityId < 30000){
                     bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
                 }
                 let effect = bcfg[cityId]["effect_type"],
@@ -346,6 +346,7 @@ class WfightAccount extends Widget{
             }
             DB.data.hero.own = data.ok[3];
            }
+           DB.data.hero.MaxHero[2] = data.ok[4];
         })
     }
 

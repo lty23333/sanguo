@@ -62,7 +62,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 130,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
@@ -86,7 +86,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 180,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
@@ -110,7 +110,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 230,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
@@ -134,7 +134,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 280,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
@@ -158,7 +158,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 330,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
@@ -182,7 +182,7 @@
             "data": {
                 "id":"arr0_number",
                 "text":"",
-                "left":470,
+                "left":280,
                 "top": 380,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"

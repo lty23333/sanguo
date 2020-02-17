@@ -24,7 +24,7 @@
             "props":{
                 "on":{"tap":{"func":"back"}},
                 "id":"back",
-                "left": 275,
+                "left": 375,
                 "top": 1100,
                 "text": "返回",
                 "size":37,

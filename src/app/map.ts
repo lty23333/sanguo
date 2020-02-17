@@ -21,6 +21,12 @@ class Map {
     static city_sprite = []  //据点精灵
     static armyNode = []  //敌军描述节点
 
+
+    static initDB(){
+        //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
+        //city:[占领城市数量，，所有建筑数量，每个城市增加的建筑,被占领城市数量]
+        DB.init("map",{date:[1],city:[1,10000,0,10,0],attack:[[]],guard:[]});
+    }
     //更新据点
     static updateGuard(){
         let time = [15,50,100]
@@ -108,13 +114,8 @@ class WCity extends Widget{
        
     }
     choose(id){
-        let isarmy =0;
-        for(let i = 0;i<DB.data.hero.own.length;i++){
-            if(DB.data.hero.own[0] && DB.data.hero.own[0][1]){
-                isarmy = 1
-            }  
-        }
-        if(isarmy){
+        if(DB.data.army.cur[0]<DB.data.army.total[0]){
+            AppEmitter.emit("stagePause");
             this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
             Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
         }else{
@@ -148,7 +149,8 @@ class WfightWindow extends Widget{
             max =  0 ,
             name 
 
-
+        //暂停时间    
+        AppEmitter.emit("stagePause");
         //判断是进攻还是被入侵
         if(props.index>=0){
             army = DB.data.map.guard[props.index]
@@ -187,7 +189,7 @@ class WfightWindow extends Widget{
         if(props.index == -2){
             this.cfg.children[5].props.text = "迎战"
             this.cfg.children[5].props.left = 150
-            this.cfg.children[6].props.alpha = 1
+            this.cfg.children[6].props.left -= 1000
             this.cfg.children[7].data.alpha = 1
         }
 
@@ -197,65 +199,75 @@ class WfightWindow extends Widget{
 
     }
     fight(){
-        let own =[],
-            bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-            bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
-            bcfg4 = CfgMgr.getOne("app/cfg/city.json@army"),
-            max =  0,
-            army = []
 
-        if(this.props.index>=0){
-            army = DB.data.map.guard[this.props.index]
-        }else{
-            army = JSON.parse(JSON.stringify(DB.data.hero.enemy));
-            army.unshift([]);
-        }
+        //判断是否有军队
+        if(DB.data.army.cur[0]<DB.data.army.total[0]){
+            let own =[],
+                bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
+                bcfg4 = CfgMgr.getOne("app/cfg/city.json@army"),
+                max =  0,
+                army = []
+            
+            if(this.props.index>=0){
+                army = DB.data.map.guard[this.props.index]
+            }else{
+                army = JSON.parse(JSON.stringify(DB.data.hero.enemy));
+                army.unshift([]);
+            }
 
-        for(let i=0;i < DB.data.hero.own.length;i++){
-            if(DB.data.hero.own[i][1]>0){
-                if(!own[i]){own[i] = []}
-                own[max][0] = DB.data.hero.own[i][0]
-                own[max][1] = DB.data.hero.own[i][1]
-                own[max][4] = bcfg[own[i][0]]["arms"]
-                own[max][2] = 1 + (Math.floor(bcfg[own[i][0]]["number"]+DB.data.hero.own[i][2]))/100 + DB.data.hero.add[own[i][4]]
-                own[max][3] = DB.data.hero.own[i][3]
-                max += 1;
-                if(max == DB.data.hero.MaxHero[0]){
-                    break;
+            for(let i=0;i < DB.data.hero.own.length;i++){
+                if(DB.data.hero.own[i][1]>0){
+                    if(!own[max]){own[max] = []}
+                    own[max][0] = DB.data.hero.own[i][0]
+                    own[max][1] = DB.data.hero.own[i][1]
+                    own[max][4] = bcfg[own[max][0]]["arms"]
+                    own[max][2] = 1 + (Math.floor(bcfg[own[max][0]]["number"]+DB.data.hero.own[i][2]))/100 + DB.data.hero.add[own[max][4]]
+                    own[max][3] = DB.data.hero.own[i][3]
+                    max += 1;
+                    if(max == DB.data.hero.MaxHero[0]){
+                        break;
+                    }
                 }
             }
-        }
 
 
-        let enemy = []
-        for(let i=0;i < army.length-1;i++){
-            if(!enemy[i]){enemy[i] = []}
-            enemy[i][0] = army[i+1][0]
-            enemy[i][1] = army[i+1][1]
-            //判断是否是城市
-            if(this.props.id < 20000){
-                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
-            }else{
-                enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/100)]["attribute"]
+            let enemy = []
+            for(let i=0;i < army.length-1;i++){
+                if(!enemy[i]){enemy[i] = []}
+                enemy[i][0] = army[i+1][0]
+                enemy[i][1] = army[i+1][1]
+                //判断是否是城市
+                if(this.props.id < 20000){
+                    enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
+                }else{
+                    enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/100)]["attribute"]
+                }
+                enemy[i][3] = i
+                enemy[i][4] = bcfg[enemy[i][0]]["arms"]
             }
-            enemy[i][3] = i+1
-            enemy[i][4] = bcfg[enemy[i][0]]["arms"]
+            Scene.remove(Global.mainFace.node); 
+            AppEmitter.emit("intoFight",{fighter:[own,enemy],city:this.props.id,enemyType:this.props.index});
+        }else{
+            AppEmitter.emit("message",`无可出战的军队！`);
         }
-        Scene.remove(Global.mainFace.node); 
-        AppEmitter.emit("intoFight",{fighter:[own,enemy],city:this.props.id,enemyType:this.props.index});
+
     } 
     remove(){
         Scene.remove(this.node);   
     } 
+    //投降
     lose(){
         Connect.request({type:"app/fight@lose",arg:[]},(data) => {
             if(data.err == 1){
-                AppEmitter.emit("stagePause");
-                Scene.open("app-ui-result", Scene.root);
+                Scene.open("app-ui-result", Scene.root,null,{id:0});
             }else{
                 DB.data.map.city[4] = data.ok[0]
+                AppEmitter.emit("stageStart");
+                this.remove();
             }
         })
+
     } 
 
     added(node){
@@ -285,9 +297,6 @@ const open = () => {
 Widget.registW("app-ui-map",WMap);
 Widget.registW("app-ui-fightWindow",WfightWindow);
 Widget.registW("app-ui-city",WCity);
-//初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
-//city:[占领城市数量，，所有建筑数量，每个城市增加的建筑,被占领城市数量]
-DB.init("map",{date:[1],city:[0,10000,0,10,0],attack:[[]],guard:[]});
 
 
 
@@ -302,3 +311,7 @@ DB.emitter.add(`map.guard`, () => {
     Map.updateGuard();
 });
 
+//初始化数据库
+AppEmitter.add("initDB",(node)=>{
+    Map.initDB();
+});

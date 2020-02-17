@@ -12,6 +12,7 @@ import util from "../libs/ni/util";
 
 //存储
 let work_name  =["total","food","wood","sci","gold"],
+    res_name  =["food","wood","sci","gold","win","fail"],
     season =[0.5,0,0,-0.75],
     five_res = [[0,0,0,0.5],[0,0.5,0,0],[0,0,0.5,0],[-0.25,0,0,0],[0.5,0,0,0]]
     
@@ -19,19 +20,7 @@ const saveDb = (key,data) => {
     localStorage.setItem(key,JSON.stringify(data));
 }
 
-let DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[1,100,100,0,0,0,0],gold:[1,600,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
-build:[],
-date:{unlock:[0,0],day:[0],warning:[0,0]},
-people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
-face:{"unlock":[0,0,1,1,1]},
-science:[[1,0]],
-hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
-hotel:{date:[0],price:[10]},
-shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
-army:{cur:[0],total:[0],price:[50]},
-map:{date:[1],city:[0,10000,0,10,0],attack:[[]],guard:[]},
-circle:{coin:[0],own:[],year:[0]}
-}
+let DB 
 
 const initScience = () => {
     let bcfg = CfgMgr.getOne("app/cfg/science.json@science")
@@ -56,6 +45,27 @@ const initHero = () => {
 }
 
 const initDB = () => {
+    let cir
+    if(DB && DB.circle && DB.circle.year && DB.circle.year[0]){
+        cir = JSON.parse(JSON.stringify(DB.circle))
+    }
+    DB = undefined
+    DB ={res:{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,500,0,0,0,0],gold:[0,0,600,0,0,0,0],win:[0,0,200,0,0,1,0],fail:[0,0,200,0,0,1,0]},
+        build:[],
+        date:{unlock:[0,0],day:[0],warning:[0,0]},
+        people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]},
+        face:{"unlock":[0,0,1,0,0]},
+        science:[[1,0]],
+        hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]},
+        hotel:{date:[0],price:[10]},
+        shop:{date:[0],price:[0,0,0,0,0,0],number:[100]},
+        army:{cur:[0],total:[0],price:[50]},
+        map:{date:[1],city:[1,10000,0,10,0],attack:[[]],guard:[]},
+        circle:{coin:[0],own:[],year:[0],temp:[[0,0,0,0],[0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}
+        }
+    if(cir){
+        DB.circle = cir
+    }
     initScience();
     initBuild();
     initHero();
@@ -78,27 +88,110 @@ const read_all = (param: any, callback) => {
 
 Connect.setTest("app/all@read",read_all);
 /****************** circle ******************/
-const update = (param: any, callback) => {   
-    DB.circle.year[0] = Math.ceil(DB.date.day[0]/400) >DB.circle.year[0]?Math.ceil(DB.date.day[0]/400):DB.circle.year[0]
+const putin = (param: any, callback) => {   
+    DB.circle.year[0] = Math.max(Math.ceil(DB.date.day[0]/400),DB.circle.year[0])
     DB.circle.coin[0] = DB.circle.year[0]
     DB.circle.own = JSON.parse(JSON.stringify(DB.hero.own))
     saveDb("circle",DB.circle);
-    callback({ok:JSON.parse(JSON.stringify(DB.circle))});
+    callback({ok:[DB.circle.year[0],DB.circle.coin[0],JSON.parse(JSON.stringify(DB.circle.own))]});
+}
+//轮回商店兑换物存入初始数据库
+const putout = (param: any, callback) => {   
+    DB.circle.year[0] = Math.ceil(DB.date.day[0]/400) >DB.circle.year[0]?Math.ceil(DB.date.day[0]/400):DB.circle.year[0]
+    DB.circle.coin[0] = DB.circle.year[0]
+    let res = [200,25,25,50],
+        shopBuild = [1000,1005,1007]
+    for(let i =0;i<4;i++){
+        if(DB.circle.temp[0][i]){
+            DB.res[work_name[i+1]][0] = 1
+            DB.res[work_name[i+1]][1] = DB.circle.temp[0][i] * res[i]
+        }
+    }
+    for(let i =0;i<shopBuild.length;i++){
+        if(DB.circle.temp[1][i]){
+            DB.build[shopBuild[i]-1000][0] = 1
+            DB.build[shopBuild[i]-1000][1] = DB.circle.temp[1][i]
+        }
+    }
+    DB.hero.own = JSON.parse(JSON.stringify(DB.circle.own))
+    if(DB.hero.own){
+        DB.face.unlock[3] = 1
+    }
+    saveDb("res",DB.res);
+    saveDb("build",DB.build);
+    saveDb("hero",DB.hero);
+    saveDb("circle",DB.circle);
+    saveDb("face",DB.face);
+    callback({ok:[DB.res,DB.build,JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(DB.circle)),DB.face.unlock[3]]});
 }
 const read = (param: any, callback) => {   
     let r = "",rs;
-    for (let k in DB.circle){
-        rs = localStorage["circle"][k];
-        if(rs){
-            DB.circle[k] = JSON.parse(rs);
+    if(localStorage["circle"]){
+        for (let k in DB.circle){
+            rs = localStorage["circle"][k];
+            if(rs){
+                DB.circle[k] = JSON.parse(rs);
+            }
+            r = `${r}${r?",":""}"${k}":${rs||JSON.stringify(DB.circle[k])}`
         }
-        r = `${r}${r?",":""}"${k}":${rs||JSON.stringify(DB.circle[k])}`
+        callback({ok:`{${r}}`});
+    }else{
+        callback({err:1});
     }
-    callback({ok:`{${r}}`});
+
+}
+const plus = (param: any, callback) => { 
+    let costlist = [[1,1,1,1],[5,10,15],[5,15,40,100,200]],
+        cost 
+    if(param[0] == 2){
+        let n = 0
+        for(let i=0;i<DB.circle.temp[2].length;i++){
+            n += DB.circle.temp[2][i]
+        }
+        cost =  costlist[2][n]
+    }else{
+        cost = costlist[param[0]][param[1]]
+    }   
+    if(param[0] == 2 && DB.circle.temp[2][param[1]]){
+        callback({err:2});
+    }else if(cost>DB.circle.coin[0]){
+        callback({err:1});
+    }else{
+        DB.circle.coin[0] -= cost;
+        DB.circle.temp[param[0]][param[1]] += 1;
+        saveDb("circle",DB.circle);
+        callback({ok:[DB.circle.temp[param[0]][param[1]],DB.circle.coin[0]]});
+    }
+}
+//轮回商店退款
+const minus = (param: any, callback) => { 
+    let costlist = [[1,1,1,1],[5,10,15],[5,15,40,100,200]],
+        cost 
+    if(param[0] == 2){
+        let n = 0
+        for(let i=0;i<DB.circle.temp[2].length;i++){
+            n += DB.circle.temp[2][i]
+        }
+        cost =  costlist[2][n-1]
+    }else{
+        cost = costlist[param[0]][param[1]]
+    }   
+    if(DB.circle.temp[param[0]][param[1]] == 0){
+        callback({err:1});
+    }else{
+        DB.circle.coin[0] += cost;
+        DB.circle.temp[param[0]][param[1]] -= 1;
+        saveDb("circle",DB.circle);
+        callback({ok:[DB.circle.temp[param[0]][param[1]],DB.circle.coin[0]]});
+    }
 }
 
-Connect.setTest("app/circle@update",update);
+
+Connect.setTest("app/circle@putin",putin);
+Connect.setTest("app/circle@putout",putout);
 Connect.setTest("app/circle@read",read);
+Connect.setTest("app/circle@plus",plus);
+Connect.setTest("app/circle@minus",minus);
 /****************** date ******************/
 const update_date = (param: any, callback) => {   
      DB.date.day[0] += 1;
@@ -123,17 +216,18 @@ const add_res = (param: any, callback) => {
         res = DB.res[param],
         people = DB.people[param],
         change =  ((res[3]) * (res[4]+1)+people[1]*people[2]*(1+people[3])-  res[5] *(1+res[6]))/2,
-        times = 1 
+        times = 1,
+        index = res_name.indexOf(param) 
         
         
-    if(param < 4 ){
+    if(index < 4 ){
         if(DB.res.win[1] >0){
             times += 0.5;
         }
         if(DB.res.fail[1] >0){
             times += -0.25;
         }
-        times += five_res[Math.ceil(DB.date.day[0]/400) % 5][param]
+        times += five_res[Math.ceil(DB.date.day[0]/400) % 5][index]
         change = change * times;
     }
      
@@ -162,32 +256,29 @@ const change_people = (param: any, callback) => {
     max = DB.people.total[1],
     food = DB.res.food[1],
     change = 0,
-    over =-1,
-    index =0
+    over =-1
+    
     if(people<max && food>0){
         DB.people.total[0] += 1 ;
         change = 1;
         over = 0;
-        index = 0;
     }
     if(food<=0 && max>0){
 
         if(DB.people.total[0]>0){
             DB.people.total[0] -=1;
             over =0;
-            index =0;
         }
         for(let i=1;i<5;i++){
             if( DB.people[work_name[i]][1]>0 && over<1){
                 DB.people[work_name[i]][1] -= 1;
                 over =i;
-                index =1;
             }
         }
         if(over>-1){change = -1;}
     }
     saveDb("people",DB.people);
-    callback({ok:[(over+1)?DB.people[work_name[over]][index]:0,change,over,index]});
+    callback({ok:[DB.people.total[0],change,over,(over+1)?DB.people[work_name[over]][1]:0]});
 }
 
 //手动加粮食
@@ -211,7 +302,8 @@ const manadd_food = (param: any, callback) => {
      }
      DB.res.food[1] = number;
      saveDb("res",DB.res);
-     callback({ok:DB.res.food[1]}); 
+     saveDb("build",DB.build);
+     callback({ok:[DB.res.food[1],DB.build[0][0],DB.build[14][0]]}); 
  }
  const eat_food = (param: any, callback) => {
      DB.res.food[5] = DB.people.total[0] *6;
@@ -259,7 +351,7 @@ const levelup = (id: any, callback) => {
         callback({err:1}); 
     }else if ((num1 >= cost1 )&&(!cost_name2 || num2>=cost2)){
         //山路特殊处理
-        if(id == 1014 && DB.build[1][1] <5){
+        if(id == 1014 && DB.build[0][1] <5){
             callback({err:3}); 
             return;
         }
@@ -279,6 +371,7 @@ const levelup = (id: any, callback) => {
             }                      
             saveDb("build",DB.build);
             saveDb("res",DB.res);
+            saveDb("face",DB.face);
             callback({ok:[DB.build[id-1000][1],num1,effect_end,cost_name2?num2:null,DB.map.city[2]]}); 
     }else{
         callback({err:2}); 
@@ -301,17 +394,17 @@ const unlock = (id: any, callback) => {
          effect_end =[]
     
     if (DB.res.sci[1] >= cost ){
-            num -= cost;
-            DB.science[id-101][1] = 1;
-            DB.res.sci[1] = num;
-            //判断数据表
-            for(let i=0;i<effect_num.length;i++){
-               DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
-               effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
+        num -= cost;
+        DB.science[id-100][1] = 1;
+        DB.res.sci[1] = num;
+        //判断数据表
+        for(let i=0;i<effect_num.length;i++){
+            DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+            effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
         }                      
-         saveDb("science",DB.science);
-         saveDb("res",DB.res);
-         callback({ok:[DB.science[id-101][1],num,effect_end]}); 
+        saveDb("science",DB.science);
+        saveDb("res",DB.res);
+        callback({ok:[DB.science[id-100][1],num,effect_end]}); 
     }else{
         callback({err:1}); 
     }
@@ -368,6 +461,8 @@ const eventtrigger = (eventId: any, callback) => {
     if(bcfg[eventId]["class"] == 1 ){
         DB.hero.enemy = bcfg[eventId].type;            
         callback({ok:[DB.hero.enemy]}); 
+    }else if(bcfg[eventId]["class"] == 2){
+        callback({ok:[]});
     }else{
         DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]] += bcfg[eventId].number;            
         callback({ok:[DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]]]});
@@ -533,25 +628,37 @@ const hero_delete = (id: any, callback) => {
 //     saveDb("hero",DB.hero);          
 //     callback({ok:[DB.hero.own[id][1],DB.army.cur[0]]});
 // }
+//满编
 const army_max = (id: any, callback) => {
     let a = DB.army,
         bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         max_army = bcfg[DB.hero.own[id][0]]["command"] + DB.hero.add[0]
-    if(a.cur[0] >0){
-        if( DB.hero.own[id][1] == 0){
-            DB.hero.MaxHero[2] +=1;
-        }
-        if(a.cur[0] + DB.hero.own[id][1]> max_army){
-            a.cur[0] -=  max_army + DB.hero.own[id][1];
-            DB.hero.own[id][1] = max_army;
+    if (DB.hero.own[id][4] >0 ){
+        callback({err:4});
+    }else{
+        if(a.cur[0] >0){
+            if(DB.hero.MaxHero[2] >= DB.hero.MaxHero[0] && DB.hero.own[id][1] ==0 ){
+                callback({err:3}); 
+            }else{
+                if( DB.hero.own[id][1] == 0){
+                    DB.hero.MaxHero[2] +=1;
+                }
+                if(a.cur[0] + DB.hero.own[id][1]> max_army){
+                    a.cur[0] -=  max_army + DB.hero.own[id][1];
+                    DB.hero.own[id][1] = max_army;
+                }else{
+                    DB.hero.own[id][1] += a.cur[0];
+                    a.cur[0] = 0;
+                }
+                saveDb("army",DB.army);  
+                saveDb("hero",DB.hero);          
+                callback({ok:[DB.hero.own[id][1],DB.army.cur[0],DB.hero.MaxHero[2]]})
+            }
         }else{
-            DB.hero.own[id][1] += a.cur[0];
-            a.cur[0] = 0;
+            callback({err:1});  
         }
+  
     }
-    saveDb("army",DB.army);  
-    saveDb("hero",DB.hero);          
-    callback({ok:[DB.hero.own[id][1],DB.army.cur[0],DB.hero.MaxHero[2]]});
 }
 
 
@@ -681,12 +788,16 @@ const fight = (param: any, callback) => {
             DB.hero.enemy = []
         }
     }else{
-        for(let i = group_num[1]-1;i >= 0; i--){
-            army_dead[1] += enemyType[fighter[1][i][3]][1] - fighter[1][i][1];
+        let t =0
+        if(enemyType[0][1] ==undefined){
+            t = 1
+        }
+        for(let i = group_num[1] -1;i >= 0; i--){
+            army_dead[1] += enemyType[i+t][1] - fighter[1][i][1];
             if(!fighter[1][i][1]){
-                enemyType.splice([fighter[1][i][3]],1);
+                enemyType.splice(i+t,1);
             }else{
-                enemyType[fighter[1][i][3]][1] = fighter[1][i][1];
+                enemyType[i+t][1] = fighter[1][i][1];
             }
         }
     }
@@ -703,7 +814,7 @@ const fight = (param: any, callback) => {
 const fightAccount = (param: any, callback) => {
     let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
 
-    if(param.cityId>=20000){
+    if(param.cityId>=20000 && param.cityId<30000){
         bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
     }
     let effect = bcfg[param.cityId]["effect_type"],
@@ -740,6 +851,7 @@ const fightAccount = (param: any, callback) => {
             }
             if(hero[1] == 0){
                 hero[4] = 100
+                DB.hero.MaxHero[2] -= 1
             }
         }
         
@@ -747,7 +859,7 @@ const fightAccount = (param: any, callback) => {
         saveDb("hero",DB.hero);
         saveDb("map",DB.map);
         saveDb("res",DB.res);
-        callback({ok:[DB.res.fail[1],DB.res.win[1],effect_end,JSON.parse(JSON.stringify(DB.hero.own))]});
+        callback({ok:[DB.res.fail[1],DB.res.win[1],effect_end,JSON.parse(JSON.stringify(DB.hero.own)),DB.hero.MaxHero[2]]});
     }else{
         //加败绩
         let fail = 50
@@ -761,12 +873,13 @@ const fightAccount = (param: any, callback) => {
             let hero = DB.hero.own[param.heroIndex[i]]
             if(hero[1] == 0){
                 hero[4] = 100
+                DB.hero.MaxHero[2] -= 1
             }
         }
 
         saveDb("hero",DB.hero);
         saveDb("res",DB.res);
-        callback({ok:[DB.res.fail[1],DB.res.win[1],[],JSON.parse(JSON.stringify(DB.hero.own))]});
+        callback({ok:[DB.res.fail[1],DB.res.win[1],[],JSON.parse(JSON.stringify(DB.hero.own)),DB.hero.MaxHero[2]]});
     }
 
 

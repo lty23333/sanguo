@@ -29,7 +29,10 @@ class People {
     static work_top =[370,650,430,540,760]
     static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1知识/秒","每个矿工+2黄金/秒"]
 
-
+    static initDB(){
+        //初始化人口数据库 [解锁，数量，提供单位资源量，效率提升百分比],total:[总人口数，人口上限]
+        DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]});
+    }
     static eatFood(){
         Connect.request({type:"app/res@eatFood",arg:{}},(data) => {
             if(data.err){
@@ -38,25 +41,35 @@ class People {
             DB.data.res.food[5] = data.ok;
         })
     }
+    static updateUnlock(id){
+        if(Global.mainFace.id != 1 && DB.data.people[People.work_name[id]][0] >=1){
+            DB.data.face.new[1] = 1
+        }
+    }
     static updatePeople(id){ 
            let p =DB.data.people,
                work = 0
-            if(peopleNode[id]!= undefined && Global.mainFace.id == 1){
-                if(id ==0){
-                    for(let i=1;i<5;i++){
-                        if(p[People.work_name[i]][0]){
-                            work += p[People.work_name[i]][1]
-                        } 
+            if(peopleNode[id]!= undefined ){ 
+                if(Global.mainFace.id == 1){
+
+                    if(id ==0){
+                        for(let i=1;i<5;i++){
+                            if(p[People.work_name[i]][0]){
+                                work += p[People.work_name[i]][1]
+                            } 
+                        }
+                        peopleNode[id].text = `${p.total[id]-work}`;
+                    }else{
+                        peopleNode[id].text = `${DB.data.people.total[id]}`
                     }
-                    peopleNode[id].text = `${p.total[id]-work}`;
                 }else{
-                    peopleNode[id].text = `${DB.data.people.total[id]}`
+                    DB.data.face.new[1] = 1
                 }
             }
     }
     static updateWork(id){    
             if(workNode[id] != undefined && Global.mainFace.id == 1){
-                workNode[id].text = `${People.work_Cname[id]}（${DB.data.people[People.work_name[id]][1]}）`
+                workNode[id].text = `${People.work_Cname[id]}\n(${DB.data.people[People.work_name[id]][1]})`
             }    
         
     } 
@@ -84,6 +97,7 @@ class WWork extends Widget{
     }
 
     dis_work(type){
+        AppEmitter.emit("stagePause");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         Scene.open(`app-ui-workDis`,this.backNode, null, {id:type});
     }
@@ -194,8 +208,7 @@ const open = () => {
 Widget.registW("app-ui-people",WPeople);
 Widget.registW("app-ui-peopleWork",WWork);
 Widget.registW("app-ui-workDis",WworkDis);
-//初始化人口数据库 [解锁，数量，提供单位资源量，效率提升百分比]
-DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[1,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]});
+
 //注册人口监听
 
 for(let i = 0; i <2; i++){
@@ -221,6 +234,14 @@ for(let i = 1; i <5; i++){
             }
         })(i));
 }   
+//注册工作解锁监听
+for(let i = 1; i <5; i++){
+    DB.emitter.add(`people.${People.work_name[i]}.0`, ((x) => {
+        return ()=>{
+            People.updateUnlock(x)
+        }
+    })(i));
+}   
 DB.emitter.add(`people.total.0`, () => {
     People.eatFood()
 });
@@ -228,4 +249,9 @@ DB.emitter.add(`people.total.0`, () => {
 //注册页面打开事件
 AppEmitter.add("intoPeople",(node)=>{
     open();
+});
+
+ //初始化数据库
+ AppEmitter.add("initDB",(node)=>{
+    People.initDB();
 });
