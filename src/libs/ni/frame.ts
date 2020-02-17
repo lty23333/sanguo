@@ -26,7 +26,7 @@ export default class Frame {
 	 * @param f 由Frame.add返回的帧对象
 	 */
 	static delete(f){
-		let i = Frame.findHandler(f);
+		let i = Frame.list.indexOf(f);
 		if(i<0){
 			return console.warn(`Don't have the frameCallback `,f);
 		}
