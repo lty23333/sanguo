@@ -227,7 +227,9 @@ const add_res = (param: any, callback) => {
         if(DB.res.fail[1] >0){
             times += -0.25;
         }
-        times += five_res[Math.ceil(DB.date.day[0]/400) % 5][index]
+        if(DB.date.unlock[1]){
+            times += five_res[Math.ceil(DB.date.day[0]/400) % 5][index]
+        }
         change = change * times;
     }
      
@@ -366,7 +368,11 @@ const levelup = (id: any, callback) => {
 
             //判断数据表
             for(let i=0;i<effect_num.length;i++){
-               DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+                if(effect[i][2] == 0 && DB[effect[i][0]][effect[i][1]][effect[i][2]]>=1 && effect[i][1] == "sci"){
+                   //如果是解锁学者，不再更新了
+                }else{
+                    DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
+                }
                effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
             }                      
             saveDb("build",DB.build);

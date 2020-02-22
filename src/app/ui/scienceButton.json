@@ -18,8 +18,8 @@
 
         {
             "type": "text",
-            "id":"button_sci",
             "data": {
+                "id":"button_sci",
                 "text": "button",
                 "top": 60,
                 "style": {"fontSize":45,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}

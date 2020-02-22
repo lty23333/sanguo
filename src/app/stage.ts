@@ -409,7 +409,7 @@ class Stage {
         }
         //自动增减人口
 
-        if(date%4 == 0) {
+        if(date%5 == 0) {
             Connect.request({type:"app/people@changepeople",arg:{}},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
@@ -1293,7 +1293,10 @@ DB.emitter.add(`date.day.0`, () => {
         Stage.eventTrigger()
         Stage.updateWarning()
     });
-
+//注册解锁五行监听，更新一下资源显示
+DB.emitter.add(`date.unlock.1`, () => {
+    Stage.updateRes("food",3)
+});
 //注册预警监听
 DB.emitter.add(`date.warning.0`, () => {
     Stage.updateWarning()

@@ -60,9 +60,9 @@
                         "id":"day",
                         "text":"",
                         "left":25,
-                        "top": 70,
+                        "top": 20,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                         }
                     }
                 },
@@ -72,9 +72,9 @@
                         "id":"year",
                         "text":"",
                         "left":25,
-                        "top": 110,
+                        "top": 60,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                         }
                     }
                 },
@@ -83,10 +83,10 @@
                     "data": {
                         "id":"fiveYear",
                         "text":"",
-                        "left":25,
-                        "top": 150,
+                        "left":55,
+                        "top": 100,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
                         }
                     }
                 }

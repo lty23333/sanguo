@@ -176,6 +176,7 @@ class WcomWindow extends Widget{
 
                 //更新窗口信息
                 this.remove();
+                AppEmitter.emit("stageStart");
                 Science.com_name.text = `${bcfg[id]["name"]}`;
                 Science.com_effect.text = `效果：${bcfg[id]["effect_dis"]}`;
                 Science.com_cost.text = `消耗：${cost}知识`;
@@ -201,7 +202,7 @@ const open = () => {
     Science.unlock_science = []
     //显示解锁的知识按钮
     for(let i=0; i<DB.data.science.length;i++ ){
-        if(DB.data.science[i][0] && !DB.data.science[i][1]){
+        if(DB.data.science[i][0] >=1 && !DB.data.science[i][1]){
             Science.unlock_science.push(i+100);
         }
     }

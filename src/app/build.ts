@@ -654,6 +654,9 @@ class WcomWindow extends Widget{
                     if(id == 1000 && DB.data.build[0][1] == 5){
                         Build.build[14][0].style.fill = Global.color[1];
                     }
+                    if(id == 1001){
+                        addNews("一位流民在此定居。（空闲人口+1）")
+                    }
                 }
             })    
         
