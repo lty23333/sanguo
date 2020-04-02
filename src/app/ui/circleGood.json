@@ -11,6 +11,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect200120",
                 "width": 200,
                  "height": 120,
                  "left": 0,
@@ -71,14 +72,13 @@
                     }
                 },
                 {
-                    "type":"app-ui-button",
+                    "type":"app-ui-button4",
                     "props":{
                         "on":{"tap":{"func":"plus"}},
                         "id":"button_+",
                         "left": 30,
                         "top": 200,
                         "text": "+",
-                        "size":35,
                         "width": 60,
                         "height": 60,
                         "background-color":"#d9c6ad",
@@ -86,14 +86,13 @@
                     }
                 },
                 {
-                    "type":"app-ui-button",
+                    "type":"app-ui-button4",
                     "props":{
                         "on":{"tap":{"func":"minus"}},
                         "id":"button_-",
                         "left": 170,
                         "top": 200,
                         "text": "-",
-                        "size":35,
                         "width": 60,
                         "height": 60,
                         "background-color":"#d9c6ad",

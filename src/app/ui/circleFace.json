@@ -11,6 +11,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect7501334",
                 "width": 750,
                 "height": 1334,
                 "left": 0,
@@ -32,6 +33,18 @@
                 "height": 100,
                 "background-color":"#d9c6ad",
                 "background-alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"dis",
+                "text":"",
+                "left":0,
+                "top": 600,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                }
             }
         }
     ]

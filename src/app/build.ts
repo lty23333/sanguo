@@ -8,7 +8,7 @@ import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
-import {Global,rand} from './global';
+import {Global,rand,number,number1} from './global';
 import {addNews} from './stage';
 
 
@@ -26,6 +26,7 @@ class Build {
     static  com_effect // 通用窗口效果节点
     static  com_cost// 通用窗口消耗节点
     static  hotel_update //酒馆刷新费用节点
+    static hotel_dis //酒馆描述节点
     static res_name = ["food","wood","sci","gold"]  //资源名
     static res_Cname = ["粮食","木材","黄金","知识"]
     static army_Cname = ["步兵","骑兵","弓兵"]
@@ -78,7 +79,7 @@ class Build {
                     if(DB.data.res[cost_name][1]<cost){
                         enough = 0
                     }
-                    if(Build.build[i][0] && Build.build[i][0].style.fill != Global.color[enough]){
+                    if(Build.build[i] && Build.build[i][0] && Build.build[i][0].style.fill != Global.color[enough]){
                         Build.build[i][0].style.fill = Global.color[enough];
                     }
                     if(id == Build.cur_buildId && Build.com_cost){
@@ -184,14 +185,16 @@ class WbuildButton extends Widget{
                 if(data.err){
                     return console.log(data.err.reson);
                 }else{
-                    Scene.open(`app-ui-hotel`,this.backNode,null, {id:1009,backNode:this.backNode});
+                    DB.data.hero.choose = data.ok[0]
+                    DB.data.hotel.price[0] = data.ok[2]
+                    Scene.open(`app-ui-hotel`,this.backNode,null, {id:1007,backNode:this.backNode});
                     for(let i=0;i<data.ok[0].length;i++){
                         Build.heroNode[i] =Scene.open(`app-ui-hero`,this.backNode,null, {id:data.ok[0][i],backNode:this.backNode,left:40+i*230,index:i});
                     }
                 }  
             })         
         }else if(type==1013){
-            Scene.open(`app-ui-shop`,this.backNode,null, {id:1014});
+            Scene.open(`app-ui-shop`,this.backNode,null, {id:1013});
             for(let i=0;i<6;i++){
                 Build.goodsNode[i] =Scene.open(`app-ui-shop_goods`,this.backNode,null, {id:i});
             }
@@ -242,25 +245,25 @@ class Wgoods extends Widget{
         let goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
             goods2= [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]],
             id = props.id,
-            color = 2
+            color = 2,
+            cost = number1(DB.data.shop.price[id] *DB.data.shop.number[0])
 
-        this.cfg.children[1].data.text = `${Math.ceil(DB.data.shop.price[id] * DB.data.shop.number[0])}${goods[id][1]}`;
-        this.cfg.children[2].data.text = `${DB.data.shop.number[0]}${goods[id][0]}`;
+        this.cfg.children[1].data.text = `${number(DB.data.shop.number[0])}${goods[id][1]}`
+        this.cfg.children[2].data.text = `${number(cost)}${goods[id][0]}`
 
         this.cfg.on = {"tap":{"func":"buy","arg":[id]}};
         this.cfg.data.left = 105 + id % 3 *190
         this.cfg.data.top = id<3?440:620
         
         //消耗加颜色
-        if(DB.data.shop.number[0] <= DB.data.res[goods2[id][0]][1]){
-            color += 1
+        if(cost > DB.data.res[goods2[id][0]][1]){
+            color += 4
         }
         this.cfg.children[2].data.style.fill = Global.color[color];
 
     }
     buy(id){
         let 
-            bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
             goods2= [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]]
    
@@ -272,9 +275,13 @@ class Wgoods extends Widget{
                     DB.data.res[goods2[id][0]][1] = data.ok[0]
                     DB.data.res[goods2[id][1]][1] = data.ok[1]
                     DB.data.shop.price[id] = data.ok[2]
-                    Build.shopGoods[id].text = `${Math.ceil(DB.data.shop.price[id] * DB.data.shop.number[0])}${goods[id][1]}`
-                    Build.shopCost[id].text = `${DB.data.shop.number[0]}${goods[id][0]}`
-                    AppEmitter.emit("message",`已购买${goods[id[1]]}`);
+                    Build.shopGoods[id].text = `${number(DB.data.shop.number[0])}${goods[id][1]}`
+                    Build.shopCost[id].text = `${number(DB.data.shop.price[id] *DB.data.shop.number[0])}${goods[id][0]}`
+                    AppEmitter.emit("message",`已购买${DB.data.shop.number[0]}${goods[id][1]}`);
+                    //消耗加颜色
+                    if(number1(DB.data.shop.price[id] *DB.data.shop.number[0]) > DB.data.res[goods2[id][0]][1]){
+                        Build.shopCost[id].style.fill = Global.color[6];
+                    }
                 }
             })    
         
@@ -343,7 +350,7 @@ class Wshop extends Widget{
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
                     let num = DB.data.map.city[2],
-                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+ DB.data.map.city[5]
                     Build.totalNode.text = `${num}/${max}`
                     if(num >=  max){
                         Build.totalNode.style.fill = Global.color[6]
@@ -354,8 +361,8 @@ class Wshop extends Widget{
                     
                     //更新商品价格
                     for(let i=0;i<6;i++){
-                        Build.shopGoods[i].text = `${Math.ceil(DB.data.shop.price[id] * DB.data.shop.number[id])}${goods[id][1]}`
-                        Build.shopCost[i].text = `${DB.data.shop.number[id]}${goods[id][0]}`
+                        Build.shopGoods[i].text = `${DB.data.shop.number[id]}${goods[id][1]}`
+                        Build.shopCost[i].text = `${Math.ceil(DB.data.shop.price[id] *DB.data.shop.number[id])}${goods[id][0]}`
                     }
 
                 }
@@ -442,12 +449,14 @@ class Whotel extends Widget{
             bcfg2 = CfgMgr.getOne("app/cfg/build.json@cost"),
             cost = bcfg2[DB.data.build[id-1000][1]+1][`a${id}`]*bcfg[id]["cost_number1"],  
             cost_name = bcfg[id]["cost_type1"],
-            color =6
+            color =6,
+            st =DB.data.build[id-1000][1] >3?"":"将领上限+1；"
 
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
-        this.cfg.children[2].data.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
+        this.cfg.children[2].data.text = `${st}${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
         this.cfg.children[3].data.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(cost_name)]}`;
         this.cfg.children[6].data.text = `${DB.data.hotel.price[0]}黄金`;
+
         this.cfg.children[13].data.text = `${bcfg[id]["dis"]}`;
 
         //消耗加颜色
@@ -475,7 +484,7 @@ class Whotel extends Widget{
    
             Connect.request({type:"app/build@levelup",arg:id},(data) => {
                 if(data.err == 1){
-                    AppEmitter.emit("message","建筑数量已达上限！");
+                    AppEmitter.emit("message","建筑数已满，请出征占领新的城市！");
                     return console.log(data.err.reson);
                 }else if(data.err == 2){
                     AppEmitter.emit("message","建造资源不足！");
@@ -496,8 +505,12 @@ class Whotel extends Widget{
                     Build.com_name.text = `${bcfg[id]["name"]}(${DB.data.build[id-1000][1]})`;
                     Build.com_effect.text = `${bcfg[id]["effect_dis"].replace("{{effect_number}}",bcfg[id]["effect_number"][0])}`;
                     Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]}`;
+                    if(DB.data.build[id-1000][1] >3){
+                        Build.hotel_dis = `${bcfg[id]["dis"]}`
+                    }
+                    Build.hotel_dis
                     let num = DB.data.map.city[2],
-                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+DB.data.map.city[5]
                     Build.totalNode.text = `${num}/${max}`
                     if(num >=  max){
                         Build.totalNode.style.fill = Global.color[6]
@@ -544,6 +557,7 @@ class Whotel extends Widget{
         Build.com_effect = this.elements.get("effect");
         Build.com_cost = this.elements.get("cost");
         Build.hotel_update = this.elements.get("update");
+        Build.hotel_dis = this.elements.get("effect");
     }
 } 
 //建筑弹窗
@@ -636,7 +650,7 @@ class WcomWindow extends Widget{
                         Build.com_cost.text = `${cost}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type1"])]},${cost2}${Build.res_Cname[Build.res_name.indexOf(bcfg[id]["cost_type2"])]}`;
                     }
                     let num = DB.data.map.city[2],
-                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+                    max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+DB.data.map.city[5]
                     Build.totalNode.text = `${num}/${max}`
                     if(num >=  max){
                         Build.totalNode.style.fill = Global.color[6]
@@ -647,7 +661,7 @@ class WcomWindow extends Widget{
 
                     //山路特殊处理
                     if(id == 1014){
-                        addNews(`有村民偶得良木于山间，献之。（木材+${bcfg[id]["effect_number"][3]}）`);
+                        addNews(`2村民偶得良木于山间，献之。（木材+${bcfg[id]["effect_number"][3]}）`);
                         Scene.remove(this.node);
                         AppEmitter.emit("stageStart");  
                     }
@@ -685,15 +699,15 @@ const open = () => {
             Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1000});
         }
     }
+    //DB.data.build[13][0] = 1;
     let num = DB.data.map.city[2],
-        max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+100
+        max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+DB.data.map.city[5]
     Build.totalNode.text = `${num}/${max}`
     if(num >=  max){
         Build.totalNode.style.fill = Global.color[6]
     }else{
         Build.totalNode.style.fill = Global.color[1]
     }
-
 }
 
 
@@ -719,8 +733,7 @@ const initBuild = () => {
     }
     DB.init("build", tempDB);
     DB.init("hotel",{date:[0],price:[10]});
-    DB.init("shop",{date:[0],price:[0,0,0,0,0,0],number:[100]})
-
+    DB.init("shop",{date:[0],price:[0,0,0,0,0,0],number:[200]})
 };
 
 //注册页面打开事件

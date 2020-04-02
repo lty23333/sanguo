@@ -10,6 +10,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect400300",
                 "width": 400,
                 "height": 300,
                 "left": 0,
@@ -52,6 +53,30 @@
                 "text":"兵种：",
                 "left":30,
                 "top": 150,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"tips",
+                "text":"统帅数值，示带兵之数量。",
+                "left":30,
+                "top": 310,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"tips2",
+                "text":"步/骑/弓兵数值，示作战之能力",
+                "left":30,
+                "top": 350,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
                 }

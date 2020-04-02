@@ -21,6 +21,7 @@
                    "type": "rect",
                    "on":{"tap":{"func":"manfood_number"}},
                    "data": {
+                    "name": "rect200100",
                        "width": 200,
                         "height": 100,
                         "left": 50,
@@ -48,6 +49,7 @@
                {
                 "type": "rect",
                 "data": {
+                    "name": "rect1605",
                     "width": 160,
                      "height": 5,
                      "left": 70,
@@ -62,6 +64,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect1030",
                 "width": 10,
                  "height": 30,
                  "left": 30,
@@ -97,9 +100,10 @@
         {
             "type": "rect",
             "data": {
-                "width": 380,
+                "name": "rect38010",
+                "width": 370,
                  "height": 10,
-                 "left": 350,
+                 "left": 360,
                  "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75

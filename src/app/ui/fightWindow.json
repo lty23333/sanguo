@@ -11,6 +11,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect600530",
                 "width": 600,
                 "height": 530,
                 "left": 0,

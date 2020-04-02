@@ -12,3 +12,43 @@ export  class Global{
 export function rand(number){
     return Math.ceil( Math.random() * number );
 };
+
+export function number(num){
+    let u = "",
+        left = 2
+    if(num>=1000000){
+        num = num/1000000
+        u = "m"
+    }else if(num>=1000){
+        num = num/1000
+        u = "k"
+    }
+
+    if(num>=100){
+        left = 0
+    }else if(num>=10){
+        left = 1
+    }
+    
+    return `${num.toFixed(left)/1}${u}`;
+};
+
+export function number1(num){
+    let u = 1,
+        left
+
+    if(num>=1000000){
+        num = num/1000000
+        u = 1000000
+    }else if(num>=1000){
+        num = num/1000
+        u = 1000
+    }
+    if(num>=100){
+        left = 0
+    }else if(num>=10){
+        left = 1
+    }
+    
+    return parseFloat(num.toFixed(left)) * u;
+};

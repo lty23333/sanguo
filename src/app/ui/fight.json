@@ -10,8 +10,9 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect20003000",
                 "width": 2000,
-                "height": 982,
+                "height": 3000,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad"

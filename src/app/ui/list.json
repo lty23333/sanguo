@@ -1,0 +1,60 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 750,
+        "height": 1334,
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+        {
+            "type": "rect",
+            "data": {
+                "name": "rect7501334",
+                "width": 750,
+                "height": 1334,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "alpha":1
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text0",
+                "text":"占领城池纪录",
+                "left":200,
+                "top": 160,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        
+        {
+            "type": "text",
+            "data": {
+                "id":"text1",
+                "text":"去留下些什么，再回来看看吧。",
+                "left":200,
+                "top": 600,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },     
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"remove"}},
+                "id":"button_clear",
+                "left": "50%",
+                "top": 1000,
+                "text": "返回",
+                "size":40
+            }
+        }
+        
+    ]
+}

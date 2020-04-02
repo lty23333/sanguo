@@ -110,6 +110,18 @@ class WUser extends Widget{
     login(){
         // initLocal(loginCallback);
         loginCallback();
+        if(localStorage.circle){
+            Connect.request({type:"app/circle@read",arg:[]},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }else{
+                    DB.data.circle = data.ok
+                }
+            })
+        }
+    }
+    clear(){
+        localStorage.clear()
     }
 
 }

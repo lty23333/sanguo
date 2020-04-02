@@ -1,13 +1,13 @@
 {
     "type": "rect",
     "data": {
-        "name": "rect204104",
-        "width": 204,
-        "height": 104,
+        "name": "rect15070",
+        "width": 150,
+        "height": 70,
         "left": 0,
         "top": 0,
-        "background-color": "0x696969",
-        "background-alpha":0.4,
+        "background-color":"#d9c6ad",
+        "background-alpha":0.75,
         "border-width":2,
         "border-color":"0xe6e6fa",
         "border-alpha":0.6,
@@ -20,7 +20,7 @@
             "type": "text",
             "data": {
                 "text": "button",
-                "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
+                "style": {"fontSize":35,"fill":"#adbbd9","strokeThickness":2}
             }
         }
     ]

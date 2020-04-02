@@ -10,6 +10,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect400300",
                 "width": 400,
                 "height": 300,
                 "left": 0,

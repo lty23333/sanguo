@@ -27,11 +27,11 @@ class People {
     static work_Cname =["空闲人口","农民","樵夫","学者","矿工"]
     static work_name  =["total","food","wood","sci","gold"]
     static work_top =[370,650,430,540,760]
-    static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1知识/秒","每个矿工+2黄金/秒"]
+    static work_dis =[0,"每个农民+8粮食/秒","每个樵夫+1木材/秒","每个学者+1知识/秒","每个矿工+1黄金/秒"]
 
     static initDB(){
         //初始化人口数据库 [解锁，数量，提供单位资源量，效率提升百分比],total:[总人口数，人口上限]
-        DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,2,0],win:[0,0,0,0],fail:[0,0,0,0]});
+        DB.init("people",{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,1,0],win:[0,0,0.25,0],fail:[0,0,0.25,0]});
     }
     static eatFood(){
         Connect.request({type:"app/res@eatFood",arg:{}},(data) => {

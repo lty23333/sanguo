@@ -9,23 +9,24 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global,rand} from './global';
-
+import {addNews} from './stage';
 
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
-let cityNumberNode // 占领城市节点
-
+let cityNumberNode, // 占领城市节点
+    mul = 3  //武将兵种数值系数
 class Map {
     
     static city_sprite = []  //据点精灵
     static armyNode = []  //敌军描述节点
+    static tipsNode   //tips描述节点
 
 
     static initDB(){
         //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
-        //city:[占领城市数量，，所有建筑数量，每个城市增加的建筑,被占领城市数量]
-        DB.init("map",{date:[1],city:[1,10000,0,10,0],attack:[[]],guard:[]});
+        //city:[占领城市数量，，所有建筑数量，每个城市增加的建筑,被占领城市数量,初始建筑数量上限]
+        DB.init("map",{date:[1],city:[1,10000,0,15,0,100],attack:[[]],guard:[]});
     }
     //更新据点
     static updateGuard(){
@@ -49,8 +50,24 @@ class Map {
                     Map.city_sprite[i] = Scene.open("app-ui-city", Global.mainFace.node,null, {id:DB.data.map.guard[i][0],index:i});
                 }
             }
+            if(!DB.data.map.guard[0]){
+                Map.tipsNode.text = "请等待斥候探查情报"; 
+            }else{
+                Map.tipsNode.text = "";
+            }
+
         }
-    }   
+    } 
+    static updateCity(){
+        if(Global.mainFace.id ==4){
+            let st =""
+            if(DB.data.map.city[4]){
+                st = `(${-DB.data.map.city[4]})`
+                cityNumberNode.style.fill = Global.color[6]
+            }
+            cityNumberNode.text = `${DB.data.map.city[0]}${st}/179` ; 
+        }
+    }
 
 }
 
@@ -62,12 +79,20 @@ class Map {
 class WMap extends Widget{
     setProps(props){
         super.setProps(props);
-        this.cfg.children[1].data.text = DB.data.map.city[0] ;
-        this.cfg.children[2].data.text = `${DB.data.map.city[4]?-DB.data.map.city[4]:""}` ;
+        let st =""
+        if(DB.data.map.city[4]){
+            st = `(${-DB.data.map.city[4]})`
+            this.cfg.children[1].data.style.fill = Global.color[6]
+        }
+        this.cfg.children[1].data.text = `${DB.data.map.city[0]}${st}/179` ;
+        if(!DB.data.map.guard[0]){
+            this.cfg.children[5].data.text = "请等待斥候探查情报"; 
+        }
     }
 
     added(node){
         cityNumberNode = this.elements.get("city_number");
+        Map.tipsNode = this.elements.get("tips");
     }
 
 
@@ -84,8 +109,8 @@ class WCity extends Widget{
             Cname = ["步","骑","弓"],
             id = props.id,
             army = DB.data.map.guard[props.index],
-            str1 = "",
-            str2 = ""
+            str2 = "",
+            color
         //判断城市还是随机据点
         if(id<20000){
             bcfg = CfgMgr.getOne("app/cfg/city.json@city")
@@ -93,20 +118,23 @@ class WCity extends Widget{
             bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
 
         }   
-        for(let i=1;i< army.length;i++){
-            str1 = `${str1}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`
-        }
+
         str2 = bcfg[id]["reward_dis"];
-        str1.slice(0,2);
+        str2 = str2.replace("{{city_num}}",DB.data.map.city[3])
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         if(bcfg[id]["belong"]){
-            this.cfg.children[2].data.text = `${bcfg[id]["belong"]}`;
+            this.cfg.children[2].data.text = `（${bcfg[id]["belong"]}）`;
         }else{
             this.cfg.children[2].data.text = "";
         }
+        //驻守军队
+        for(let i = 1;i< army.length;i++){
+            this.cfg.children[2 + i].data.text = `${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`;
+            color = bcfg2[army[i][0]]["color"]
+            this.cfg.children[2 + i].data.style.fill = Global.color[color]
+        }
 
-        this.cfg.children[3].data.text = `${str1}`;
-        this.cfg.children[4].data.text = `${str2.replace(/\\n/,"\n")}`;
+        this.cfg.children[6].data.text = `${str2.replace(/\\n/,"\n")}`;
 
         this.cfg.data.left += props.index * 230;
 
@@ -222,7 +250,7 @@ class WfightWindow extends Widget{
                     own[max][0] = DB.data.hero.own[i][0]
                     own[max][1] = DB.data.hero.own[i][1]
                     own[max][4] = bcfg[own[max][0]]["arms"]
-                    own[max][2] = 1 + (Math.floor(bcfg[own[max][0]]["number"]+DB.data.hero.own[i][2]))/100 + DB.data.hero.add[own[max][4]]
+                    own[max][2] = 1 + (Math.floor(bcfg[own[max][0]]["number"]+DB.data.hero.own[i][2]+DB.data.hero.add[own[max][4]])*mul)/100 
                     own[max][3] = DB.data.hero.own[i][3]
                     max += 1;
                     if(max == DB.data.hero.MaxHero[0]){
@@ -238,10 +266,14 @@ class WfightWindow extends Widget{
                 enemy[i][0] = army[i+1][0]
                 enemy[i][1] = army[i+1][1]
                 //判断是否是城市
-                if(this.props.id < 20000){
+                if(this.props.id < 19999){
                     enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
                 }else{
-                    enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/100)]["attribute"]
+                    enemy[i][2] = 1 + (bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/400)] ["attribute"])*mul
+                }
+                //动态调整
+                if(this.props.id == 19999){
+                    enemy[i][2] += Math.ceil(DB.data.hero.add[0] /3)/100 *mul
                 }
                 enemy[i][3] = i
                 enemy[i][4] = bcfg[enemy[i][0]]["arms"]
@@ -263,7 +295,15 @@ class WfightWindow extends Widget{
                 Scene.open("app-ui-result", Scene.root,null,{id:0});
             }else{
                 DB.data.map.city[4] = data.ok[0]
+                DB.data.res.fail[1] = data.ok[1]
+                DB.data.res.win[1] = data.ok[2]
                 AppEmitter.emit("stageStart");
+                addNews(`6割让边境${DB.data.map.city[4]}城。(败绩+50)`);
+                let  bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                name = DB.data.hero.own[0]?bcfg[DB.data.hero.own[0][0]]["name"]:"军备官"
+                if(DB.data.hero.own[0]){
+                    addNews(`${name}：此诚危急存亡之秋也。望主公尽快组织反攻，不可懈怠！`);
+                }
                 this.remove();
             }
         })
@@ -311,6 +351,13 @@ DB.emitter.add(`map.guard`, () => {
     Map.updateGuard();
 });
 
+//监听占领城市
+DB.emitter.add(`map.city.0`, () => {
+    Map.updateCity();
+});
+DB.emitter.add(`map.city.4`, () => {
+    Map.updateCity();
+});
 //初始化数据库
 AppEmitter.add("initDB",(node)=>{
     Map.initDB();

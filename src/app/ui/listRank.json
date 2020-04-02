@@ -1,0 +1,49 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 750,
+        "height": 50,
+        "left": 0,
+        "top": 0
+    },
+    "children":[
+
+        {
+            "type": "text",
+            "data": {
+                "id":"text0",
+                "text":"第1名",
+                "left":150,
+                "top": 0,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 37, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text1",
+                "text":"99座",
+                "left":300,
+                "top": 0,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 37, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"text2",
+                "text":"（第99次轮回）",
+                "left":450,
+                "top": 0,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 37, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        }
+        
+    ]
+}

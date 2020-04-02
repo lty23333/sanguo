@@ -13,6 +13,7 @@
             "type": "rect",
             "on":{"tap":{"func":"dis_work","arg":[1]}},
             "data": {
+                "name": "rect20090",
                 "width": 200,
                  "height": 90,
                  "left": 0,
@@ -39,7 +40,7 @@
             ]
         },     
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"people_plus"}},
                     "id":"button_+",
@@ -54,7 +55,7 @@
                 }
             },
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"people_minus"}},
                     "id":"button_-",
@@ -69,7 +70,7 @@
                 }
             },
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"people_max"}},
                     "id":"button_max",
@@ -84,7 +85,7 @@
                 }
             },   
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"people_0"}},
                     "id":"button_0",
@@ -95,8 +96,7 @@
                     "width": 100,
                     "height": 90,
                     "background-color":"#d9c6ad",
-                    "background-alpha":0.75,
-                    "color":"0xDC143C"
+                    "background-alpha":0.75
                 }
             }  
     ]

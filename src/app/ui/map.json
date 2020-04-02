@@ -1,7 +1,7 @@
 {   
     "type": "container",
     "data": {
-        "width": 600,
+        "width": 750,
         "height": 600,
         "left": 0,
         "top": 0
@@ -11,7 +11,7 @@
         {
             "type": "text",
             "data": {
-                "text":"占领城市：",
+                "text":"占领城池:",
                 "left":50,
                 "top": 315,
                 "style":{
@@ -24,7 +24,7 @@
             "data": {
                 "id":"city_number",
                 "text":"0",
-                "left":220,
+                "left":200,
                 "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left","strokeThickness":2
@@ -46,6 +46,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect1030",
                 "width": 10,
                  "height": 30,
                  "left": 30,
@@ -57,12 +58,25 @@
         {
             "type": "rect",
             "data": {
-                "width": 380,
+                "name": "rect38010",
+                "width": 340,
                  "height": 10,
-                 "left": 350,
+                 "left": 390,
                  "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"tips",
+                "text":"",
+                "left":220,
+                "top": 700,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "center"
+                }
             }
         }
     ]

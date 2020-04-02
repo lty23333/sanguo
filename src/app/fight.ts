@@ -72,7 +72,7 @@ class Fight {
                 str = str.replace("B",`${bcfg[fight_show[0][3]]["name"]}`) 
                 
                 addFNews(`${fight_show[0][1]*4+2}${str}人。`);
-                if(damageSprite){
+                if(damageSprite && damageSprite.parent){
                     damageSprite.ni.left = armysT.left;
                     damageSprite.ni.top =armysT.top +10;
                     damageNode.text = `-${damage}`;
@@ -165,7 +165,8 @@ class Show{
         for(let i = 0,len = evs.length; i < len; i++){
             Show[evs[i].type] && Show[evs[i].type](evs[i]);
         }
-    }   
+    }
+    //创建军队精灵   
     static insert(ev){
         if ( !fighter_sprite[ev.target.group]){ fighter_sprite[ev.target.group] = []}
         fighter_sprite[ev.target.group][ev.target.id] = Scene.open("app-ui-fightHero", Global.mainFace.node,null, {id:ev.target.id,group:ev.target.group,left:sitP[ev.target.group][ev.target.id][0],top:sitP[ev.target.group][ev.target.id][1]});
@@ -295,25 +296,28 @@ class WfightAccount extends Widget{
         this.cfg.children[22].data.text = `${die_all}`;
         if(isvic){
             if(cityId<20000){
-                this.cfg.children[23].data.text = `${bcfg[cityId]["reward_dis"].replace(/\\n/,"\n")}`;
+                let st = bcfg[cityId]["reward_dis"].replace("{{city_num}}",DB.data.map.city[3])
+                this.cfg.children[23].data.text = `${st.replace(/\\n/,"\n")}`;
             }else{
                 this.cfg.children[23].data.text = `${bcfg3[cityId]["reward_dis"].replace(/\\n/,"\n")}`;
             }
         }else{
-            this.cfg.children[23].data.text = "+50败绩";
+            let st = cityId ==19999?`-${DB.data.map.city[4]}城池\n+50败绩`:"+50败绩"
+            this.cfg.children[23].data.text = st;
             this.cfg.children[23].data.style.fill = "0xff6347"
         }
-    
-
     }
 
     remove(){
+        Scene.remove(damageSprite);
         Scene.remove(Global.mainFace.node);
         AppEmitter.emit("stageStart"); 
         AppEmitter.emit(`${faceName[lastFace]}`);
         Fight.pause = 1;
         let index = [],
              bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+             bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
+             bcfg3 = CfgMgr.getOne("app/cfg/city.json@rand"),
              arms = ["步兵","骑兵","弓兵"]
         for(let i=0;i<fighter[0].length;i++){
             index.push(fighter[0][i][3])
@@ -323,6 +327,54 @@ class WfightAccount extends Widget{
             if(data.err){
                 return console.log(data.err.reson);
             }
+            //战斗结果播报
+            if(isvic){
+              if(cityId ==19999){
+                  if(DB.data.map.city[4]){
+                    addNews(`2战斗胜利，击退了敌人的入侵，收复了${DB.data.map.city[4]}城。(胜绩+50)`);
+                    DB.data.map.city[4] = data.ok[5];
+                  }else{
+                    addNews(`2战斗胜利，击退了敌人的入侵。(胜绩+50)`);
+                  }
+              }
+              if(cityId >19999){
+                addNews(`2战斗胜利，扫除了领地内的${bcfg3[cityId]["name"]}。(胜绩+50)`);
+              }
+              if(cityId <19999){
+                addNews(`2战斗胜利，占领了${bcfg2[cityId]["name"]}。(胜绩+100,建筑上限+${DB.data.map.city[3]})`);
+                if(DB.data.map.city[0] >177){
+                    Scene.open("app-ui-result", Scene.root,null,{id:3});
+                }
+              }
+            }else{
+                if(cityId ==19999){
+                    if(DB.data.map.city[4]){
+                        Scene.open("app-ui-result", Scene.root,null,{id:0});
+                    }else{
+                        addNews(`6战斗失败，失去了边境${DB.data.map.city[4]}城。(败绩+50)`);
+                    }  
+                }
+                if(cityId >19999){
+                  addNews(`6战斗失败。(败绩+50)`);
+                }
+                if(cityId <19999){
+                  addNews(`6战斗失败。(败绩+50)`);
+                }
+                //将领受伤
+                if(data.ok[3]){
+                  for(let i=0;i<index.length;i++){
+                    addNews(`6${bcfg[DB.data.hero.own[index[i]][0]]["name"]}在战斗中负伤，需要休养一段时间。`);
+                  }
+                }
+                if(cityId ==19999){
+                    let name = DB.data.hero.own[0]?bcfg[DB.data.hero.own[0][0]]["name"]:"军备官"
+                  if(DB.data.hero.own[0]){
+                      addNews(`${name}：此诚危急存亡之秋也。望主公尽快组织反攻，不可懈怠！`);
+                  }
+                }
+            }
+
+
             DB.data.res.fail[1] = data.ok[0];
             DB.data.res.win[1]  = data.ok[1];
             if(data.ok[2]){
@@ -341,7 +393,7 @@ class WfightAccount extends Widget{
             for(let i=0;i<index.length;i++){
                 if(Math.floor(data.ok[3][index[i]][2]) > Math.floor(DB.data.hero.own[index[i]][2])){
                     let id = DB.data.hero.own[index[i]][0]
-                    addNews(`久历沙场，${bcfg[id]["name"]}的${arms[bcfg[id]["arms"]]}能力+1`);
+                    addNews(`2久历沙场，${bcfg[id]["name"]}的${arms[bcfg[id]["arms"]]}能力+1`);
                 }
             }
             DB.data.hero.own = data.ok[3];

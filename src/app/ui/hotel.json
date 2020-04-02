@@ -10,6 +10,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect700700",
                 "width": 700,
                 "height": 700,
                 "left": 0,
@@ -99,6 +100,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect1030",
                 "width": 10,
                  "height": 30,
                  "left": 30,
@@ -121,6 +123,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect1030",
                 "width": 10,
                  "height": 30,
                  "left": 30,
@@ -143,6 +146,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect1030",
                 "width": 10,
                  "height": 30,
                  "left": 30,

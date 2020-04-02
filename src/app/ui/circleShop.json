@@ -10,6 +10,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect7501334",
                 "width": 750,
                 "height": 1334,
                 "left": 0,
@@ -26,7 +27,7 @@
                 "left":20,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xFFFF00"
                 }
             }
         },
@@ -49,6 +50,7 @@
             "type": "rect",
             "on":{"tap":{"func":"open","arg":[0]}},
             "data": {
+                "name": "rect220300",
                 "width": 220,
                 "height": 300,
                 "left": 20,
@@ -70,7 +72,7 @@
                         "left":10,
                         "top": 20,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xFFFF00", "align" : "center"
                         }
                     }
                 },
@@ -140,6 +142,7 @@
             "type": "rect",
             "on":{"tap":{"func":"open","arg":[1]}},
             "data": {
+                "name": "rect220300",
                 "width": 220,
                 "height": 300,
                 "left": 265,
@@ -161,7 +164,7 @@
                         "left":10,
                         "top": 20,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xFFFF00", "align" : "center"
                         }
                     }
                 },
@@ -231,6 +234,7 @@
             "type": "rect",
             "on":{"tap":{"func":"open","arg":[2]}},
             "data": {
+                "name": "rect220300",
                 "width": 220,
                 "height": 300,
                 "left": 510,
@@ -252,7 +256,7 @@
                         "left":10,
                         "top": 20,
                         "style":{
-                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xffffff", "align" : "center"
+                            "fontFamily" : "Arial", "fontSize": 46, "fill" : "0xFFFF00", "align" : "center"
                         }
                     }
                 },

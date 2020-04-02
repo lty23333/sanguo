@@ -10,6 +10,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect750200",
                 "width": 750,
                 "height": 200,
                 "left": 0,
@@ -31,6 +32,7 @@
                 {
                     "type": "rect",
                     "data": {
+                        "name": "rect15050",
                         "id": "off0",
                         "width": 150,
                         "height": 50,
@@ -43,6 +45,7 @@
                 {
                     "type": "rect",
                     "data": {
+                        "name": "rect15050a",
                         "id": "on0",
                         "width": 150,
                         "height": 50,
@@ -80,6 +83,7 @@
                 {
                     "type": "rect",
                     "data": {
+                        "name": "rect15050",
                         "id": "off1",
                         "width": 150,
                         "height": 50,
@@ -92,6 +96,7 @@
                 {
                     "type": "rect",
                     "data": {
+                        "name": "rect15050a",
                         "id": "on1",
                         "width": 150,
                         "height": 50,

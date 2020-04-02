@@ -10,6 +10,17 @@
         {
             "type":"app-ui-button",
             "props":{
+                "on":{"tap":{"func":"continue"}},
+                "id":"button_continue",
+                "left": 0,
+                "top": 400,
+                "text": "继续游戏",
+                "size":35
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
                 "on":{"tap":{"func":"startGame"}},
                 "id":"button_new",
                 "left": 0,
@@ -21,11 +32,11 @@
         {
             "type":"app-ui-button",
             "props":{
-                "on":{"tap":{"func":"continue"}},
-                "id":"button_continue",
+                "on":{"tap":{"func":"record"}},
+                "id":"button_record",
                 "left": 0,
                 "top": 800,
-                "text": "继续游戏",
+                "text": "记录",
                 "size":35
             }
         }

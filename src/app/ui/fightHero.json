@@ -11,6 +11,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect200200",
                 "width": 200,
                 "height": 200,
                 "left": 0,
@@ -25,6 +26,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect192200",
                 "id":"hp",
                 "width": 192,
                 "height": 200,

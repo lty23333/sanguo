@@ -2,6 +2,7 @@
     "type": "rect",
     "on":{"tap":{"func":"army_plus"}},
     "data": {
+        "name": "rect500180",
         "width": 500,
         "height": 180,
         "left": 200,

@@ -1,10 +1,10 @@
 {   
     "type": "container",
     "data": {
-        "width": 214,
-        "height": 100,
-        "left": "50%",
-        "top": "50%"
+        "width": 750,
+        "height": 1334,
+        "left": 0,
+        "top": 0
     },
     "children": [
         {
@@ -12,9 +12,20 @@
             "props":{
                 "on":{"tap":{"func":"login"}},
                 "id":"button_login",
-                "left": 0,
-                "top": 0,
+                "left": "50%",
+                "top": "50%",
                 "text": "登陆",
+                "size":40
+            }
+        },
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"clear"}},
+                "id":"button_clear",
+                "left": "50%",
+                "top": 1000,
+                "text": "清理数据",
                 "size":40
             }
         }

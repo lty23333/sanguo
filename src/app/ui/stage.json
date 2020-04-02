@@ -21,6 +21,7 @@
         {
             "type": "rect",
             "data": {
+             "name": "rect20003000",
              "width": 2000,
              "height": 3000,
              "left": 0,
@@ -42,6 +43,7 @@
              {
                 "type": "rect",
                 "data": {
+                "name": "rect150150",
                  "width": 150,
                  "height": 150,
                  "left": 0,
@@ -116,6 +118,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100",
                                 "id": "off0",
                                 "width": 150,
                                 "height": 100,
@@ -128,6 +131,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100a",
                                 "id": "on0",
                                 "width": 150,
                                 "height": 100,
@@ -151,6 +155,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect3232",
                                 "id": "new0",
                                 "width": 32,
                                 "height": 32,
@@ -187,6 +192,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100",
                                 "id": "off1",
                                 "width": 150,
                                 "height": 100,
@@ -199,6 +205,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100a",
                                 "id": "on1",
                                 "width": 150,
                                 "height": 100,
@@ -222,6 +229,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect3232",
                                 "id": "new1",
                                 "width": 32,
                                 "height": 32,
@@ -258,6 +266,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100",
                                 "id": "off2",
                                 "width": 150,
                                 "height": 100,
@@ -270,6 +279,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100a",
                                 "id": "on2",
                                 "width": 150,
                                 "height": 100,
@@ -293,6 +303,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect3232",
                                 "id": "new2",
                                 "width": 32,
                                 "height": 32,
@@ -329,6 +340,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100",
                                 "id": "off3",
                                 "width": 150,
                                 "height": 100,
@@ -341,6 +353,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100a",
                                 "id": "on3",
                                 "width": 150,
                                 "height": 100,
@@ -364,6 +377,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect3232",
                                 "id": "new3",
                                 "width": 32,
                                 "height": 32,
@@ -400,6 +414,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100",
                                 "id": "off4",
                                 "width": 150,
                                 "height": 100,
@@ -412,6 +427,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect150100a",
                                 "id": "on4",
                                 "width": 150,
                                 "height": 100,
@@ -435,6 +451,7 @@
                         {
                             "type": "rect",
                             "data": {
+                                "name": "rect3232",
                                 "id": "new4",
                                 "width": 32,
                                 "height": 32,
@@ -461,6 +478,7 @@
                 {
                     "type": "rect",
                     "data": {
+                     "name": "rect460",
                      "width": 4,
                      "height": 60,
                      "left": 150,
@@ -472,6 +490,7 @@
                 {
                     "type": "rect",
                     "data": {
+                     "name": "rect460",
                      "width": 4,
                      "height": 60,
                      "left": 300,
@@ -483,6 +502,7 @@
                 {
                     "type": "rect",
                     "data": {
+                     "name": "rect460",
                      "width": 4,
                      "height": 60,
                      "left": 450,
@@ -494,6 +514,7 @@
                 {
                     "type": "rect",
                     "data": {
+                     "name": "rect460",
                      "width": 4,
                      "height": 60,
                      "left": 600,
@@ -505,6 +526,7 @@
                 {
                     "type": "rect",
                     "data": {
+                     "name": "rect7504",
                      "width": 750,
                      "height": 4,
                      "left": 0,
@@ -521,6 +543,7 @@
             "type": "rect",
             "on":{"tap":{"func":"pause_button"}},
             "data": {
+                "name": "rect15070",
                 "id":"pause_button",
                 "width": 150,
                 "height": 70,
@@ -551,6 +574,7 @@
             "type": "rect",
             "on":{"tap":{"func":"restart_button"}},
             "data": {
+                "name": "rect15070",
                 "id":"restart_button",
                 "width": 150,
                 "height": 70,
@@ -580,6 +604,7 @@
             "type": "rect",
             "on":{"tap":{"func":"warning"}},
             "data": {
+                "name": "rect15050",
                 "id":"warning",
                 "width": 150,
                 "height": 50,

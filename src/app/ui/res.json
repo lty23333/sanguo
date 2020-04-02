@@ -12,6 +12,7 @@
         "type": "rect",
         "on":{"tap":{"func":"dis_res","arg":[1]}},
         "data": {
+            "name": "rect55043",
             "width": 550,
              "height": 43,
              "left": -10,
@@ -78,7 +79,7 @@
         "data": {
             "id":"change",
             "text":"",
-            "left":310,
+            "left":300,
             "top": 5,
             "style":{
                 "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"

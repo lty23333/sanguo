@@ -10,8 +10,9 @@
         {
             "type": "rect",
             "data": {
-                "width": 950,
-                "height": 1534,
+                "name": "rect20003000",
+                "width": 2000,
+                "height": 3000,
                 "left": -200,
                 "top": -600,
                 "background-color": "#d9c6ad",
@@ -21,6 +22,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect440520",
                 "width": 440,
                 "height": 520,
                 "left": 0,
@@ -35,6 +37,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect31530",
                 "width": 315,
                 "height": 30,
                 "left": 55,
@@ -45,6 +48,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect31530",
                 "width": 315,
                 "height": 30,
                 "left": 55,
@@ -55,6 +59,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect31530",
                 "width": 315,
                 "height": 30,
                 "left": 65,
@@ -65,6 +70,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect31530",
                 "width": 315,
                 "height": 30,
                 "left": 15,
@@ -75,6 +81,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect31530",
                 "width": 315,
                 "height": 30,
                 "left": 55,

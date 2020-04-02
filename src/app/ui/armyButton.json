@@ -11,6 +11,7 @@
                 "type": "rect",
                 "on":{"tap":{"func":"dis_work","arg":[1]}},
                 "data": {
+                    "name": "rect204104a",
                     "width": 200,
                      "height": 90,
                      "left": 0,
@@ -49,65 +50,94 @@
                 ]
             },     
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"army_plus"}},
                     "id":"button_+",
-                    "left": 300,
+                    "left": 270,
                     "top": 0,
                     "text": "+",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
                 }
             },
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"army_minus"}},
                     "id":"button_-",
-                    "left": 420,
+                    "left": 380,
                     "top": 0,
                     "text": "-",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
                 }
             },
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
                     "on":{"tap":{"func":"army_max"}},
                     "id":"button_0",
-                    "left": 540,
+                    "left": 490,
                     "top": 0,
                     "text": "满编",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
                 }
             },   
             {
-                "type":"app-ui-button",
+                "type":"app-ui-button2",
                 "props":{
-                    "on":{"tap":{"func":"hero_delete"}},
+                    "on":{"tap":{"func":"army_zero"}},
                     "id":"button_max",
-                    "left": 660,
+                    "left": 600,
                     "top": 0,
-                    "text": "革职",
+                    "text": "清零",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
-                    "background-alpha":0.75,
-                    "color":"0xDC143C"
+                    "background-alpha":0.75
                 }
+            },
+            {
+                "type": "rect",
+                "on":{"tap":{"func":"hero_delete"}},
+                "data": {
+                    "name":"rect5555",
+                    "width": 60,
+                    "height": 60,
+                    "left": 655,
+                    "top": -30,
+                    "background-color": "0x696969",
+                    "background-alpha":0.4,
+                    "border-width":2,
+                    "border-color":"0xDC143C",
+                    "border-alpha":0.6,
+                    "border-align":0.5,
+                    "radius":50,
+                    "alpha":1
+                },
+                "children": [
+            
+                    {
+                        "type": "text",
+                        "data": {
+                            "top": 0,
+                            "text": "革",
+                            "style": {"fontSize":45,"fill":"0xDC143C","strokeThickness":2, "align" : "center"}
+                        }
+                    }
+                ]
             }    
     ]
 }

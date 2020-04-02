@@ -28,8 +28,8 @@ class Army {
 
     static initDB(){
         //初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
-        DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[0,0,0],add:[0,0,0,0],p:[80,15,4,0.8,0.2,0]});
-        DB.init("army",{cur:[0],total:[0],price:[50]});
+        DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[1212,1208,1200],add:[0,0,0,0]});
+        DB.init("army",{cur:[0],total:[0],price:[250,5]}); //price:[价格,数量]
     }
     
     static eatGold(){
@@ -99,7 +99,8 @@ class WHero extends Widget{
         this.cfg.children[1].props.on = {"tap":{"func":"army_plus","arg":[DB.data.hero.own[i][3]]}};
         this.cfg.children[2].props.on = {"tap":{"func":"army_minus","arg":[DB.data.hero.own[i][3]]}};
         this.cfg.children[3].props.on = {"tap":{"func":"army_max","arg":[DB.data.hero.own[i][3]]}};
-        this.cfg.children[4].props.on = {"tap":{"func":"hero_delete","arg":[DB.data.hero.own[i][3]]}};
+        this.cfg.children[4].props.on = {"tap":{"func":"army_zero","arg":[DB.data.hero.own[i][3]]}};
+        this.cfg.children[5].on = {"tap":{"func":"hero_delete","arg":[DB.data.hero.own[i][3]]}};
         if(DB.data.hero.own[i][4]>0){
             this.cfg.children[0].children[1].data.text = `(伤${100-DB.data.hero.own[i][4]}%)`
         }else{
@@ -141,16 +142,16 @@ class WHero extends Widget{
             DB.data.hero.MaxHero[2] = data.ok[2];
         })
     }
-    // //人数清0
-    // army_zero (id){
-    //     Connect.request({type:"app/army@army_zero",arg:id},(data) => {
-    //         if(data.err){
-    //             return console.log(data.err.reson);
-    //         }
-    //         DB.data.hero.own[id][1] = data.ok[0];
-    //         DB.data.army.cur[0] = data.ok[1];
-    //     })
-    // }
+     //人数清0
+     army_zero (id){
+         Connect.request({type:"app/army@army_zero",arg:id},(data) => {
+             if(data.err){
+                 return console.log(data.err.reson);
+             }
+             DB.data.hero.own[id][1] = data.ok[0];
+             DB.data.army.cur[0] = data.ok[1];
+         })
+     }
     //满编
     army_max (id){
         Connect.request({type:"app/army@army_max",arg:id},(data) => {
@@ -198,6 +199,10 @@ class WArmy extends Widget{
         }
         this.cfg.children[3].data.style.fill = Global.color[color];
 
+        if(!DB.data.hero.own.length){
+            this.cfg.children[8].data.text = "请前往酒馆招募将领"
+        }
+
     }
     added(node){
         armyNode[0] = this.elements.get("army_number");
@@ -211,9 +216,10 @@ class WArmy extends Widget{
                 return console.log(data.err.reson);
             }else{
                 DB.data.res.gold[1] = data.ok[0];
+                let n =data.ok[1] - DB.data.army.total[0] 
                 DB.data.army.total[0] = data.ok[1];
                 DB.data.army.cur[0] = data.ok[2];
-                AppEmitter.emit("message","空闲士兵+1");
+                AppEmitter.emit("message",`空闲士兵+${n}`);
 
             }
         })
@@ -236,7 +242,7 @@ class WheroDis extends Widget{
         
         this.cfg.children[1].data.text = `${name}(${DB.data.hero.own[i][1]}/${max})`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
-        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[DB.data.hero.own[i][3]][2])}（+${DB.data.hero.add[armsId]}）`;
+        this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[DB.data.hero.own[i][3]][2])}（+${DB.data.hero.add[armsId+1]}）`;
     }
 } 
 
@@ -253,6 +259,7 @@ const open = () => {
     for(let i=0; i<DB.data.hero.own.length;i++ ){
       Scene.open("app-ui-armyButton", Global.mainFace.node,null, {id:i});
     }
+    
 }
 
 

@@ -81,3 +81,6 @@ class Button extends Widget{
 /****************** 立即执行 ******************/
 //注册组件
 Widget.registW("app-ui-button",Button);
+Widget.registW("app-ui-button2",Button);
+Widget.registW("app-ui-button3",Button);
+Widget.registW("app-ui-button4",Button);

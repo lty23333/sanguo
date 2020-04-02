@@ -11,6 +11,7 @@
         {
             "type": "rect",
             "data": {
+                "name": "rect220300",
                 "width": 220,
                 "height": 350,
                 "left": 0,
@@ -44,7 +45,7 @@
                 "left":10,
                 "top": 75,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 36, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
@@ -52,15 +53,38 @@
             "type": "text",
             "data": {
                 "id":"army",
-                "text":"驻守：",
+                "text":"",
                 "left":30,
-                "top": 100,
+                "top": 130,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
                 }
             }
         },
-
+        {
+            "type": "text",
+            "data": {
+                "id":"army1",
+                "text":"",
+                "left":30,
+                "top": 165,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"army2",
+                "text":"",
+                "left":30,
+                "top": 200,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 25, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
         {
             "type": "text",
             "data": {

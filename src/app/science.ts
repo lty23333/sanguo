@@ -22,6 +22,8 @@ class Science {
     static  com_name // 通用窗口名字节点
     static  com_effect // 通用窗口效果节点
     static  com_cost// 通用窗口消耗节点
+    static  sci_number //掌握科技数量节点
+    static  sci_num  //掌握科技数量
     static science_sprite =[]
     static cur_scienceId = 0
     static coordinate = {left:[0,0,0,0,0,300,0,300],top:[0,200,400,600,300,300,450,450]}//知识按钮坐标
@@ -127,9 +129,12 @@ class WscienceButton extends Widget{
  * @description  知识界面组件
  */
 class WScience extends Widget{
-
+    setProps(props){
+        super.setProps(props);
+        this.cfg.children[1].data.text = `${Science.sci_num}`;
+    }
     added(node){
-        
+        Science.sci_number = this.elements.get("sci_number");
     }
 }
 
@@ -167,19 +172,22 @@ class WcomWindow extends Widget{
                 if(data.err){
                     AppEmitter.emit("message","知识不足！");
                     return console.log(data.err.reson);
+                }else{
+                    for(let i=0;i<effect.length;i++){
+                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                    }   
+                    DB.data.science[id-100][1] = data.ok[0];
+                    DB.data.res.sci[1] = data.ok[1];
+    
+                    //更新窗口信息
+                    this.remove();
+                    AppEmitter.emit("stageStart");
+                    Science.com_name.text = `${bcfg[id]["name"]}`;
+                    Science.com_effect.text = `效果：${bcfg[id]["effect_dis"]}`;
+                    Science.com_cost.text = `消耗：${cost}知识`;
+                    Science.sci_num += 1;
+                    Science.sci_number.text = Science.sci_num;
                 }
-                for(let i=0;i<effect.length;i++){
-                    DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                }   
-                DB.data.science[id-100][1] = data.ok[0];
-                DB.data.res.sci[1] = data.ok[1];
-
-                //更新窗口信息
-                this.remove();
-                AppEmitter.emit("stageStart");
-                Science.com_name.text = `${bcfg[id]["name"]}`;
-                Science.com_effect.text = `效果：${bcfg[id]["effect_dis"]}`;
-                Science.com_cost.text = `消耗：${cost}知识`;
             })           
     } 
     remove(){
@@ -197,7 +205,7 @@ class WcomWindow extends Widget{
  * @description 打开知识界面
  */
 const open = () => {
-    Global.mainFace.node = Scene.open("app-ui-science", Scene.root);
+    Science.sci_num = 0
     Global.mainFace.id = 0;
     Science.unlock_science = []
     //显示解锁的知识按钮
@@ -205,8 +213,13 @@ const open = () => {
         if(DB.data.science[i][0] >=1 && !DB.data.science[i][1]){
             Science.unlock_science.push(i+100);
         }
+        if(DB.data.science[i][1]>=1){
+            Science.sci_num +=1;
+        }
     }
+    Global.mainFace.node = Scene.open("app-ui-science", Scene.root);
     Science.updateScienceButton(); 
+    
 }
 
 
