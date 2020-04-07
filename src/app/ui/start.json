@@ -39,6 +39,18 @@
                 "text": "记录",
                 "size":35
             }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"轮回三国",
+                "left":-140,
+                "top": 180,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 70, "fill" : "0xffffff", "align" : "left"
+                }
+            }
         }
     ]
 }

@@ -61,7 +61,7 @@ const initDB = () => {
         hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[1212,1208,1200],add:[0,0,0,0]},
         hotel:{date:[0],price:[10]},
         shop:{date:[0],price:[0,0,0,0,0,0],number:[200]},
-        army:{cur:[0],total:[0],price:[250,5]},
+        army:{cur:[0],total:[0],price:[250,5,1]},
         map:{date:[1],city:[1,10000,0,15,0,100],attack:[[]],guard:[]},
         event:{"next":[2001],"date":[0]},
         circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}
@@ -115,15 +115,20 @@ const putin = (param: any, callback) => {
 
     DB.circle.coin[0] = DB.circle.city[0][0]
     DB.circle.own = JSON.parse(JSON.stringify(DB.hero.own))
+    //时间归零，游戏结束
+    DB.date.day[0] = 0
+    saveDb("date",DB.date);
     saveDb("circle",DB.circle);
-    callback({ok:[JSON.parse(JSON.stringify(DB.circle))]});
+    callback({ok:[JSON.parse(JSON.stringify(DB.circle)),DB.date.day[0]]});
 }
 //轮回商店兑换物存入初始数据库
 const putout = (param: any, callback) => {   
 //    DB.circle.year[0] = Math.ceil(DB.date.day[0]/400) >DB.circle.year[0]?Math.ceil(DB.date.day[0]/400):DB.circle.year[0]
     DB.circle.coin[0] = DB.circle.city[0][0]
     let res = [400,50,50,50],
-        shopBuild = [1000,1005,1008,1007]
+        shopBuild = [1000,1005,1008,1007],
+        //返回的效果结果
+        effect_end =[]
     for(let i =0;i<4;i++){
         if(DB.circle.temp[0][i]){
             DB.res[work_name[i+1]][0] = 1
@@ -131,13 +136,36 @@ const putout = (param: any, callback) => {
         }
     }
     for(let i =0;i<shopBuild.length;i++){
+        if(!effect_end[i]){
+            effect_end[i] =[]
+        }
         if(DB.circle.temp[1][i]){
             DB.build[shopBuild[i]-1000][0] = 1
             DB.build[shopBuild[i]-1000][1] = DB.circle.temp[1][i]
+            //如果解锁了果园，把山路也解锁了
+            if(shopBuild[i] == 1000){
+                DB.build[14][0] = 1
+            }
+            if(shopBuild[i] == 1007){
+                 DB.face.unlock[3] = 1
+            }
+            
+            let  bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+            id = shopBuild[i],
+            effect = bcfg[id]["effect_type"],
+            effect_num = bcfg[id]["effect_number"]
+            //判断数据表
+            for(let j=0;j<effect_num.length;j++){
+                DB[effect[j][0]][effect[j][1]][effect[j][2]] += effect_num[j] * DB.circle.temp[1][i];
+                if(shopBuild[i] == 1007 && DB.circle.temp[1][i] >4){
+                    DB[effect[j][0]][effect[j][1]][effect[j][2]] = 5
+                }
+                effect_end[i].push(DB[effect[j][0]][effect[j][1]][effect[j][2]]);
+            }
         }
     }
+    let id = 0
     for(let i =0;i<DB.circle.own.length;i++){
-        let id = 0
         if(DB.circle.temp[2][i]){
             DB.circle.own[i][1] = 0
             DB.circle.own[i][3] = id
@@ -157,7 +185,7 @@ const putout = (param: any, callback) => {
     saveDb("hero",DB.hero);
     saveDb("circle",DB.circle);
     saveDb("face",DB.face);
-    callback({ok:[DB.res,DB.build,JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(DB.circle)),DB.face.unlock[3]]});
+    callback({ok:[JSON.parse(JSON.stringify(DB.res)),JSON.parse(JSON.stringify(DB.build)),JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(DB.circle)),DB.face.unlock[3],effect_end]});
 }
 
 const read = (param: any, callback) => {   
@@ -259,14 +287,20 @@ const add_res = (param: any, callback) => {
             times += -DB.people.fail[2];
         }
         if(DB.date.unlock[1]){
-            times += five_res[Math.floor(DB.date.day[0]/400+ (DB.circle.city[0] && DB.circle.city[0][0] >15?DB.circle.city[0][0]%5:0)) % 5][index]
+            times += five_res[Math.floor(DB.date.day[0]/400+ (DB.circle.city[0] && DB.circle.city[0][0] >81?DB.circle.city[0][0]%5:0)) % 5][index]
         }
         change = change * times/2;
     }
     change -=  res[5] *(1+res[6])/2
 
     if(change+number>max){
-        number = max;
+        if(number < max){
+            number = max;
+        }else{
+            if(change < 0){
+                number += change
+            }
+        }
     }else{
         if(number+change<0){
             number = 0;
@@ -460,6 +494,7 @@ const unlock = (id: any, callback) => {
         saveDb("map",DB.map);
         saveDb("res",DB.res);
         saveDb("date",DB.date);
+        saveDb("army",DB.army);
         callback({ok:[DB.science[id-100][1],num,effect_end]}); 
     }else{
         callback({err:1}); 
@@ -546,12 +581,17 @@ const eventtrigger = (eventId: any, callback) => {
             }         
         }
     }else{
-        callback({err:1});
+        callback({err:DB.event.next[0]});
     }
-
+}
+const warning_zero = (param: any, callback) =>{
+    DB.date.warning[1] = 0;
+    saveDb("date",DB.date);
+    callback({ok:[DB.date.warning[1]]});
 }
 
 Connect.setTest("app/event@eventtrigger",eventtrigger);
+Connect.setTest("app/event@warning_zero",warning_zero);
 /****************** hero ******************/
 //param:（1给钱刷新，2时间刷新）
 const hero_choose = (param: any, callback) => {   
@@ -634,9 +674,11 @@ Connect.setTest("app/hero@choose",hero_choose);
 Connect.setTest("app/hero@buy",hero_buy);
 /****************** army ******************/
 const army_buy = (id: any, callback) => { 
-    let cost = DB.army.price[0],
+    if(!DB.army.price[2]){
+        DB.army.price.push(1);
+    }
+    let cost = DB.army.price[0] * DB.army.price[2],
         num 
-
         if(cost<=DB.res.gold[1]){
             DB.res.gold[1] = DB.res.gold[1] -cost;
             num = Math.ceil(DB.army.price[1] * (400 + rand(200))/500 -0.5)
@@ -648,7 +690,6 @@ const army_buy = (id: any, callback) => {
         }else{
         callback({err:1}); 
     }
-
 }
 //添加军人
 const army_plus = (id: any, callback) => { 
@@ -935,7 +976,11 @@ const fightAccount = (param: any, callback) => {
         if(DB.res.fail[1]>win){
             DB.res.fail[1] -= win;
         }else{
-            DB.res.win[1] += win -DB.res.fail[1];
+            if(DB.res.win[1] + win -DB.res.fail[1] <= DB.res.win[2]){
+                DB.res.win[1] += win -DB.res.fail[1];
+            }else{
+                DB.res.win[1] = DB.res.win[2]
+            }
             DB.res.fail[1] = 0;
         }
         if(effect){           
@@ -949,8 +994,8 @@ const fightAccount = (param: any, callback) => {
             DB.map.city[4] = 0;
         }
         //加武将能力,添加受伤状态
-        let a = [300,200,90,80,70,50,30,0],
-            b = [0.01,0.03,0.06,0.1,0.2,0.3,0.5,0.8]
+        let a = [900,600,300,200,90,80,70,50,30,0],
+            b = [0.01,0.02,0.03,0.06,0.09,0.12,0.2,0.3,0.5,0.8]
         for(let i =0;i<param.heroIndex.length;i++){
             let hero = DB.hero.own[param.heroIndex[i]], 
                 bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
@@ -988,10 +1033,18 @@ const fightAccount = (param: any, callback) => {
                 DB.hero.MaxHero[2] -= 1
             }
         }
+        if(param.cityId == 19999){
+            if( DB.map.city[4] == 0){
+                DB.map.city[4] += Math.ceil(DB.map.city[0]/2) 
+            }else{
+                DB.map.city[4] = DB.map.city[0]
+            }
+            
+        }
         saveDb("map",DB.map);
         saveDb("hero",DB.hero);
         saveDb("res",DB.res);
-        callback({ok:[DB.res.fail[1],DB.res.win[1],[],JSON.parse(JSON.stringify(DB.hero.own)),DB.hero.MaxHero[2]]});
+        callback({ok:[DB.res.fail[1],DB.res.win[1],"no",JSON.parse(JSON.stringify(DB.hero.own)),DB.hero.MaxHero[2],DB.map.city[4]]});
     }
 
 
@@ -1031,15 +1084,19 @@ const buy = (param: any, callback) => {
     n =number1(num)
     //购买某种商品后刷新价格
     if(DB.res[goods[param][0]][1] >=  n){
-        DB.res[goods[param][0]][1] -=  n
-        DB.res[goods[param][1]][1] +=  DB.shop.number[0]
-        if(DB.shop.price[param] <price[param]){
-            times = 1.1
+        if(DB.res[goods[param][1]][1] +DB.shop.number[0] >DB.res[goods[param][1]][2]){
+            DB.res[goods[param][0]][1] -=  n
+            DB.res[goods[param][1]][1] +=  DB.shop.number[0]
+            if(DB.shop.price[param] <price[param]){
+                times = 1.1
+            }
+            DB.shop.price[param] = DB.shop.price[param] * times
+            saveDb("res",DB.res);
+            saveDb("shop",DB.shop);
+            callback({ok:[DB.res[goods[param][0]][1],DB.res[goods[param][1]][1],DB.shop.price[param]]});
+        }else{
+            callback({err:2}); 
         }
-        DB.shop.price[param] = DB.shop.price[param] * times
-        saveDb("res",DB.res);
-        saveDb("shop",DB.shop);
-        callback({ok:[DB.res[goods[param][0]][1],DB.res[goods[param][1]][1],DB.shop.price[param]]});
     }else{
         callback({err:1}); 
     }
@@ -1047,13 +1104,13 @@ const buy = (param: any, callback) => {
 
 const updateShop = (param: any, callback) => {
     let discount = rand(6) - 1,
-        price = [8,1,1,0.125,1,1]
+        price = [0.125,1,1,8,1,1]
     
 
     for(let i = 0;i<=5;i++){
         DB.shop.price[i] = price[i] 
     }
-    DB.shop.price[discount] = price[discount] /2
+    DB.shop.price[discount] = price[discount] *0.4
     DB.shop.date[0] = Math.ceil(DB.date.day[0]/100) 
     saveDb("shop",DB.shop);
     callback({ok:[discount,DB.shop.price,DB.shop.date[0]]});

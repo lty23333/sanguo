@@ -59,9 +59,9 @@
             "type": "rect",
             "data": {
                 "name": "rect38010",
-                "width": 340,
+                "width": 325,
                  "height": 10,
-                 "left": 390,
+                 "left": 405,
                  "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75

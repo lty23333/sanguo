@@ -10,6 +10,7 @@ import Connect from "../libs/ni/connect";
 import {addFNews} from './stage';
 import {Global,rand} from './global';
 import {addNews} from './stage';
+import Music from '../libs/ni/music';
 
 /****************** 导出 ******************/
 
@@ -22,8 +23,8 @@ let lastFace,        //上一个界面
     numberNode = [[]],    //军队人数节点
     moverF = [],     //当前精灵阵营，ID
     moverT = [],     //目标精灵阵营，ID
-    sitP = [[[]]],         //军队不动时坐标
-    attP = [[[]]] ,          //进队进攻的坐标          
+    sitP = [],         //军队不动时坐标
+    attP = [] ,          //进队进攻的坐标          
     fighter_sprite = [[]],  //参战军队精灵
     armys = [[]],         //参战军队的逻辑对象
     state ,      //表现演播的状态
@@ -37,15 +38,16 @@ let lastFace,        //上一个界面
     damageSprite,   //伤害飘字
     damageNode,    //伤害飘字
     kill_die,       //我军将领杀敌损伤
-    cityId          //争夺城市的ID
+    cityId,          //争夺城市的ID
+    hero_news = [[],[]] //将领打后需要播报的情况  负伤/提升
 class Fight {
     
 
     static pause = 1
     static events = []     //事件列表
-    static shake = 2      //震动次数
+    static shake = 3      //震动次数
     static shakeState = 4      //震动阶段
-
+    static mp3 = 0
 
 
     static run(){
@@ -86,9 +88,13 @@ class Fight {
                 Fight.events.push({type:"move",target: armysF});
             }
         }else if(state == "damage"){
+            if(!Fight.mp3){
+                Music.play("audio/attck.mp3");
+                Fight.mp3 = 1;
+            }
             if(Fight.shake>0){
                 damageSprite.ni.top += 1;
-                if(Fight.shakeState>-9){
+                if(Fight.shakeState>-5){
                     armysT.left +=  Fight.shakeState/(Math.abs(Fight.shakeState)?Math.abs(Fight.shakeState):1);
                     Fight.shakeState -= 1;
                     Fight.events.push({type:"move",target: armysT});
@@ -98,7 +104,7 @@ class Fight {
                 }
             }else{
                     let Cname = ["步","骑","弓"]
-                    Fight.shake = 2;
+                    Fight.shake = 3;
                     state = "run2";
                     armysT.hp -= damage;
                     numberNode[fight_show[0][4]][fight_show[0][5]].text =  `${armysT.hp} ${Cname[fighter[fight_show[0][4]][fight_show[0][5]][4]]}`;
@@ -106,6 +112,7 @@ class Fight {
                     damageSprite.ni.top += 2000;
             }
         }else if(state == "run2"){
+            Fight.mp3 = 0;
             if((armysF.top >= moverF[1] && vy<=0)||(armysF.top <= moverF[1] && vy>=0)){
                 fight_show.splice(0,1);
                 if(fight_show[0]){
@@ -302,104 +309,88 @@ class WfightAccount extends Widget{
                 this.cfg.children[23].data.text = `${bcfg3[cityId]["reward_dis"].replace(/\\n/,"\n")}`;
             }
         }else{
-            let st = cityId ==19999?`-${DB.data.map.city[4]}城池\n+50败绩`:"+50败绩"
+            //战斗奖励显示
+            let st
+            if(cityId ==19999){
+                if(DB.data.map.city[4] == DB.data.map.city[0]){
+                    st = `-所有剩余城池\n+50败绩`
+                }else{
+                    st =`-${DB.data.map.city[4]}城池\n+50败绩`
+                }
+            }else{
+                st ="+50败绩"
+            }
             this.cfg.children[23].data.text = st;
             this.cfg.children[23].data.style.fill = "0xff6347"
         }
     }
 
     remove(){
-        Scene.remove(damageSprite);
-        Scene.remove(Global.mainFace.node);
-        AppEmitter.emit("stageStart"); 
-        AppEmitter.emit(`${faceName[lastFace]}`);
-        Fight.pause = 1;
-        let index = [],
-             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-             bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
-             bcfg3 = CfgMgr.getOne("app/cfg/city.json@rand"),
-             arms = ["步兵","骑兵","弓兵"]
-        for(let i=0;i<fighter[0].length;i++){
-            index.push(fighter[0][i][3])
-        }
-        //发放战斗奖励
-        Connect.request({type:"app/fight@fightAccount",arg:{isvic:isvic,cityId:cityId,heroIndex:index}},(data) => {
-            if(data.err){
-                return console.log(data.err.reson);
+
+        let 
+        bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+        bcfg2 = CfgMgr.getOne("app/cfg/city.json@city"),
+        bcfg3 = CfgMgr.getOne("app/cfg/city.json@rand"),
+        arms = ["步兵","骑兵","弓兵"]
+        if(isvic){
+            if(cityId ==19999){
+                if(DB.data.map.city[4]){
+                  addNews(`2战斗胜利，击退了敌人的入侵，收复了${DB.data.map.city[4]}城。(胜绩+50)`);
+                }else{
+                  addNews(`2战斗胜利，击退了敌人的入侵。(胜绩+50)`);
+                }
             }
-            //战斗结果播报
-            if(isvic){
+            if(cityId >19999){
+              addNews(`2战斗胜利，扫除了领地内的${bcfg3[cityId]["name"]}。(胜绩+50)`);
+            }
+            if(cityId <19999){
+              addNews(`2战斗胜利，占领了${bcfg2[cityId]["name"]}。(胜绩+100,建筑上限+${DB.data.map.city[3]})`);
+              if(DB.data.map.city[0] >178){
+                  Scene.open("app-ui-result", Scene.root,null,{id:3});
+              }
+            }
+          }else{
               if(cityId ==19999){
-                  if(DB.data.map.city[4]){
-                    addNews(`2战斗胜利，击退了敌人的入侵，收复了${DB.data.map.city[4]}城。(胜绩+50)`);
-                    DB.data.map.city[4] = data.ok[5];
+                  if(DB.data.date.day[0] == 0){
+                      Scene.open("app-ui-result", Scene.root,null,{id:0});
                   }else{
-                    addNews(`2战斗胜利，击退了敌人的入侵。(胜绩+50)`);
-                  }
+                      addNews(`6战斗失败，失去了边境${DB.data.map.city[4]}城。(败绩+50)`);
+                  }  
               }
               if(cityId >19999){
-                addNews(`2战斗胜利，扫除了领地内的${bcfg3[cityId]["name"]}。(胜绩+50)`);
+                addNews(`6战斗失败。(败绩+50)`);
               }
               if(cityId <19999){
-                addNews(`2战斗胜利，占领了${bcfg2[cityId]["name"]}。(胜绩+100,建筑上限+${DB.data.map.city[3]})`);
-                if(DB.data.map.city[0] >177){
-                    Scene.open("app-ui-result", Scene.root,null,{id:3});
-                }
+                addNews(`6战斗失败。(败绩+50)`);
               }
-            }else{
-                if(cityId ==19999){
-                    if(DB.data.map.city[4]){
-                        Scene.open("app-ui-result", Scene.root,null,{id:0});
-                    }else{
-                        addNews(`6战斗失败，失去了边境${DB.data.map.city[4]}城。(败绩+50)`);
-                    }  
+              if(cityId ==19999){
+                let name = "军备官"  
+                if(DB.data.hero.own[0]){
+                    name = bcfg[DB.data.hero.own[0][0]]["name"]
                 }
-                if(cityId >19999){
-                  addNews(`6战斗失败。(败绩+50)`);
-                }
-                if(cityId <19999){
-                  addNews(`6战斗失败。(败绩+50)`);
-                }
-                //将领受伤
-                if(data.ok[3]){
-                  for(let i=0;i<index.length;i++){
-                    addNews(`6${bcfg[DB.data.hero.own[index[i]][0]]["name"]}在战斗中负伤，需要休养一段时间。`);
-                  }
-                }
-                if(cityId ==19999){
-                    let name = DB.data.hero.own[0]?bcfg[DB.data.hero.own[0][0]]["name"]:"军备官"
-                  if(DB.data.hero.own[0]){
-                      addNews(`${name}：此诚危急存亡之秋也。望主公尽快组织反攻，不可懈怠！`);
-                  }
-                }
+                addNews(`${name}：此诚危急存亡之秋也。望主公尽快组织反攻，不可懈怠！`);
+              }
+          }
+        //将领受伤
+        if(hero_news[0]){
+            for(let i=0;i< hero_news[0].length;i++){
+                addNews(`6${bcfg[hero_news[0][i]]["name"]}在战斗中负伤，需要休养一段时间。`);
             }
-
-
-            DB.data.res.fail[1] = data.ok[0];
-            DB.data.res.win[1]  = data.ok[1];
-            if(data.ok[2]){
-                let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
-                if(cityId > 19999 && cityId < 30000){
-                    bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
-                }
-                let effect = bcfg[cityId]["effect_type"],
-                    effect_num = bcfg[cityId]["effect_number"]
-                    for(let i=0;i<effect_num.length;i++){
-                        DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
-                    }  
             }
-            //将领数值
-            if(data.ok[3]){
-            for(let i=0;i<index.length;i++){
-                if(Math.floor(data.ok[3][index[i]][2]) > Math.floor(DB.data.hero.own[index[i]][2])){
-                    let id = DB.data.hero.own[index[i]][0]
-                    addNews(`2久历沙场，${bcfg[id]["name"]}的${arms[bcfg[id]["arms"]]}能力+1`);
-                }
+            if(hero_news[1]){
+            for(let i=0;i< hero_news[1].length;i++){
+                addNews(`2久历沙场，${bcfg[hero_news[1][i]]["name"]}的${arms[bcfg[hero_news[1][i]]["arms"]]}能力+1`);
             }
-            DB.data.hero.own = data.ok[3];
-           }
-           DB.data.hero.MaxHero[2] = data.ok[4];
-        })
+        }
+        Scene.remove(damageSprite);
+        Scene.remove(Global.mainFace.node);
+        //游戏结束，不需要回去
+        if(DB.data.date.day[0] > 0){
+            AppEmitter.emit("stageStart"); 
+            AppEmitter.emit(`${faceName[lastFace]}`);
+        }
+        Fight.pause = 1;
+        Music.play(`audio/season${Math.floor(DB.data.date.day[0]/100)% 4}.mp3`,true);
     }
 
 
@@ -407,6 +398,74 @@ class WfightAccount extends Widget{
         this.node = node;
     }
 } 
+/**
+ * @description 领取奖励
+ */
+const reward = () => {
+  let index = []
+    for(let i=0;i<fighter[0].length;i++){
+      index.push(fighter[0][i][3])
+    }
+    //发放战斗奖励
+    Connect.request({type:"app/fight@fightAccount",arg:{isvic:isvic,cityId:cityId,heroIndex:index}},(data) => {
+        if(data.err){
+            return console.log(data.err.reson);
+        }
+        //游戏失败
+        if(cityId ==19999 && !isvic){
+            if(DB.data.map.city[4] > 0){
+                Connect.request({type:"app/circle@putin",arg:[]},(data) => {
+                    if(data.err){
+                        return console.log(data.err.reson);
+                    }else{
+                        DB.data.circle = data.ok[0];
+                        DB.data.date.day[0] = data.ok[1];
+                    }
+                })
+            }
+            DB.data.map.city[4] = data.ok[5];
+        }
+        //游戏通关
+        if(cityId < 19999 && isvic && DB.data.map.city[0] >177){
+            Connect.request({type:"app/circle@putin",arg:[]},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }else{
+                    DB.data.circle = data.ok[0];
+                    DB.data.date.day[0] = data.ok[1];
+                }
+            })
+        }
+
+        DB.data.res.fail[1] = data.ok[0];
+        DB.data.res.win[1]  = data.ok[1];
+        if(data.ok[2] != "no"){
+            let bcfg = CfgMgr.getOne("app/cfg/city.json@city")
+            if(cityId > 19999 && cityId < 30000){
+                bcfg = CfgMgr.getOne("app/cfg/city.json@rand")
+            }
+            let effect = bcfg[cityId]["effect_type"],
+                effect_num = bcfg[cityId]["effect_number"]
+                for(let i=0;i<effect_num.length;i++){
+                    DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
+                }  
+        }
+        //将领数值
+        if(data.ok[3]){
+                for(let i=0;i<index.length;i++){
+                    let id = DB.data.hero.own[index[i]][0]
+                    if(Math.floor(data.ok[3][index[i]][2]) > Math.floor(DB.data.hero.own[index[i]][2])){
+                        hero_news[1].push(id);
+                    }
+                    if(data.ok[3][index[i]][1] == 0){
+                        hero_news[0].push(id);
+                    }
+                }
+                DB.data.hero.own = data.ok[3];
+            }
+        DB.data.hero.MaxHero[2] = data.ok[4];
+        })
+}
 
 /**
  * @description 打开战斗界面
@@ -414,8 +473,12 @@ class WfightAccount extends Widget{
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-fight", Scene.root);
     Global.mainFace.id = 5;
- 
+    Music.play("audio/fight.mp3",true);
     AppEmitter.emit("stagePause");
+    hero_news = [[],[]] 
+    sitP = []
+    attP = []
+    Fight.events = []
     //显示军队
     for(let i=0; i<2;i++ ){
         for(let j=0; j<fighter[i].length;j++ ){
@@ -424,7 +487,7 @@ const open = () => {
             if (!sitP[i][j]){sitP[i][j] = []}
             if (!attP[i][j]){attP[i][j] = []}
 
-            sitP[i][j].push(750/(fighter[i].length+1)*(j+1)-100  ,634 - 534 * i)
+            sitP[i][j].push(850/(fighter[i].length+1)*(j+1)-150  ,634 - 534 * i)
             attP[i][j].push(sitP[i][j][0],sitP[i][j][1] + 200*(i?1:-1))
             if (!armys[i]){armys[i] = []}
             armys[i][j] = new Army({
@@ -454,8 +517,8 @@ const open = () => {
         kill_die = data.ok[5];
         Fight.pause = 0;
         state = "start"
+        reward();
     })
-
 }
 
 

@@ -51,17 +51,13 @@ class People {
                work = 0
             if(peopleNode[id]!= undefined ){ 
                 if(Global.mainFace.id == 1){
-
-                    if(id ==0){
-                        for(let i=1;i<5;i++){
-                            if(p[People.work_name[i]][0]){
-                                work += p[People.work_name[i]][1]
-                            } 
-                        }
-                        peopleNode[id].text = `${p.total[id]-work}`;
-                    }else{
-                        peopleNode[id].text = `${DB.data.people.total[id]}`
+                    for(let i=1;i<5;i++){
+                        if(p[People.work_name[i]][0]){
+                            work += p[People.work_name[i]][1]
+                        } 
                     }
+                    peopleNode[id].text = `${p.total[0]-work}/${DB.data.people.total[1]}`;
+  
                 }else{
                     DB.data.face.new[1] = 1
                 }
@@ -157,8 +153,8 @@ class WPeople extends Widget{
                 work += p[People.work_name[i]][1]
             } 
         }
-        this.cfg.children[1].data.text = `${p.total[0]-work}`;
-        this.cfg.children[3].data.text = DB.data.people.total[1];
+        this.cfg.children[1].data.text = `${p.total[0]-work}/${DB.data.people.total[1]}`;
+    //    this.cfg.children[3].data.text = DB.data.people.total[1];
  
 
     }

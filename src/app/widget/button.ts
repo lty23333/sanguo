@@ -3,6 +3,7 @@ import Scene from '../../libs/ni/scene';
 import Widget from '../../libs/ni/widget';
 import { Events, HandlerResult } from '../../libs/ni/events';
 import Util from '../../libs/ni/util';
+import Music from '../../libs/ni/music';
 
 /****************** 导出 ******************/
 /****************** 本地 ******************/
@@ -73,6 +74,7 @@ class Button extends Widget{
     buttonTap(){
         let btn = this.elements.get(this.props.id);
         btn.scale.x = btn.scale.y = 1;
+        Music.play("audio/but.mp3");
         console.log("buttonTap");
         return HandlerResult.OK;
     }

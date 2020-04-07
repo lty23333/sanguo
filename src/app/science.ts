@@ -10,6 +10,7 @@ import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global} from './global';
 import {addNews} from './stage';
+import Music from '../libs/ni/music';
 
 /****************** 导出 ******************/
 
@@ -24,6 +25,7 @@ class Science {
     static  com_cost// 通用窗口消耗节点
     static  sci_number //掌握科技数量节点
     static  sci_num  //掌握科技数量
+    static sci_max //科技总值
     static science_sprite =[]
     static cur_scienceId = 0
     static coordinate = {left:[0,0,0,0,0,300,0,300],top:[0,200,400,600,300,300,450,450]}//知识按钮坐标
@@ -114,6 +116,7 @@ class WscienceButton extends Widget{
     }
 
     unlockScience(type){
+        Music.play("audio/but.mp3");
         AppEmitter.emit("stagePause");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         Scene.open(`app-ui-comscienceWindow`,this.backNode, null, {id:type,backNode:this.backNode});
@@ -131,7 +134,7 @@ class WscienceButton extends Widget{
 class WScience extends Widget{
     setProps(props){
         super.setProps(props);
-        this.cfg.children[1].data.text = `${Science.sci_num}`;
+        this.cfg.children[1].data.text = `${Science.sci_num}/${Science.sci_max}`;
     }
     added(node){
         Science.sci_number = this.elements.get("sci_number");
@@ -186,7 +189,7 @@ class WcomWindow extends Widget{
                     Science.com_effect.text = `效果：${bcfg[id]["effect_dis"]}`;
                     Science.com_cost.text = `消耗：${cost}知识`;
                     Science.sci_num += 1;
-                    Science.sci_number.text = Science.sci_num;
+                    Science.sci_number.text = `${Science.sci_num}/${Science.sci_max}`;
                 }
             })           
     } 
@@ -206,6 +209,7 @@ class WcomWindow extends Widget{
  */
 const open = () => {
     Science.sci_num = 0
+    Science.sci_max = DB.data.science.length -1
     Global.mainFace.id = 0;
     Science.unlock_science = []
     //显示解锁的知识按钮

@@ -14,7 +14,7 @@
                 "left":50,
                 "top": 315,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -23,10 +23,10 @@
             "data": {
                 "id":"people_number",
                 "text":"0",
-                "left":190,
+                "left":220,
                 "top": 315,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -34,7 +34,7 @@
             "type": "text",
             "data": {
                 "id":"people_/",
-                "text":"/",
+                "text":"",
                 "left":215,
                 "top": 315,
                 "style":{
@@ -46,7 +46,7 @@
             "type": "text",
             "data": {
                 "id":"people_max",
-                "text":"0",
+                "text":"",
                 "left":230,
                 "top": 315,
                 "style":{
@@ -62,6 +62,18 @@
                  "height": 30,
                  "left": 30,
                  "top": 323,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "name": "rect38010",
+                "width": 350,
+                 "height": 10,
+                 "left": 380,
+                 "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75
             }

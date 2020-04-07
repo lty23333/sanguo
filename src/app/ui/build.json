@@ -77,7 +77,7 @@
             "type": "text",
             "data": {
                 "id":"",
-                "text":"建筑数量：",
+                "text":"建筑数量:",
                 "left":50,
                 "top": 315,
                 "style":{
@@ -90,7 +90,7 @@
             "data": {
                 "id":"build_number",
                 "text":"0/0",
-                "left":220,
+                "left":205,
                 "top": 315,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 34, "fill" : "0xffffff", "align" : "left"
@@ -101,9 +101,9 @@
             "type": "rect",
             "data": {
                 "name": "rect38010",
-                "width": 370,
+                "width": 350,
                  "height": 10,
-                 "left": 360,
+                 "left": 380,
                  "top": 330,
                  "background-color": "0xffd700",
                  "alpha":0.75

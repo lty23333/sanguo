@@ -7,7 +7,7 @@ import CfgMgr from '../libs/ni/cfgmrg';
 import {AppEmitter} from './appEmitter';
 import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
-import {table} from "./formula";
+import Music from '../libs/ni/music';
 import {Global,rand,number,number1} from './global';
 import {addNews} from './stage';
 
@@ -177,6 +177,7 @@ class WbuildButton extends Widget{
     }
 
     addBuild(type){
+        Music.play("audio/but.mp3");
         AppEmitter.emit("stagePause");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         //如果是酒馆，则特殊处理
@@ -230,6 +231,7 @@ class WBuild extends Widget{
                 DB.data.build[0][0] = data.ok[1];
                 DB.data.build[14][0] = data.ok[2];
                 AppEmitter.emit("message","粮食+2");
+                Music.play("audio/manfood.mp3");
             })
         }else{
             AppEmitter.emit("message","暂停时不能采集野果");
@@ -267,9 +269,13 @@ class Wgoods extends Widget{
             goods = [["黄金","粮食"],["黄金","木材"],["黄金","知识"],["粮食","黄金"],["木材","黄金"],["知识","黄金"]],
             goods2= [["gold","food"],["gold","wood"],["gold","sci"],["food","gold"],["wood","gold"],["sci","gold"]]
    
+            Music.play("audio/but.mp3");
             Connect.request({type:"app/shop@buy",arg:id},(data) => {
                 if(data.err == 1){
                     AppEmitter.emit("message",`${goods[id][0]}不足!`);
+                    return console.log(data.err.reson);
+                }else if(data.err == 2){
+                    AppEmitter.emit("message",`${goods[id][1]}已达上限!`);
                     return console.log(data.err.reson);
                 }else{
                     DB.data.res[goods2[id][0]][1] = data.ok[0]
@@ -409,7 +415,8 @@ class Whero extends Widget{
     buy(id){
         let 
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
-   
+
+            Music.play("audio/but.mp3");
             Connect.request({type:"app/hero@buy",arg:id},(data) => {
                 if(data.err == 1){
                     AppEmitter.emit("message","黄金不足！");
@@ -496,6 +503,10 @@ class Whotel extends Widget{
                         }else{
                             DB.data[effect[i][0]][effect[i][1]][effect[i][2]] = data.ok[2][i];
                         }
+                    }
+                    //英雄数量上限有上限
+                    if(DB.data.hero.MaxHero[1] > 5){
+                        DB.data.hero.MaxHero[1] = 5;
                     }   
                     DB.data.build[id-1000][1] = data.ok[0];
                     DB.data.res[cost_name][1] = data.ok[1];
@@ -508,7 +519,6 @@ class Whotel extends Widget{
                     if(DB.data.build[id-1000][1] >3){
                         Build.hotel_dis = `${bcfg[id]["dis"]}`
                     }
-                    Build.hotel_dis
                     let num = DB.data.map.city[2],
                     max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+DB.data.map.city[5]
                     Build.totalNode.text = `${num}/${max}`

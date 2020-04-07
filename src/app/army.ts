@@ -9,7 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {Global} from './global';
 import {addNews} from './stage';
-
+import Music from '../libs/ni/music';
 
 /****************** 导出 ******************/
 
@@ -29,7 +29,7 @@ class Army {
     static initDB(){
         //初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
         DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[1212,1208,1200],add:[0,0,0,0]});
-        DB.init("army",{cur:[0],total:[0],price:[250,5]}); //price:[价格,数量]
+        DB.init("army",{cur:[0],total:[0],price:[250,5,1]}); //price:[价格,数量]
     }
     
     static eatGold(){
@@ -76,7 +76,7 @@ class Army {
         }
     }
     static updatePrice(){
-        armyNode[2].text = `${DB.data.army.price[0]}黄金`
+        armyNode[2].text = `${Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)}黄金`
     }
         
 }
@@ -109,6 +109,7 @@ class WHero extends Widget{
     }
 
     dis_hero(type){
+        Music.play("audio/but.mp3");
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         Scene.open(`app-ui-heroDis`,this.backNode, null, {id:type});
     }
@@ -155,6 +156,7 @@ class WHero extends Widget{
     //满编
     army_max (id){
         Connect.request({type:"app/army@army_max",arg:id},(data) => {
+            let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
             if(data.err){
                 if(data.err == 3){
                     AppEmitter.emit("message",`目前最多${DB.data.hero.MaxHero[0]}名将领同时带兵`);
@@ -172,6 +174,7 @@ class WHero extends Widget{
     hero_delete (id){
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             name = bcfg[DB.data.hero.own[id][0]]["name"];
+        Music.play("audio/but.mp3");
         AppEmitter.emit("stagePause");
         Scene.open(`app-ui-confirm`, Global.mainFace.node, null, {text:`革职后，您将永远失去${name}。\n确认吗？`,on:"hero_delete",arg:[id]});
     }
@@ -191,7 +194,7 @@ class WArmy extends Widget{
         super.setProps(props);
         let color = 6
         this.cfg.children[1].data.text = `${DB.data.army.cur}`;
-        this.cfg.children[3].data.text = `${DB.data.army.price[0]}黄金`;
+        this.cfg.children[3].data.text = `${Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)}黄金`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
         //消耗加颜色
         if(DB.data.res.gold[1]>=parseInt(this.cfg.children[3].data.text)){
@@ -304,7 +307,7 @@ DB.emitter.add(`hero.own`, () => {
     Army.updateHero()
 });
 
-//注册将领受伤监听
+//注册招兵费用
 DB.emitter.add(`army.price.0`, () => {
     Army.updatePrice()
 });

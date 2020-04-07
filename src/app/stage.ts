@@ -9,7 +9,7 @@ import { AppUtil } from "./util";
 import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global,rand,number} from './global';
-
+import Music from '../libs/ni/music';
 
 
 /****************** 导出 ******************/
@@ -116,25 +116,28 @@ class Stage {
     }
     //更新界面按钮文字
     static updateFace(i){
-        if(DB.data.face.unlock[i]){
-            Stage.face_text[i].text = Stage.face_Cname[i];
-            Stage.face_text[i].style.fill = Global.color[1]
-            DB.data.face.new[i] = 1
-            //初始化据点更新时间
-            if(i ==4){
-                DB.data.map.date[0] = DB.data.date.day[0] + 6
+        if(DB.data.date.day[0]>0){
+            if(DB.data.face.unlock[i]){
+                Stage.face_text[i].text = Stage.face_Cname[i];
+                Stage.face_text[i].style.fill = Global.color[1]
+                DB.data.face.new[i] = 1
+                //初始化据点更新时间
+                if(i ==4){
+                    DB.data.map.date[0] = DB.data.date.day[0] + 6
+                }
+            }else{
+                Stage.face_text[i].text = "未解锁";
+                Stage.face_text[i].style.fill = Global.color[0]
             }
-        }else{
-            Stage.face_text[i].text = "？？";
-            Stage.face_text[i].style.fill = Global.color[0]
         }
-
     }
     static updateNew(i){
-        if(DB.data.face.new[i]>0){
-            Stage.face_new[i].ni.left = 115
-        }else{
-            Stage.face_new[i].ni.left = 1115
+        if(DB.data.date.day[0]>0){
+            if(DB.data.face.new[i]>0){
+                Stage.face_new[i].ni.left = 115
+            }else{
+                Stage.face_new[i].ni.left = 1115
+            }
         }
     }
     //更新轮回商店显示
@@ -222,9 +225,18 @@ class Stage {
             Stage.warning_button.style.fill = Global.color[6]
             Stage.warning_button.ni.left = 30
         }else if(DB.data.date.warning[1] && DB.data.date.warning[0]){
-            text = `${DB.data.date.warning[1] - DB.data.date.day[0]}天敌袭`
-            Stage.warning_button.style.fill = Global.color[6]
-            Stage.warning_button.ni.left = 10
+            if(DB.data.date.warning[1] - DB.data.date.day[0]<0){
+                Connect.request({type:"app/event@warning_zero",arg:{}},(data) => {
+                    if(data.err){
+                        return console.log(data.err.reson);
+                    }
+                    DB.data.date.warning[1] = data.ok[0];
+                })
+            }else{
+                text = `${DB.data.date.warning[1] - DB.data.date.day[0]}天敌袭`
+                Stage.warning_button.style.fill = Global.color[6]
+                Stage.warning_button.ni.left = 10
+            }
         }else{
             text = "和平"
             Stage.warning_button.style.fill = Global.color[5]
@@ -299,7 +311,7 @@ class Stage {
             num = res[idType],
             people = DB.data.people[name]
         //解锁新资源
-        if(idType ==0 && DB.data.res[name][0]>=1 && !Stage.resSprite[res_nameID]){
+        if(idType ==0 && DB.data.res[name][0]>=1 && !Stage.resSprite[res_nameID] && DB.data.date.day[0]>0){
             Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
         }
         //胜败绩根据其资源数值显示和消失
@@ -329,7 +341,7 @@ class Stage {
             if(DB.data.res.fail[1] >0){
                 times += -DB.data.people.fail[2];
             }
-            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5,
+            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5,
                 five_times = Stage.five_res[five][res_nameID]
             if(DB.data.date.unlock[1] && five_times){
                 times += five_times 
@@ -403,8 +415,8 @@ class Stage {
             //触发相应事件
             if(date >= eventDate){
                 Connect.request({type:"app/event@eventtrigger",arg:eventId},(data) => {
-                    if(data.err == 1){
-                        DB.data.event.next[0] += 1 
+                    if(data.err >2000){
+                        DB.data.event.next[0] = data.err 
                     }else{
                         if(bcfg[eventId]["class"] == 1 ){
                             DB.data.hero.enemy = data.ok[1];
@@ -514,7 +526,7 @@ class Stage {
             if(DB.data.res.fail[1] >0){
                 addtion[i].push(["败",6]);
             }
-            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5,
+            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5,
                 five_times = Stage.five_res[five][i]
             if(DB.data.date.unlock[1] && five_times){
                 addtion[i].push([`${Stage.five[five]}`,five_times>0?2:6]);
@@ -579,12 +591,12 @@ class Stage {
                     Stage.year.text =  `第 ${Math.ceil(DB.data.date.day[0]/400)}年`
                 }
                 if(DB.data.date.unlock[1]){
-                    Stage.fiveYear.text =  `${Stage.five[Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5]} 年`
+                    Stage.fiveYear.text =  `${Stage.five[Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5]} 年`
                 }
                 Stage.day.text = `${season} ${DB.data.date.day[0] % 100}天`
                 //新年弹出新闻信息
                 if(DB.data.date.day[0] % 400 == 1 && DB.data.date.day[0] != 1){
-                    let st = DB.data.date.unlock[1]?`(${Stage.five[Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5]})`:""
+                    let st = DB.data.date.unlock[1]?`(${Stage.five[Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5]})`:""
                     addNews(`5--------------第${Math.ceil(DB.data.date.day[0]/400)}年${st}-------------`)
                     for(let i =0;i<4;i++){
                         Stage.updateRes(i,3);
@@ -592,6 +604,9 @@ class Stage {
                     if(DB.data.build[7][0]){
                         addNews(`酒馆来了一批新的客人。`)  
                     }
+                }
+                if(DB.data.date.day[0] % 100 == 1){
+                    Music.play(`audio/season${Math.floor(DB.data.date.day[0]/100)% 4}.mp3`,true);
                 }
             })
             Stage.nextDay += Stage.dayTime; 
@@ -601,6 +616,7 @@ class Stage {
 
     static change_Newsface(faceID){
         if(Stage.newsFace != faceID){
+            Music.play("audio/but.mp3");
             Stage.news_change[faceID]["alpha"] = 0
             Stage.news_change[Stage.newsFace]["alpha"] = 1
             Stage.news_change[2+faceID]["alpha"] = 1
@@ -620,10 +636,11 @@ class WBack extends Widget{
     setProps(props){
         super.setProps(props);
         if(props && props.type){
-            this.cfg.on = {}
+            this.cfg.on = {"tap":{"func":"no"}}
             this.cfg.children[1].data.text = ""
         }   
     }
+    no(){}
     remove(){
         Scene.remove(this.node);  
         start(); 
@@ -696,7 +713,7 @@ class WRes extends Widget{
                 times += -DB.data.people.fail[2];
                 addtion.push(["败",6]);
             }
-            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5,
+            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5,
                 five_times = Stage.five_res[five][id]
             if(DB.data.date.unlock[1] && five_times){
                 times += five_times 
@@ -720,6 +737,7 @@ class WRes extends Widget{
         this.cfg.children[0].on = {"tap":{"func":"dis_res","arg":[id]}};  
     }
     dis_res(type){
+        Music.play("audio/but.mp3");
         pause();
         this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
         Scene.open(`app-ui-resDis`,this.backNode, null, {id:type});
@@ -801,14 +819,14 @@ class WResdis extends Widget{
 //胜败和五行影响
         if(id < 4 ){
             if(DB.data.res.win[1] >0){
-                dis.push(["胜绩：",`总生产+25%`,2]);
-                times += 0.25
+                dis.push(["胜绩：",`总生产+${Math.floor(DB.data.people.win[2]*100)}%`,2]);
+                times += DB.data.people.win[2]
             }
             if(DB.data.res.fail[1] >0){
-                dis.push(["败绩：",`总生产-25%`,6]);
-                times -= 0.25
+                dis.push(["败绩：",`总生产-${Math.floor(DB.data.people.fail[2]*100)}%`,6]);
+                times -= DB.data.people.fail[2]
             }
-            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >15?DB.data.circle.city[0][0]%5:0)) % 5,
+            let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5,
                 five_times = Stage.five_res[five][id]
             if(DB.data.date.unlock[1] && five_times){
                 dis.push([`${Stage.five[five]}年：`,`总生产${five_times>0?"+":""}${five_times*100}%`,five_times>0?2:6]);
@@ -888,11 +906,13 @@ class WStage extends Widget{
     }
     pause_button(){
        pause();
+       Music.play("audio/but.mp3");
        Stage.stillStop = 1
        Stage.pause_button.ni.left = 800
        Stage.restart_button.ni.left= 580
     }
     restart_button(){
+        Music.play("audio/but.mp3");
         Stage.stillStop = 0
         start();
         Stage.pause_button.ni.left = 580
@@ -920,6 +940,7 @@ class WStage extends Widget{
     //切换主界面
     changeFace(faceid){
         if(faceid != Global.mainFace.id && DB.data.face.unlock[faceid]){
+            Music.play("audio/but.mp3");
             Scene.remove(Global.mainFace.node);
 
             Stage.face_button[Global.mainFace.id]["alpha"]  = 0;
@@ -947,6 +968,7 @@ class WStage extends Widget{
     }
     //预警按钮
     warning(){
+        Music.play("audio/but.mp3");
         if(DB.data.hero.enemy.length){
             if(DB.data.army.cur[0]<DB.data.army.total[0]){
                 AppEmitter.emit("stagePause");
@@ -989,7 +1011,7 @@ class WResult extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
-        let tex = [["9座城池尽数沦陷。","兵败如山倒，","残存亦末路。","“我。。又失败了吗？”","你颓然倒地，心中满是不甘。","仿佛无数次失败身死之情，","尽数交叠于身。","等等，又？"," 。。。"],
+        let tex = [["9座城池尽数沦陷。","兵败如山倒，","残存亦末路。","“我。。又失败了吗？”","你颓然倒地，心中满是不甘。","仿佛无数次失败身死之情，","尽数交叠于身。","等等，又？"," 为什么是又？"," 。。。"],
         ["一觉醒来","竟回东汉末年","适逢黄巾乱世，宦官当权","庙堂之上，朽木为官","乡野之间，生灵涂炭","好男儿自当拔刀奋起","尽收名士猛将","逐鹿天地之间"],
         ["最多占领9城，","便是9个轮回币。","你死死攥着这些硬币,","深知那是翻盘的最后本钱。","此刻，你已回想起了一切。","豁然开朗之后","便只剩下一个疑问。。。","再来一次，","是否便能改变一切？"],
         ["你的国家繁荣昌盛，","你的军队所向披靡，","你的功绩万人传颂。","你由衷地欣喜，","却不是因为这些。","而是...","你！","终于！","摆脱了！","那无尽的轮回！"]],
@@ -1023,17 +1045,13 @@ class WResult extends Widget{
     }
     //下一页
     next(){
+        Music.play("audio/but.mp3");
         Scene.remove(this.node);
-        Connect.request({type:"app/circle@putin",arg:[]},(data) => {
-            if(data.err){
-                return console.log(data.err.reson);
-            }else{
-                DB.data.circle = data.ok[0];
-            }
-        })
+
         Scene.open("app-ui-result", Scene.root,null,{id:2});
     }
     restart(){
+        Music.play("audio/but.mp3");
         this.remove();
         Connect.request({type:"app/circle@read",arg:[]},(data) => {
             if(data.err){
@@ -1045,6 +1063,7 @@ class WResult extends Widget{
         })
     }
     main(){
+        Music.play("audio/but.mp3");
         this.remove();
         openStart();
     }
@@ -1055,6 +1074,7 @@ class WResult extends Widget{
     }
     //正式开始游戏
     start(){
+        Music.play("audio/but.mp3");
         Scene.remove(this.node);
         begin();
     }
@@ -1244,7 +1264,7 @@ class WStart extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
-        if(!localStorage.build){
+        if(!localStorage.build || localStorage.date.indexOf("day:[0]") >=0){
             this.cfg.children[0].props.left = 2000
         }
     }
@@ -1359,12 +1379,23 @@ const cir_start =()=> {
                   for(let i=0;i<Stage.shopBuild.length;i++){
                       DB.data.build[Stage.shopBuild[i]-1000][0] = data.ok[1][Stage.shopBuild[i]-1000][0];
                       DB.data.build[Stage.shopBuild[i]-1000][1] = data.ok[1][Stage.shopBuild[i]-1000][1];
+                      //如果解锁了果园，把山路也解锁了
+                      if(Stage.shopBuild[i] == 1000 && DB.data.build[Stage.shopBuild[i]-1000][0]){
+                            DB.data.build[14][0] = 1
+                      }
+                      if(DB.data.build[Stage.shopBuild[i]-1000][0]){
+                        let bcfg = CfgMgr.getOne("app/cfg/build.json@build"),
+                            effect = bcfg[Stage.shopBuild[i]]["effect_type"]
+                        for(let j=0;j<effect.length;j++){
+                            DB.data[effect[j][0]][effect[j][1]][effect[j][2]] = data.ok[5][i][j];
+                          }
+                      }
                   }
                   
                   DB.data.hero.own = data.ok[2]
                   DB.data.circle = data.ok[3]
                   DB.data.face.unlock[3] = data.ok[4]
-              }
+                }              
           })
           Scene.open("app-ui-result", Scene.root,null,{id:1});
 }
@@ -1431,6 +1462,16 @@ DB.emitter.add(`date.day.0`, () => {
 //注册解锁五行监听，更新一下资源显示
 DB.emitter.add(`date.unlock.1`, () => {
     Stage.updateRes(0,3)
+    Stage.updateRes(1,3)
+    Stage.updateRes(2,3)
+    Stage.updateRes(3,3)
+});
+//注册解锁五行监听，更新一下资源显示
+DB.emitter.add(`people.win.2`, () => {
+    Stage.updateRes(0,3)
+    Stage.updateRes(1,3)
+    Stage.updateRes(2,3)
+    Stage.updateRes(3,3)
 });
 //注册预警监听
 DB.emitter.add(`date.warning.0`, () => {

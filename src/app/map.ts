@@ -10,7 +10,7 @@ import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global,rand} from './global';
 import {addNews} from './stage';
-
+import Music from '../libs/ni/music';
 /****************** 导出 ******************/
 
 /****************** 本地 ******************/
@@ -142,6 +142,7 @@ class WCity extends Widget{
        
     }
     choose(id){
+        Music.play("audio/but.mp3");
         if(DB.data.army.cur[0]<DB.data.army.total[0]){
             AppEmitter.emit("stagePause");
             this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
@@ -292,6 +293,14 @@ class WfightWindow extends Widget{
     lose(){
         Connect.request({type:"app/fight@lose",arg:[]},(data) => {
             if(data.err == 1){
+                Connect.request({type:"app/circle@putin",arg:[]},(data) => {
+                    if(data.err){
+                        return console.log(data.err.reson);
+                    }else{
+                        DB.data.circle = data.ok[0];
+                        DB.data.date.day[0] = data.ok[1];
+                    }
+                })
                 Scene.open("app-ui-result", Scene.root,null,{id:0});
             }else{
                 DB.data.map.city[4] = data.ok[0]

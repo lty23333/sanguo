@@ -74,7 +74,6 @@ const ptFrom = {
         createButton = () => {
             var button = wx.createUserInfoButton({type: 'text',text: '微信登录',style:{left: wx.getSystemInfoSync().windowWidth/2-70,bottom: wx.getSystemInfoSync().windowHeight/2,width: 140,height: 40,lineHeight: 40,backgroundColor: '#ff0000',color: '#ffffff',textAlign: 'center',fontSize: 16,borderRadius: 4}})
             button.onTap((res) =>{
-                Music.play("audio/boom.mp3");
                 if(res.errMsg=="getUserInfo:ok"){
                     User.info = res;
                     //清除微信授权按钮
@@ -169,6 +168,7 @@ const loginCallback = (err?) => {
         return console.log(err);
     }
     AppEmitter.emit("intoMain");
+    Music.play("audio/main.mp3",true);
     Scene.remove(User.show);
     User.show = null;
 }
