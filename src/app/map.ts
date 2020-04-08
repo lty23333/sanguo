@@ -26,7 +26,7 @@ class Map {
     static initDB(){
         //初始化敌军数据库guard: [[[据点ID],[将领id,人数],[将领id,人数]],..]
         //city:[占领城市数量，，所有建筑数量，每个城市增加的建筑,被占领城市数量,初始建筑数量上限]
-        DB.init("map",{date:[1],city:[1,10000,0,15,0,100],attack:[[]],guard:[]});
+        DB.init("map",{date:[1],city:[1,10000,0,15,0,100],attack:[0],guard:[]});
     }
     //更新据点
     static updateGuard(){
@@ -303,6 +303,7 @@ class WfightWindow extends Widget{
                 })
                 Scene.open("app-ui-result", Scene.root,null,{id:0});
             }else{
+                DB.data.map.attack[0] = 0
                 DB.data.map.city[4] = data.ok[0]
                 DB.data.res.fail[1] = data.ok[1]
                 DB.data.res.win[1] = data.ok[2]

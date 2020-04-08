@@ -1,8 +1,8 @@
 {   
     "type": "container",
     "data": {
-        "width": 750,
-        "height": 1334,
+        "width":  "100%",
+        "height": "100%",
         "left": 0,
         "top": 0
     },
@@ -12,8 +12,8 @@
             "on":{"tap":{"func":"no"}},
             "data": {
                 "name": "rect7501334",
-                "width": 750,
-                "height": 1334,
+                "width": "100%",
+                "height":"100%",
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad",
@@ -158,7 +158,7 @@
                 "name": "rect204104",
                 "width": 204,
                 "height": 104,
-                "left": 275,
+                "left": "50%",
                 "top": 1000,
                 "background-color": "0x696969",
                 "background-alpha":0.4,

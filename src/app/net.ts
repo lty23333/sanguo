@@ -62,7 +62,7 @@ const initDB = () => {
         hotel:{date:[0],price:[10]},
         shop:{date:[0],price:[0,0,0,0,0,0],number:[200]},
         army:{cur:[0],total:[0],price:[250,5,1]},
-        map:{date:[1],city:[1,10000,0,15,0,100],attack:[[]],guard:[]},
+        map:{date:[1],city:[1,10000,0,15,0,100],attack:[0],guard:[]},
         event:{"next":[2001],"date":[0]},
         circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}
         }
@@ -557,8 +557,10 @@ const eventtrigger = (eventId: any, callback) => {
         if(bcfg[eventId]["class"] == 1 ){
             DB.hero.enemy = bcfg[eventId].type;
             DB.date.warning[1] = 0;
+            DB.map.attack[0] = 1
+            saveDb("map",DB.map);
             saveDb("hero",DB.hero);
-            saveDb("date",DB.date)            
+            saveDb("date",DB.date);            
             callback({ok:[DB.event.next[0],JSON.parse(JSON.stringify(DB.hero.enemy))]}); 
         }else if(bcfg[eventId]["class"] == 2){
             callback({ok:[DB.event.next[0]]});
@@ -992,6 +994,7 @@ const fightAccount = (param: any, callback) => {
         //收复城池
         if(param.cityId == 19999){
             DB.map.city[4] = 0;
+            DB.map.attack[0] = 0
         }
         //加武将能力,添加受伤状态
         let a = [900,600,300,200,90,80,70,50,30,0],
@@ -1036,6 +1039,7 @@ const fightAccount = (param: any, callback) => {
         if(param.cityId == 19999){
             if( DB.map.city[4] == 0){
                 DB.map.city[4] += Math.ceil(DB.map.city[0]/2) 
+                DB.map.attack[0] = 0
             }else{
                 DB.map.city[4] = DB.map.city[0]
             }
@@ -1054,6 +1058,7 @@ const lose = (param: any, callback) => {
     if(DB.map.city[4]){
         callback({err:1});
     }else{
+       DB.map.attack[0] = 0
        DB.map.city[4] += Math.ceil(DB.map.city[0]/2) 
        let fail = 50
        if(DB.res.win[1] > fail){
@@ -1084,7 +1089,7 @@ const buy = (param: any, callback) => {
     n =number1(num)
     //购买某种商品后刷新价格
     if(DB.res[goods[param][0]][1] >=  n){
-        if(DB.res[goods[param][1]][1] +DB.shop.number[0] >DB.res[goods[param][1]][2]){
+        if(DB.res[goods[param][1]][1] + DB.shop.number[0] <= DB.res[goods[param][1]][2]){
             DB.res[goods[param][0]][1] -=  n
             DB.res[goods[param][1]][1] +=  DB.shop.number[0]
             if(DB.shop.price[param] <price[param]){

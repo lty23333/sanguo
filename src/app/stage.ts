@@ -423,6 +423,7 @@ class Stage {
                             DB.data.date.warning[1] = 0;
                             let backNode
                             pause();
+                            DB.data.map.attack[0] = 1
                             backNode = Scene.open(`app-ui-back`,Global.mainFace.node,null,{type:1});
                             Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"});
                         }else if(bcfg[eventId]["class"] == 2 && DB.data.map.city[4]>0){
@@ -610,6 +611,13 @@ class Stage {
                 }
             })
             Stage.nextDay += Stage.dayTime; 
+            //如果上一次跳过了敌人的进攻，再次弹出
+             if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
+                 let backNode
+                 pause();
+                 backNode = Scene.open(`app-ui-back`,Global.mainFace.node,null,{type:1});
+                 Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
+             }
         }
  
     }
@@ -908,7 +916,7 @@ class WStage extends Widget{
        pause();
        Music.play("audio/but.mp3");
        Stage.stillStop = 1
-       Stage.pause_button.ni.left = 800
+       Stage.pause_button.ni.left = 1200
        Stage.restart_button.ni.left= 580
     }
     restart_button(){
@@ -916,7 +924,7 @@ class WStage extends Widget{
         Stage.stillStop = 0
         start();
         Stage.pause_button.ni.left = 580
-        Stage.restart_button.ni.left= 800
+        Stage.restart_button.ni.left= 1200
     }
 
     added(node){    

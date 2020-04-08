@@ -411,6 +411,10 @@ const reward = () => {
         if(data.err){
             return console.log(data.err.reson);
         }
+        if(cityId ==19999){
+            DB.data.map.attack[0] = 0
+            DB.data.map.city[4] = data.ok[5];
+        }
         //游戏失败
         if(cityId ==19999 && !isvic){
             if(DB.data.map.city[4] > 0){
@@ -423,7 +427,6 @@ const reward = () => {
                     }
                 })
             }
-            DB.data.map.city[4] = data.ok[5];
         }
         //游戏通关
         if(cityId < 19999 && isvic && DB.data.map.city[0] >177){
