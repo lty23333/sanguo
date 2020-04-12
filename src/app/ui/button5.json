@@ -1,0 +1,25 @@
+{
+    "type": "rect",
+    "data": {
+        "name": "rect189",
+        "width": 180,
+        "height": 90,
+        "background-color": "0x696969",
+        "background-alpha":0.4,
+        "border-width":2,
+        "border-color":"0xe6e6fa",
+        "border-alpha":0.6,
+        "border-align":0.5,
+        "radius":30
+    },
+    "children": [
+
+        {
+            "type": "text",
+            "data": {
+                "text": "button",
+                "style": {"fontSize":30,"fill":"#adbbd9","strokeThickness":2}
+            }
+        }
+    ]
+}
