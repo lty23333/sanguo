@@ -48,7 +48,7 @@
                     "top": 0,
                     "text": "+",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
@@ -63,7 +63,7 @@
                     "top": 0,
                     "text": "-",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
@@ -78,7 +78,7 @@
                     "top": 0,
                     "text": "全部",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75
@@ -93,7 +93,7 @@
                     "top": 0,
                     "text": "清零",
                     "size":35,
-                    "width": 100,
+                    "width": 90,
                     "height": 90,
                     "background-color":"#d9c6ad",
                     "background-alpha":0.75

@@ -100,6 +100,8 @@ class Stage {
     static textTime = 0     //字幕时间
     static textNum = 0     //字幕数
     static Ftext        //文字帧循环
+    static nextFrame  //帧循环的下一帧时间
+    static frameTime = 17 //每帧时间
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
         DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,800,0,0,0,0],gold:[0,0,500,0,0,0,0],win:[0,0,100,0,0,1,0],fail:[0,0,100,0,0,1,0]});
@@ -152,23 +154,11 @@ class Stage {
         }
         Stage.coinNode.text = `轮回币：${DB.data.circle.coin[0]}`
         for(let i = 0;i < n;i++){
-            let name,num,
+            let x,
                 cost = 1
-            //已购买物品描述
-            if(type == 0){
-                name = Stage.res_Cname[i]
-                num = DB.data.circle.temp[type][i] * Stage.shopRes[i]
-            }else if(type == 1){
-                let bcfg = CfgMgr.getOne("app/cfg/build.json@build")
-                name = `${bcfg[Stage.shopBuild[i]]["name"]}`
-                num = DB.data.circle.temp[type][i]
-            }else{
-                let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
-                name = `${bcfg[DB.data.circle.own[i][0]]["name"]}`
-                num = DB.data.circle.temp[type][i]
-            }
+            x = cir_dis(type,i);
             if(DB.data.circle.temp[type][i]){
-                Stage.shopText[type][j].text = `${name}(${num})`
+                Stage.shopText[type][j].text = `${x[0]}(${x[1]})`
                 j += 1;
             }
 
@@ -288,19 +278,22 @@ class Stage {
     }
     //字幕浮现循环
     static textRun(){
-        if(Stage.textNum >9 || !Stage.resultNode[Stage.textNum]){
-            Frame.delete(Stage.Ftext);
-            Stage.textNum = 0
-            Stage.textTime = 0
-        }else{
-            Stage.textTime += 1;
-            if(Stage.textTime >= 10){
+        if(Date.now()>Stage.nextFrame){
+            if(Stage.textNum >9 || !Stage.resultNode[Stage.textNum]){
+                Frame.delete(Stage.Ftext);
+                Stage.textNum = 0
                 Stage.textTime = 0
-                Stage.resultNode[Stage.textNum].alpha += 0.1
-                if(Stage.resultNode[Stage.textNum].alpha >=1){
-                    Stage.textNum +=1
+            }else{
+                Stage.textTime += 1;
+                if(Stage.textTime >= 10){
+                    Stage.textTime = 0
+                    Stage.resultNode[Stage.textNum].alpha += 0.1
+                    if(Stage.resultNode[Stage.textNum].alpha >=1){
+                        Stage.textNum +=1
+                    }
                 }
             }
+            Stage.nextFrame += Stage.frameTime
         }
     }
 
@@ -385,19 +378,22 @@ class Stage {
                 bcfg1 = CfgMgr.getOne("app/cfg/city.json@rand")
             Connect.request({type:"app/map@guard_add",arg:{}},(data) => {
                 if(data.err){
+                    DB.data.map.date[0] = 999999999
                     return console.log(data.err.reson);
-                }
-                DB.data.map.guard = data.ok[0];
-                DB.data.map.city[1] = data.ok[2];
-                if(data.ok[1]<20000){
-                    addNews(`斥候已经侦察好了前往${bcfg[data.ok[1]]["name"]}的道路。`);
                 }else{
-                    addNews(bcfg1[data.ok[1]]["dis"]);
+                    DB.data.map.guard = data.ok[0];
+                    DB.data.map.city[1] = data.ok[2];
+                    if(data.ok[1]<20000){
+                        addNews(`斥候已经侦察好了前往${bcfg[data.ok[1]]["name"]}的道路。`);
+                    }else{
+                        addNews(bcfg1[data.ok[1]]["dis"]);
+                    }
+                    //添加红点
+                    if(Global.mainFace.id != 4){
+                        DB.data.face.new[4] = 1
+                    }
                 }
-                //添加红点
-                if(Global.mainFace.id != 4){
-                    DB.data.face.new[4] = 1
-                }
+
             })
         }
     }
@@ -424,12 +420,12 @@ class Stage {
                             let backNode
                             pause();
                             DB.data.map.attack[0] = 1
-                            backNode = Scene.open(`app-ui-back`,Global.mainFace.node,null,{type:1});
+                            backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
                             Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"});
                         }else if(bcfg[eventId]["class"] == 2 && DB.data.map.city[4]>0){
                             let backNode
                             pause();
-                            backNode = Scene.open(`app-ui-back`,Global.mainFace.node,null,{type:1});
+                            backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
                             Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵核心"});
                         }else{
                             if(data.ok[1]){
@@ -568,8 +564,9 @@ class Stage {
             Connect.request({type:"app/hero@hurt",arg:[]},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
+                }else{
+                    DB.data.hero.own = data.ok[0];
                 }
-                DB.data.hero.own = data.ok[0];
             })
             Stage.time +=Stage.timeInterval;
         }
@@ -615,7 +612,7 @@ class Stage {
              if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
                  let backNode
                  pause();
-                 backNode = Scene.open(`app-ui-back`,Global.mainFace.node,null,{type:1});
+                 backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
                  Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
              }
         }
@@ -698,7 +695,17 @@ class WRes extends Widget{
             res = DB.data.res[name],
             people = DB.data.people[name],
             addtion = []
-  
+        
+        //适配
+        this.cfg.children[0].data.width = Scene.screen.width - 200
+        let n = Math.floor((Scene.screen.width - 750)/3.4)
+        this.cfg.children[3].data.left += n
+        this.cfg.children[4].data.left += n
+        this.cfg.children[5].data.left += 2*n
+        this.cfg.children[6].data.left += 3*n
+        this.cfg.children[7].data.left += 3.2*n
+        this.cfg.children[8].data.left += 3.4*n
+
         this.cfg.children[1].data.text = `${Cname}:`;
         this.cfg.children[2].data.text = number(DB.data.res[name][1]);
         this.cfg.children[4].data.text = DB.data.res[name][2]==5000?DB.data.res[name][2]:number(DB.data.res[name][2]);
@@ -747,7 +754,7 @@ class WRes extends Widget{
     dis_res(type){
         Music.play("audio/but.mp3");
         pause();
-        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        this.backNode = Scene.open(`app-ui-back`,Scene.root);
         Scene.open(`app-ui-resDis`,this.backNode, null, {id:type});
     }
     added(node){
@@ -767,10 +774,11 @@ class WConfirm extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
-        this.cfg.children[2].data.text = `${props.text}`;
-        this.cfg.children[3].props.on =  {"tap":{"func":`${props.on}`,"arg":props.arg}};
+        this.cfg.children[1].data.left = Math.floor((Scene.screen.width - this.cfg.children[1].data.width)/2)
+        this.cfg.children[1].children[0].data.text = `${props.text}`;
+        this.cfg.children[1].children[1].props.on =  {"tap":{"func":`${props.on}`,"arg":props.arg}};
         if(props.on =="circle_start"){
-            this.cfg.children[4].props.on={"tap":{"func":"out_remove"}}
+            this.cfg.children[1].children[2].props.on={"tap":{"func":"out_remove"}}
         }
     }
 //将领革职
@@ -824,6 +832,7 @@ class WResdis extends Widget{
             dis = [],
             times = 1
 
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2  
 //胜败和五行影响
         if(id < 4 ){
             if(DB.data.res.win[1] >0){
@@ -883,6 +892,16 @@ class WStage extends Widget{
     setProps(props){
         super.setProps(props);
         let text = ""
+        //适配
+        this.cfg.children[3].data.top = Scene.screen.height -100
+        this.cfg.children[3].data.width = Math.floor(Scene.screen.width / 5)
+        for(let i=0;i<4;i++){
+            this.cfg.children[3].children[1+i].data.left = this.cfg.children[3].data.width * (i +1)
+            this.cfg.children[3].children[5+i].data.left = this.cfg.children[3].data.width * (i +1)
+        }
+            
+        
+
         //预警文字初始化
         if(DB.data.hero.enemy.length){
             text = "反攻"
@@ -916,15 +935,15 @@ class WStage extends Widget{
        pause();
        Music.play("audio/but.mp3");
        Stage.stillStop = 1
-       Stage.pause_button.ni.left = 1200
-       Stage.restart_button.ni.left= 580
+       Stage.pause_button.ni.right = 2000
+       Stage.restart_button.ni.right= 20
     }
     restart_button(){
         Music.play("audio/but.mp3");
         Stage.stillStop = 0
         start();
-        Stage.pause_button.ni.left = 580
-        Stage.restart_button.ni.left= 1200
+        Stage.pause_button.ni.right = 20
+        Stage.restart_button.ni.right= 2000
     }
 
     added(node){    
@@ -980,14 +999,14 @@ class WStage extends Widget{
         if(DB.data.hero.enemy.length){
             if(DB.data.army.cur[0]<DB.data.army.total[0]){
                 AppEmitter.emit("stagePause");
-                this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+                this.backNode = Scene.open(`app-ui-back`,Scene.root);
                 Scene.open("app-ui-fightWindow", this.backNode,null,{id:19999,index:-1,name:`边境城市`});
             }else{
                 AppEmitter.emit("message",`无可出战的军队！`);
             }
         }else{
             AppEmitter.emit("stagePause");
-            this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+            this.backNode = Scene.open(`app-ui-back`,Scene.root);
             Scene.open(`app-ui-warning`,this.backNode, null, {});
         }
     }
@@ -999,6 +1018,7 @@ class WStage extends Widget{
 class WWarning extends Widget{
     setProps(props){
         super.setProps(props);
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2 
         if(DB.data.date.warning[0] && DB.data.date.warning[1]){
             this.cfg.children[1].data.text = `敌袭预警`;
             this.cfg.children[1].data.style.fill = Global.color[6];
@@ -1034,18 +1054,18 @@ class WResult extends Widget{
             }else if(props.id == 2){
                 text[0] = text[0].replace("9", `${Math.max(DB.data.map.city[0],DB.data.circle.city[0][0])}`);
                 text[1] = text[1].replace("9", `${Math.max(DB.data.map.city[0],DB.data.circle.city[0][0])}`);
-                this.cfg.children[11].data.left += 1000
-                this.cfg.children[12].data.left -= 1000
-                this.cfg.children[13].data.left -= 1000
+                this.cfg.children[11].data.left += 2000
+                this.cfg.children[12].data.left -= 2000
+                this.cfg.children[13].data.right -= 2000
             }else if(props.id == 3){
-                this.cfg.children[11].data.left += 1000
-                this.cfg.children[13].data.left -= 1130
+                this.cfg.children[13].data.left = this.cfg.children[11].data.left
+                this.cfg.children[11].data.left += 2000
             }
             for(let i = 0;i<text.length;i++){
                 this.cfg.children[i+1].data.text = text[i]; 
             }
             //注册循环
-
+            Stage.nextFrame = Date.now() + Stage.frameTime;
             Stage.Ftext = Frame.add(()=>{
                     Stage.textRun();
             });
@@ -1105,6 +1125,27 @@ class WCircleShop extends Widget{
     setProps(props){
         super.setProps(props)
         this.cfg.children[1].data.text = `轮回币：${DB.data.circle.coin[0]}`
+        for(let i =0;i<3;i++){
+            this.cfg.children[3+i].data.left = (Scene.screen.width - 3 * this.cfg.children[3+i].data.width)/4 * (i+1) +  this.cfg.children[3+i].data.width*i
+        }
+        // //已购买物品描述
+        for(let i=0;i<3;i++){
+            let n,t = 0
+            if(i ==2){
+                n = DB.data.circle.own.length
+            }else{
+                n = DB.data.circle.temp[i].length
+            }
+            for(let j = 0;j < n;j++){
+                let x
+                x = cir_dis(i,j);
+                if(DB.data.circle.temp[i][j]){
+                    this.cfg.children[3+i].children[2+t].data.text = `${x[0]}(${x[1]})`
+                    t+= 1;
+                }
+            }
+        }
+
     }
     start(){
         if(DB.data.circle.coin[0]){
@@ -1160,7 +1201,8 @@ class WCircleGood extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
-        this.cfg.data.left = 37.5 + (props.index % 3)*237.5
+
+        this.cfg.data.left = (Scene.screen.width - 3 * this.cfg.data.width)/4 * (props.index % 3+1) +  this.cfg.data.width*(props.index % 3)
         this.cfg.data.top = 300 + Math.floor(props.index / 3)*250
         let cost,
             color = Global.color[2]
@@ -1256,6 +1298,7 @@ class WListRank extends Widget{
     setProps(props){
         super.setProps(props);
         this.cfg.data.top = 300 + props.id * 55
+        this.cfg.data.left = Math.floor((Scene.screen.width -750)/2)
         this.cfg.children[0].data.text = `第${props.id+1}名`
         this.cfg.children[1].data.text = `${DB.data.circle.city[props.id][0]}座`
         this.cfg.children[2].data.text = `（第${DB.data.circle.city[props.id][1]}次轮回）`    
@@ -1272,7 +1315,7 @@ class WStart extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
-        if(!localStorage.build || localStorage.date.indexOf("day:[0]") >=0){
+        if(!localStorage.build || localStorage.date.indexOf("\"day\":[0]") >=0){
             this.cfg.children[0].props.left = 2000
         }
     }
@@ -1293,7 +1336,7 @@ class WStart extends Widget{
             let d = JSON.parse(data.ok);
             for(let i in d){
                 for(let j in d[i]){
-                    if(j == "own" || j== "left" || j== "choose" || j==  'enemy'){
+                    if(i == "hero" && (j == "own" || j== "left" || j== "choose" || j==  'enemy')){
                         DB.data.hero[j] = d[i][j];
                     }else{
                         for(let k in d[i][j]){
@@ -1329,6 +1372,7 @@ class WStart extends Widget{
  */
 const open = () => {
     stageNode = Scene.open("app-ui-stage", Scene.root);
+    Music.play(`audio/season${Math.floor(DB.data.date.day[0]/100)% 4}.mp3`,true);
     Scene.open("app-ui-news",Scene.root);   
     for(let i=0;i<6;i++){
         let name = Stage.res_name[i]
@@ -1341,14 +1385,7 @@ const open = () => {
 
     // console.log(Stage.width,Stage.height);
 }
-const openStart = () => {
-    startNode = Scene.open("app-ui-start",Scene.root);
-}
 
-const pause = () => {
-    Stage.pause = 1;
-    DB.data.fore.pause[0] = 1;
-}    
 //恢复暂停
 const start = () => {
     if(Stage.stillStop == 0){
@@ -1357,6 +1394,31 @@ const start = () => {
         Stage.pause = 0;
         DB.data.fore.pause[0] = 0;
     }
+} 
+const openStart = () => {
+    startNode = Scene.open("app-ui-start",Scene.root);
+}
+
+const pause = () => {
+    Stage.pause = 1;
+    DB.data.fore.pause[0] = 1;
+}    
+//轮回商店已购买物品描述
+const cir_dis = (type,i) => {
+    let name,num,j
+    if(type == 0){
+        name = Stage.res_Cname[i]
+        num = DB.data.circle.temp[type][i] * Stage.shopRes[i]
+    }else if(type == 1){
+        let bcfg = CfgMgr.getOne("app/cfg/build.json@build")
+        name = `${bcfg[Stage.shopBuild[i]]["name"]}`
+        num = DB.data.circle.temp[type][i]
+    }else{
+        let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero")
+        name = `${bcfg[DB.data.circle.own[i][0]]["name"]}`
+        num = DB.data.circle.temp[type][i]
+    }
+    return([name,num])
 } 
 
 const begin = () => {

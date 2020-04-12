@@ -38,11 +38,10 @@ class Map {
                 if(data.err){
                     return console.log(data.err.reson);
                 }
-                DB.data.map.date[0] = data.ok[0];
-                
+                DB.data.map.date[0] = data.ok[0];                
             })
         }
-
+        
         //更新据点精灵
         if(Global.mainFace.id ==4){
             for(let i = 0;i< DB.data.map.guard.length;i++){
@@ -88,6 +87,7 @@ class WMap extends Widget{
         if(!DB.data.map.guard[0]){
             this.cfg.children[5].data.text = "请等待斥候探查情报"; 
         }
+        this.cfg.children[4].data.width = 325 + Scene.screen.width -750
     }
 
     added(node){
@@ -136,8 +136,7 @@ class WCity extends Widget{
 
         this.cfg.children[6].data.text = `${str2.replace(/\\n/,"\n")}`;
 
-        this.cfg.data.left += props.index * 230;
-
+        this.cfg.data.left =  (Scene.screen.width - 660)/4 * (props.index+1) +  220*props.index;
         this.cfg.on = {"tap":{"func":"choose","arg":[id]}};
        
     }
@@ -145,8 +144,8 @@ class WCity extends Widget{
         Music.play("audio/but.mp3");
         if(DB.data.army.cur[0]<DB.data.army.total[0]){
             AppEmitter.emit("stagePause");
-            this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
-            Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index});
+            this.backNode = Scene.open(`app-ui-back`,Scene.root);
+            Scene.open("app-ui-fightWindow", this.backNode,null,{id:this.props.id,index:this.props.index,backNode:this.backNode});
         }else{
             AppEmitter.emit("message",`无可出战的军队！`);
         }
@@ -178,6 +177,7 @@ class WfightWindow extends Widget{
             max =  0 ,
             name 
 
+        this.cfg.data.left = Math.floor((Scene.screen.width - this.cfg.data.width)/2)
         //暂停时间    
         AppEmitter.emit("stagePause");
         //判断是进攻还是被入侵
@@ -281,6 +281,7 @@ class WfightWindow extends Widget{
             }
             Scene.remove(Global.mainFace.node); 
             AppEmitter.emit("intoFight",{fighter:[own,enemy],city:this.props.id,enemyType:this.props.index});
+            this.remove();
         }else{
             AppEmitter.emit("message",`无可出战的军队！`);
         }
@@ -321,7 +322,7 @@ class WfightWindow extends Widget{
     } 
 
     added(node){
-        this.node = this.props.backNode;;
+        this.node = this.props.backNode;
     }
 } 
 

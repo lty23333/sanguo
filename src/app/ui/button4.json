@@ -4,8 +4,6 @@
         "name": "rect6060",
         "width": 60,
         "height": 60,
-        "left": 0,
-        "top": 0,
         "background-color":"#d9c6ad",
         "background-alpha":0.75,
         "border-width":2,

@@ -7,6 +7,7 @@ export  class Global{
     static mainFace ={id:-1, node: null};
     static color = ["0xC0C0C0","0xffffff","0x98fb98","0x6495ED","0x8A2BE2","0xFFFF00","0xff6347"] //灰白绿蓝紫黄红
     
+    
 }
 
 export function rand(number){

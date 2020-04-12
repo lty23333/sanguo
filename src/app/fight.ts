@@ -48,86 +48,91 @@ class Fight {
     static shake = 3      //震动次数
     static shakeState = 4      //震动阶段
     static mp3 = 0
-
+    static nextFrame
+    static time = 17
 
     static run(){
-        if(state == "start"){
-            moverF = sitP[fight_show[0][1]][fight_show[0][2]]
-            moverT = attP[fight_show[0][4]][fight_show[0][5]]
-            armysF = armys[fight_show[0][1]][fight_show[0][2]]
-            armysT = armys[fight_show[0][4]][fight_show[0][5]]
-            damage =  fight_show[0][6]
-            vx = (moverT[0]-moverF[0])/20
-            vy = (moverT[1]-moverF[1])/20
-            state = "run1"
+        //动画播报
+        if(Date.now()>Fight.nextFrame){
+            if(state == "start"){
+                moverF = sitP[fight_show[0][1]][fight_show[0][2]]
+                moverT = attP[fight_show[0][4]][fight_show[0][5]]
+                armysF = armys[fight_show[0][1]][fight_show[0][2]]
+                armysT = armys[fight_show[0][4]][fight_show[0][5]]
+                damage =  fight_show[0][6]
+                vx = (moverT[0]-moverF[0])/20
+                vy = (moverT[1]-moverF[1])/20
+                state = "run1"
 
-        }else if(state == "run1"){
-            if((armysF.top >= moverT[1] && vy >=0)||(armysF.top <= moverT[1] && vy <=0)){
-                state = "damage"
-                //战斗报文fight_show[攻武将ID，攻阵营，攻位置，防武将ID，防阵营，防位置，死伤数]
-                let character = ["A引军袭杀B","A与B交战","A与B遭遇，战至一处","A伏击B","A直取B大营","A驱兵攻B","A截住B去路"],
-                    result = ["斩首","杀敌","斩敌","削首","歼敌"],
-                    bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
-                    str = `${character[rand(character.length)-1]},${result[rand(result.length)-1]}${fight_show[0][6]}`
-                
-                str = str.replace("A",`${bcfg[fight_show[0][0]]["name"]}`) 
-                str = str.replace("B",`${bcfg[fight_show[0][3]]["name"]}`) 
-                
-                addFNews(`${fight_show[0][1]*4+2}${str}人。`);
-                if(damageSprite && damageSprite.parent){
-                    damageSprite.ni.left = armysT.left;
-                    damageSprite.ni.top =armysT.top +10;
-                    damageNode.text = `-${damage}`;
-                }else{
-                    damageSprite = Scene.open("app-ui-fightHp", Global.mainFace.node,null,{left:armysT.left,top:armysT.top +10,damage:damage});
-                }
+            }else if(state == "run1"){
+                if((armysF.top >= moverT[1] && vy >=0)||(armysF.top <= moverT[1] && vy <=0)){
+                    state = "damage"
+                    //战斗报文fight_show[攻武将ID，攻阵营，攻位置，防武将ID，防阵营，防位置，死伤数]
+                    let character = ["A引军袭杀B","A与B交战","A与B遭遇，战至一处","A伏击B","A直取B大营","A驱兵攻B","A截住B去路"],
+                        result = ["斩首","杀敌","斩敌","削首","歼敌"],
+                        bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                        str = `${character[rand(character.length)-1]},${result[rand(result.length)-1]}${fight_show[0][6]}`
+                    
+                    str = str.replace("A",`${bcfg[fight_show[0][0]]["name"]}`) 
+                    str = str.replace("B",`${bcfg[fight_show[0][3]]["name"]}`) 
+                    
+                    addFNews(`${fight_show[0][1]*4+2}${str}人。`);
+                    if(damageSprite && damageSprite.parent){
+                        damageSprite.ni.left = armysT.left;
+                        damageSprite.ni.top =armysT.top +10;
+                        damageNode.text = `-${damage}`;
+                    }else{
+                        damageSprite = Scene.open("app-ui-fightHp", Global.mainFace.node,null,{left:armysT.left,top:armysT.top +10,damage:damage});
+                    }
 
-            }else{
-                armysF.left +=  vx;
-                armysF.top +=  vy;
-                Fight.events.push({type:"move",target: armysF});
-            }
-        }else if(state == "damage"){
-            if(!Fight.mp3){
-                Music.play("audio/attck.mp3");
-                Fight.mp3 = 1;
-            }
-            if(Fight.shake>0){
-                damageSprite.ni.top += 1;
-                if(Fight.shakeState>-5){
-                    armysT.left +=  Fight.shakeState/(Math.abs(Fight.shakeState)?Math.abs(Fight.shakeState):1);
-                    Fight.shakeState -= 1;
-                    Fight.events.push({type:"move",target: armysT});
                 }else{
-                    Fight.shake -= 1;
-                    Fight.shakeState = 4
+                    armysF.left +=  vx;
+                    armysF.top +=  vy;
+                    Fight.events.push({type:"move",target: armysF});
                 }
-            }else{
-                    let Cname = ["步","骑","弓"]
-                    Fight.shake = 3;
-                    state = "run2";
-                    armysT.hp -= damage;
-                    numberNode[fight_show[0][4]][fight_show[0][5]].text =  `${armysT.hp} ${Cname[fighter[fight_show[0][4]][fight_show[0][5]][4]]}`;
-                    hpNode[fight_show[0][4]][fight_show[0][5]].scale.y =  armysT.hp/armysT.max_hp;
-                    damageSprite.ni.top += 2000;
-            }
-        }else if(state == "run2"){
-            Fight.mp3 = 0;
-            if((armysF.top >= moverF[1] && vy<=0)||(armysF.top <= moverF[1] && vy>=0)){
-                fight_show.splice(0,1);
-                if(fight_show[0]){
-                    state = "start";
+            }else if(state == "damage"){
+                if(!Fight.mp3){
+                    Music.play("audio/attck.mp3");
+                    Fight.mp3 = 1;
+                }
+                if(Fight.shake>0){
+                    damageSprite.ni.top += 1;
+                    if(Fight.shakeState>-5){
+                        armysT.left +=  Fight.shakeState/(Math.abs(Fight.shakeState)?Math.abs(Fight.shakeState):1);
+                        Fight.shakeState -= 1;
+                        Fight.events.push({type:"move",target: armysT});
+                    }else{
+                        Fight.shake -= 1;
+                        Fight.shakeState = 4
+                    }
                 }else{
-                    state = "end";
+                        let Cname = ["步","骑","弓"]
+                        Fight.shake = 3;
+                        state = "run2";
+                        armysT.hp -= damage;
+                        numberNode[fight_show[0][4]][fight_show[0][5]].text =  `${armysT.hp} ${Cname[fighter[fight_show[0][4]][fight_show[0][5]][4]]}`;
+                        hpNode[fight_show[0][4]][fight_show[0][5]].scale.y =  armysT.hp/armysT.max_hp;
+                        damageSprite.ni.top += 2000;
                 }
-            }else{
-                armysF.left -= vx;
-                armysF.top -= vy;
-                Fight.events.push({type:"move",target: armysF});
+            }else if(state == "run2"){
+                Fight.mp3 = 0;
+                if((armysF.top >= moverF[1] && vy<=0)||(armysF.top <= moverF[1] && vy>=0)){
+                    fight_show.splice(0,1);
+                    if(fight_show[0]){
+                        state = "start";
+                    }else{
+                        state = "end";
+                    }
+                }else{
+                    armysF.left -= vx;
+                    armysF.top -= vy;
+                    Fight.events.push({type:"move",target: armysF});
+                }
+            }else if(state == "end"){
+                Scene.open("app-ui-fightAccount", Global.mainFace.node);
+                state = ""
             }
-        }else if(state == "end"){
-             Scene.open("app-ui-fightAccount", Global.mainFace.node);
-             state = ""
+            Fight.nextFrame += Fight.time
         }
           
     }
@@ -275,6 +280,7 @@ class WfightAccount extends Widget{
         kill_all = 0,
         die_all = 0
 
+        this.cfg.data.left = Math.floor((Scene.screen.width - this.cfg.data.width)/2)
         for(let i=0;i<kill_die[0].length-1;i++){
             kill_die[0][4] += kill_die[0][i];
             kill_die[1][4] += kill_die[1][i];
@@ -411,10 +417,6 @@ const reward = () => {
         if(data.err){
             return console.log(data.err.reson);
         }
-        if(cityId ==19999){
-            DB.data.map.attack[0] = 0
-            DB.data.map.city[4] = data.ok[5];
-        }
         //游戏失败
         if(cityId ==19999 && !isvic){
             if(DB.data.map.city[4] > 0){
@@ -427,6 +429,10 @@ const reward = () => {
                     }
                 })
             }
+        }
+        if(cityId ==19999){
+            DB.data.map.attack[0] = 0
+            DB.data.map.city[4] = data.ok[5];
         }
         //游戏通关
         if(cityId < 19999 && isvic && DB.data.map.city[0] >177){
@@ -476,6 +482,7 @@ const reward = () => {
 const open = () => {
     Global.mainFace.node = Scene.open("app-ui-fight", Scene.root);
     Global.mainFace.id = 5;
+    Fight.nextFrame = Date.now() + Fight.time;
     Music.play("audio/fight.mp3",true);
     AppEmitter.emit("stagePause");
     hero_news = [[],[]] 
@@ -489,8 +496,7 @@ const open = () => {
             if (!attP[i]){attP[i] = []}
             if (!sitP[i][j]){sitP[i][j] = []}
             if (!attP[i][j]){attP[i][j] = []}
-
-            sitP[i][j].push(850/(fighter[i].length+1)*(j+1)-150  ,634 - 534 * i)
+            sitP[i][j].push((Scene.screen.width - 200 * fighter[i].length)/(fighter[i].length+1) * (j+1) +  200* j ,634 - 534 * i)
             attP[i][j].push(sitP[i][j][0],sitP[i][j][1] + 200*(i?1:-1))
             if (!armys[i]){armys[i] = []}
             armys[i][j] = new Army({

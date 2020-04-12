@@ -82,6 +82,7 @@ class WWork extends Widget{
         let id = props.id,
             name = People.work_name[id];
         super.setProps(props);
+
         this.cfg.children[0].children[0].data.text = `${People.work_Cname[id]}\n(${DB.data.people[name][1]})`;
         this.cfg.data.top =  People.work_top[id];
         this.cfg.children[0].on = {"tap":{"func":"dis_work","arg":[id]}};
@@ -89,12 +90,16 @@ class WWork extends Widget{
         this.cfg.children[2].props.on = {"tap":{"func":"people_minus","arg":[name]}};
         this.cfg.children[3].props.on = {"tap":{"func":"people_max","arg":[name]}};
         this.cfg.children[4].props.on = {"tap":{"func":"people_zero","arg":[name]}};
-
+        let n = Math.floor((Scene.screen.width - 230 - 4 * 90)/6)
+        this.cfg.children[1].props.left = 200 + 2*n +45
+        this.cfg.children[2].props.left = 200 + 3*n +45 + 90
+        this.cfg.children[3].props.left = 200 + 4*n +45 + 180
+        this.cfg.children[4].props.left = 200 + 5*n +45 + 270
     }
 
     dis_work(type){
         AppEmitter.emit("stagePause");
-        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        this.backNode = Scene.open(`app-ui-back`,Scene.root);
         Scene.open(`app-ui-workDis`,this.backNode, null, {id:type});
     }
     //加1个人
@@ -154,6 +159,8 @@ class WPeople extends Widget{
             } 
         }
         this.cfg.children[1].data.text = `${p.total[0]-work}/${DB.data.people.total[1]}`;
+
+        this.cfg.children[5].data.width = 350 + Scene.screen.width -750
     //    this.cfg.children[3].data.text = DB.data.people.total[1];
  
 
@@ -172,7 +179,7 @@ class WworkDis extends Widget{
     setProps(props){
         super.setProps(props);
         let id = props.id
-        
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2 
         this.cfg.children[1].data.text = `${People.work_Cname[id]}(${DB.data.people[People.work_name[id]][1]})`;
         this.cfg.children[2].data.text = People.work_dis[id];
        

@@ -91,7 +91,17 @@ class WHero extends Widget{
             bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
             max = bcfg[id]["command"] + DB.data.hero.add[0],
             name = bcfg[id]["name"];
+
         super.setProps(props);
+        //适配
+        let n = Math.floor((Scene.screen.width - 230 - 4 * 90 - 60)/6)
+        
+        this.cfg.children[1].props.left = 200 + n +45
+        this.cfg.children[2].props.left = 200 + 2*n +45 + 90
+        this.cfg.children[3].props.left = 200 + 3*n +45 + 180
+        this.cfg.children[4].props.left = 200 + 4*n +45 + 270
+        this.cfg.children[5].data.left = 200 + 5*n + 360
+
         this.cfg.children[0].children[0].data.text = `${name}`;
         this.cfg.children[0].children[0].data.style.fill = Global.color[bcfg[id]["color"]]
         this.cfg.data.top =  Army.hero_top[i+1] +330;
@@ -110,7 +120,7 @@ class WHero extends Widget{
 
     dis_hero(type){
         Music.play("audio/but.mp3");
-        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        this.backNode = Scene.open(`app-ui-back`,Scene.root);
         Scene.open(`app-ui-heroDis`,this.backNode, null, {id:type});
     }
     //加1个人
@@ -192,9 +202,13 @@ class WHero extends Widget{
 class WArmy extends Widget{
     setProps(props){
         super.setProps(props);
-        let color = 6
+        let color = 6,
+            cost = Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)
+
+        this.cfg.children[2].props.left = Scene.screen.width -95
+        this.cfg.children[3].data.left = Scene.screen.width - 150 - (cost>9999?14:0)
         this.cfg.children[1].data.text = `${DB.data.army.cur}`;
-        this.cfg.children[3].data.text = `${Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)}黄金`;
+        this.cfg.children[3].data.text = `${cost}黄金`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
         //消耗加颜色
         if(DB.data.res.gold[1]>=parseInt(this.cfg.children[3].data.text)){
@@ -227,7 +241,6 @@ class WArmy extends Widget{
             }
         })
     }
-
 }
 
 //英雄介绍弹窗
@@ -242,7 +255,7 @@ class WheroDis extends Widget{
             armsId = bcfg[id]["arms"],
             max = bcfg[id]["command"] + DB.data.hero.add[0],
             name = bcfg[id]["name"];
-        
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2 
         this.cfg.children[1].data.text = `${name}(${DB.data.hero.own[i][1]}/${max})`;
         this.cfg.children[2].data.text = `统帅：${bcfg[id]["command"]}（+${DB.data.hero.add[0]}）`;
         this.cfg.children[3].data.text = `${Army.arms_Cname[armsId]}：${Math.floor(bcfg[id]["number"]+DB.data.hero.own[DB.data.hero.own[i][3]][2])}（+${DB.data.hero.add[armsId+1]}）`;

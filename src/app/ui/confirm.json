@@ -1,10 +1,10 @@
 {   
     "type": "container",
     "data": {
-        "width": 475,
-        "height": 300,
-        "left": 140,
-        "top": 600
+        "width": "100%",
+        "height": "100%",
+        "left": 0,
+        "top": 0
     },
     "children":[
         {
@@ -14,8 +14,8 @@
                 "name": "rect20003000",
                 "width": 2000,
                 "height": 3000,
-                "left": -400,
-                "top": -1000,
+                "left": 0,
+                "top": 0,
                 "background-color": "#d9c6ad",
                 "alpha":0.78
             }
@@ -27,52 +27,54 @@
                 "width": 470,
                 "height": 300,
                 "left": 0,
-                "top": 0,
+                "top": 600,
                 "background-color": "#d9c6ad",
                 "alpha":1,
                 "border-width":2,
                 "border-color":"0xe6e6fa",
                 "border-alpha":0.3,
                 "border-align":0.5
-           }      
-        },
-        {
-            "type": "text",
-            "data": {
-                "id":"text",
-                "text":"是否花费",
-                "left":30,
-                "top": 75,
-                "style":{
-                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+           },
+           "children":[
+            {
+                "type": "text",
+                "data": {
+                    "id":"text",
+                    "text":"是否花费",
+                    "left":30,
+                    "top": 75,
+                    "style":{
+                        "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
+                    }
+                }
+            },
+            {
+                "type":"app-ui-button5",
+                "props":{
+                    "on":{"tap":{"func":"levelup"}},
+                    "id":"button_levelup",
+                    "anchor":[0.5,0.5],
+                    "width": 180,
+                    "height": 90,
+                    "left": 130,
+                    "top": 220,
+                    "text": "确认"
+                }
+            },
+            {
+                "type":"app-ui-button5",
+                "props":{
+                    "on":{"tap":{"func":"remove"}},
+                    "id":"button_remove",
+                    "anchor":[0.5,0.5],
+                    "width": 180,
+                    "height": 90,
+                    "left": 340,
+                    "top": 220,
+                    "text": "取消"
                 }
             }
-        },
-        {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"levelup"}},
-                "id":"button_levelup",
-                "anchor":[0.5,0.5],
-                "width": 180,
-                "height": 90,
-                "left": 130,
-                "top": 220,
-                "text": "确认"
-            }
-        },
-        {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"remove"}},
-                "id":"button_remove",
-                "anchor":[0.5,0.5],
-                "width": 180,
-                "height": 90,
-                "left": 340,
-                "top": 220,
-                "text": "取消"
-            }
+           ]      
         }
     ]
 }

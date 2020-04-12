@@ -35,7 +35,7 @@
             "data": {
                 "width": 150,
                 "height": 200,
-                "left": 585,
+                "right": 15,
                 "top": 30
             },
             "children":[     
@@ -99,8 +99,8 @@
         {   
             "type": "container",
             "data": {
-                "width": "100%",
-                "height": "100%",
+                "width": 150,
+                "height": 100,
                 "left": 0,
                 "top": 1234
             },
@@ -109,8 +109,8 @@
                     "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[0]}},
                     "data": {
-                        "width": 150,
-                        "height": 100,
+                        "width": "100%",
+                        "height": "100%",
                         "left": 0,
                         "top": 0
                     },
@@ -120,8 +120,8 @@
                             "data": {
                                 "name": "rect150100",
                                 "id": "off0",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
@@ -133,8 +133,8 @@
                             "data": {
                                 "name": "rect150100a",
                                 "id": "on0",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
@@ -183,8 +183,8 @@
                     "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[1]}},
                     "data": {
-                        "width": 150,
-                        "height": 100,
+                        "width": "100%",
+                        "height": "100%",
                         "left": 150,
                         "top": 0
                     },
@@ -194,8 +194,8 @@
                             "data": {
                                 "name": "rect150100",
                                 "id": "off1",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
@@ -207,8 +207,8 @@
                             "data": {
                                 "name": "rect150100a",
                                 "id": "on1",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
@@ -257,8 +257,8 @@
                     "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[2]}},
                     "data": {
-                        "width": 150,
-                        "height": 100,
+                        "width": "100%",
+                        "height": "100%",
                         "left": 300,
                         "top": 0
                     },
@@ -268,8 +268,8 @@
                             "data": {
                                 "name": "rect150100",
                                 "id": "off2",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
@@ -281,8 +281,8 @@
                             "data": {
                                 "name": "rect150100a",
                                 "id": "on2",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
@@ -331,8 +331,8 @@
                     "type": "container",
                     "on":{"tap":{"func":"changeFace","arg":[3]}},
                     "data": {
-                        "width": 150,
-                        "height": 100,
+                        "width": "100%",
+                        "height": "100%",
                         "left": 450,
                         "top": 0
                     },
@@ -342,8 +342,8 @@
                             "data": {
                                 "name": "rect150100",
                                 "id": "off3",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
@@ -355,8 +355,8 @@
                             "data": {
                                 "name": "rect150100a",
                                 "id": "on3",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
@@ -416,8 +416,8 @@
                             "data": {
                                 "name": "rect150100",
                                 "id": "off4",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
@@ -429,8 +429,8 @@
                             "data": {
                                 "name": "rect150100a",
                                 "id": "on4",
-                                "width": 150,
-                                "height": 100,
+                                "width": "100%",
+                                "height": "100%",
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
@@ -522,18 +522,6 @@
                       "background-color": "0xe6e6fa",
                       "alpha":0.5
                    }
-                },
-                {
-                    "type": "rect",
-                    "data": {
-                     "name": "rect7504",
-                     "width": 750,
-                     "height": 4,
-                     "left": 0,
-                      "top": 0,
-                      "background-color": "0xe6e6fa",
-                      "alpha":0.5
-                   }
                 }
                 
            
@@ -547,7 +535,7 @@
                 "id":"pause_button",
                 "width": 150,
                 "height": 70,
-                "left": 580,
+                "right": 20,
                 "top": 240,
                 "background-color": "#d9c6ad",
                 "background-alpha":0.4,
@@ -578,7 +566,7 @@
                 "id":"restart_button",
                 "width": 150,
                 "height": 70,
-                "left": 1200,
+                "right": 2000,
                 "top": 240,
                 "background-color": "#d9c6ad",
                 "background-alpha":0.4,
@@ -608,7 +596,7 @@
                 "id":"warning",
                 "width": 150,
                 "height": 50,
-                "left": 580,
+                "right": 20,
                 "top": 20,
                 "background-color": "#d9c6ad",
                 "background-alpha":0.8,

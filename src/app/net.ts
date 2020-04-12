@@ -352,17 +352,17 @@ const change_people = (param: any, callback) => {
 const manadd_food = (param: any, callback) => {
     
      let number = DB.res.food[1],
-         max = DB.res.food[2]
-      
+         max = DB.res.food[2],
+         ismax = 0
+    
+
      if(number!=max){
-         if(1+number>max){
-             number = max;
+         if(2+number>max){
+            ismax = 1
          }else{
                  number+= 2;
-         }
-         
+         }    
      }
-
      if(DB.build[0][0] <1){
         DB.build[0][0] += 0.2
         DB.build[14][0] += 0.2
@@ -370,7 +370,7 @@ const manadd_food = (param: any, callback) => {
      DB.res.food[1] = number;
      saveDb("res",DB.res);
      saveDb("build",DB.build);
-     callback({ok:[DB.res.food[1],DB.build[0][0],DB.build[14][0]]}); 
+     callback({ok:[DB.res.food[1],DB.build[0][0],DB.build[14][0],ismax]}); 
  }
  const eat_food = (param: any, callback) => {
      DB.res.food[5] = DB.people.total[0] *6;
@@ -661,14 +661,20 @@ const hero_buy = (id: any, callback) => {
 }
 
 const hero_hurt = (id: any, callback) => { 
-    let health = []
+    let health = [],pd = 0
     for(let i=0;i<DB.hero.own.length;i++){
         if(DB.hero.own[i] && DB.hero.own[i][4]>0){
             DB.hero.own[i][4] -= 0.5;
+            pd = 1
         }
     }
-    saveDb("hero",DB.hero);
-    callback({ok:[JSON.parse(JSON.stringify(DB.hero.own))]});
+    if(pd){
+        saveDb("hero",DB.hero);
+        callback({ok:[JSON.parse(JSON.stringify(DB.hero.own))]});  
+    }else{
+        callback({err:1});
+    }
+
 }
 
 Connect.setTest("app/hero@hurt",hero_hurt);
@@ -814,42 +820,49 @@ const guard_add = (id: any, callback) => {
             bcfg3 = CfgMgr.getOne("app/cfg/city.json@army"),
             guard = [],
             guardId
-        //随机据点
-        if(rand(3)>1){
-          guardId = 20000 +rand(3);
-          for(let i=0;i<bcfg3[Math.ceil(DB.date.day[0]/400)]["army"].length;i++){
-            guard.push([bcfg2[guardId]["army"],Math.ceil(bcfg3[Math.ceil(DB.date.day[0]/400)]["army"][i] * (450 + rand(100))/500 -0.5)])
-          }
-        //城市据点
+        if(DB.map.guard.length >=3){
+            DB.map.date[0] = 999999999
+            saveDb("map",DB.map);
+            callback({err:1}); 
         }else{
-          guardId = DB.map.city[1] + 1;
-          DB.map.city[1] += 1;
-          //判断时间段
-          let time = bcfg[guardId]["time"],
-              army = bcfg[guardId]["army"],
-              hero = bcfg[guardId]["hero"],
-              index = 0
-          for(let i =0;i<time.length;i++){
-            if(DB.event.date[0]>=time[i]){
-                index += 1; 
+                        //随机据点
+            if(rand(3)>1){
+                guardId = 20000 +rand(3);
+                for(let i=0;i<bcfg3[Math.ceil(DB.date.day[0]/400)]["army"].length;i++){
+                guard.push([bcfg2[guardId]["army"],Math.ceil(bcfg3[Math.ceil(DB.date.day[0]/400)]["army"][i] * (450 + rand(100))/500 -0.5)])
+                }
+            //城市据点
             }else{
-                break;
-            }
-          }
-          for(let i =0;i<army.length;i++){
-            guard.push([hero[index][i],army[i]])
-          }
-        }    
-        guard.splice(0,0,guardId); 
-        DB.map.guard.push(guard);
-        saveDb("map",DB.map);
-        callback({ok:[JSON.parse(JSON.stringify(DB.map.guard)),guardId,DB.map.city[1]]});
+                guardId = DB.map.city[1] + 1;
+                DB.map.city[1] += 1;
+                //判断时间段
+                let time = bcfg[guardId]["time"],
+                    army = bcfg[guardId]["army"],
+                    hero = bcfg[guardId]["hero"],
+                    index = 0
+                for(let i =0;i<time.length;i++){
+                if(DB.event.date[0]>=time[i]){
+                    index += 1; 
+                }else{
+                    break;
+                }
+                }
+                for(let i =0;i<army.length;i++){
+                guard.push([hero[index][i],army[i]])
+                }
+            }    
+            guard.splice(0,0,guardId); 
+            DB.map.guard.push(guard);
+            saveDb("map",DB.map);
+            callback({ok:[JSON.parse(JSON.stringify(DB.map.guard)),guardId,DB.map.city[1]]});
+        }
 }
 
 const date_update = (date: any, callback) => { 
-        DB.map.date[0] = date
-        saveDb("map",DB.map);
-        callback({ok:[DB.map.date[0]]});
+
+    DB.map.date[0] = date 
+    saveDb("map",DB.map);
+    callback({ok:[DB.map.date[0]]});
 }
 
     Connect.setTest("app/map@guard_add",guard_add);

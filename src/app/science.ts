@@ -37,13 +37,13 @@ class Science {
     //更新知识数量
     static updateScience(id,type){
         if(type ==0){
-            if(DB.data.science[id][0]==1 && Global.mainFace.id ==0){
+            if(DB.data.science[id][0]==1 && Global.mainFace.id ==0 && Science.unlock_science.indexOf(id+100) == -1){
                 Science.unlock_science.push(id+100);
                 Science.updateScienceButton();
             }
         }
         if(type ==1){
-            if(DB.data.science[id][1] && Global.mainFace.id == 0){
+            if(DB.data.science[id][1] && Global.mainFace.id == 0 && Science.unlock_science.indexOf(id+100) > -1){
                 Science.unlock_science.splice(Science.unlock_science.indexOf(id+100),1);   
                 Science.updateScienceButton();        
             }
@@ -102,9 +102,8 @@ class WscienceButton extends Widget{
             name = bcfg[id]["name"],
             cost = bcfg[id][`cost`],
             color = 0
-
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2  
         this.cfg.children[0].data.text = `${name}`;
-        this.cfg.data.left = Science.coordinate.left[props.coordinate]+140;
         this.cfg.data.top =  Science.coordinate.top[props.coordinate]+400;
         this.cfg.on = {"tap":{"func":"unlockScience","arg":[id]}};
 
@@ -118,7 +117,7 @@ class WscienceButton extends Widget{
     unlockScience(type){
         Music.play("audio/but.mp3");
         AppEmitter.emit("stagePause");
-        this.backNode = Scene.open(`app-ui-back`,Global.mainFace.node);
+        this.backNode = Scene.open(`app-ui-back`,Scene.root);
         Scene.open(`app-ui-comscienceWindow`,this.backNode, null, {id:type,backNode:this.backNode});
     }
 
@@ -135,6 +134,7 @@ class WScience extends Widget{
     setProps(props){
         super.setProps(props);
         this.cfg.children[1].data.text = `${Science.sci_num}/${Science.sci_max}`;
+        this.cfg.children[3].data.width = 380 + Scene.screen.width -750
     }
     added(node){
         Science.sci_number = this.elements.get("sci_number");
@@ -152,6 +152,7 @@ class WcomWindow extends Widget{
             cost = bcfg[id][`cost`],  
             color = 6
 
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2  
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
         this.cfg.children[4].data.text = `${bcfg[id]["effect_dis"]}`;
         this.cfg.children[7].data.text = `${cost}知识`;

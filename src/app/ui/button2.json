@@ -1,11 +1,9 @@
 {
     "type": "rect",
     "data": {
-        "name": "rect10090",
-        "width": 100,
+        "name": "rect9090",
+        "width": 90,
         "height": 90,
-        "left": 0,
-        "top": 0,
         "background-color":"#d9c6ad",
         "background-alpha":0.75,
         "border-width":2,

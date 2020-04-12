@@ -2,8 +2,8 @@
     "type": "container",
     "on":{"tap":{"func":"remove"}},
     "data": {
-        "width": 2000,
-        "height": 4000,
+        "width": "100%",
+        "height": "100%",
         "left": 0,
         "top": 0
     },
@@ -12,10 +12,10 @@
             "type": "rect",
             "data": {
                 "name": "rect20003000",
-                "width": 2000,
-                "height": 3000,
-                "left": -750,
-                "top": -1500,
+                "width": "100%",
+                "height": "100%",
+                "left": 0,
+                "top": 0,
                 "background-color": "#d9c6ad",
                 "alpha":0.78
             }
@@ -25,10 +25,10 @@
             "data": {
                 "id":"name",
                 "text":"点击空白处关闭",
-                "left":200,
-                "top": 1250,
+                "left":0,
+                "top": 1230,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
                 }
             }
         }

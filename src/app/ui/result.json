@@ -167,16 +167,18 @@
                 "border-alpha":0.6,
                 "border-align":0.5,
                 "radius":30,
-                "alpha":1
+                "alpha":1,
+                "anchor":[0.5,0.5]
             },
             "children": [
         
                 {
                     "type": "text",
                     "data": {
-                        "top": 25,
+                        "top": -25,
+                        "left": -40,
                         "text": "继续",
-                        "style": {"fontSize":40,"fill":"#adbbd9","strokeThickness":2, "align" : "center"}
+                        "style": {"fontSize":40,"fill":"#adbbd9","strokeThickness":2, "align" : "left"}
                     }
                 }
             ]
@@ -188,7 +190,7 @@
                 "name": "rect204104",
                 "width": 204,
                 "height": 104,
-                "left": 1150,
+                "left": 2150,
                 "top": 1000,
                 "background-color": "0x696969",
                 "background-alpha":0.4,
@@ -218,7 +220,7 @@
                 "name": "rect204104",
                 "width": 204,
                 "height": 104,
-                "left": 1400,
+                "right": 2150,
                 "top": 1000,
                 "background-color": "0x696969",
                 "background-alpha":0.4,

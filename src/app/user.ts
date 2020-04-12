@@ -122,6 +122,9 @@ class WUser extends Widget{
     clear(){
         localStorage.clear()
     }
+    text(){
+        Scene.open("app-ui-text",Scene.root);
+    }
 
 }
 /**

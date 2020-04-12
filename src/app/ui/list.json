@@ -1,8 +1,8 @@
 {   
     "type": "container",
     "data": {
-        "width": 750,
-        "height": 1334,
+        "width": "100%",
+        "height": "100%",
         "left": 0,
         "top": 0
     },
@@ -11,8 +11,8 @@
             "type": "rect",
             "data": {
                 "name": "rect7501334",
-                "width": 750,
-                "height": 1334,
+                "width": "100%",
+                "height": "100%",
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad",
@@ -27,7 +27,7 @@
                 "left":200,
                 "top": 160,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xFFFF00", "align" : "center"
                 }
             }
         },
@@ -54,7 +54,6 @@
                 "text": "返回",
                 "size":40
             }
-        }
-        
+        }   
     ]
 }

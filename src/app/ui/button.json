@@ -4,8 +4,6 @@
         "name": "rect204104",
         "width": 204,
         "height": 104,
-        "left": 0,
-        "top": 0,
         "background-color": "0x696969",
         "background-alpha":0.4,
         "border-width":2,
