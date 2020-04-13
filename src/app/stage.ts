@@ -94,8 +94,8 @@ class Stage {
     static shopBuild = [1000,1005,1008,1007]  //轮回商店卖的建筑
     static shopRes = [400,50,50,50]  //轮回商店卖的res
     static coinNode    //轮回币节点
-    static cir_cost1 = [1,5,5,15]  //轮回建筑消耗
-    static cir_cost2 = [5,15,40,100,200]  //轮回英雄消耗
+    static cir_cost1 = [1,4,4,15]  //轮回建筑消耗
+    static cir_cost2 = [3,10,25,50,100]  //轮回英雄消耗
     static resultNode = [] //字幕文字节点
     static textTime = 0     //字幕时间
     static textNum = 0     //字幕数
@@ -1000,7 +1000,7 @@ class WStage extends Widget{
             if(DB.data.army.cur[0]<DB.data.army.total[0]){
                 AppEmitter.emit("stagePause");
                 this.backNode = Scene.open(`app-ui-back`,Scene.root);
-                Scene.open("app-ui-fightWindow", this.backNode,null,{id:19999,index:-1,name:`边境城市`});
+                Scene.open("app-ui-fightWindow", this.backNode,null,{id:19999,index:-1,backNode:this.backNode,name:`边境城市`});
             }else{
                 AppEmitter.emit("message",`无可出战的军队！`);
             }

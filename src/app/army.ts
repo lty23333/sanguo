@@ -76,7 +76,9 @@ class Army {
         }
     }
     static updatePrice(){
-        armyNode[2].text = `${Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)}黄金`
+        if(Global.mainFace.id == 3){
+          armyNode[2].text = `${Math.ceil(DB.data.army.price[0] * DB.data.army.price[2] -0.5)}黄金`
+        }
     }
         
 }

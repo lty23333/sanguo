@@ -199,7 +199,7 @@ const read = (param: any, callback) => {
 
 }
 const plus = (param: any, callback) => { 
-    let costlist = [[1,1,1,1],[1,5,5,15],[5,15,40,100,200]],
+    let costlist = [[1,1,1,1],[1,4,4,15],[3,10,25,50,100]],
         cost 
     if(param[0] == 2){
         let n = 0
@@ -223,7 +223,7 @@ const plus = (param: any, callback) => {
 }
 //轮回商店退款
 const minus = (param: any, callback) => { 
-    let costlist = [[1,1,1,1],[1,5,5,15],[5,15,40,100,200]],
+    let costlist = [[1,1,1,1],[1,4,4,15],[3,10,25,50,100]],
         cost 
     if(param[0] == 2){
         let n = 0
@@ -827,7 +827,7 @@ const guard_add = (id: any, callback) => {
         }else{
                         //随机据点
             if(rand(3)>1){
-                guardId = 20000 +rand(3);
+                guardId = 20000 +rand(4);
                 for(let i=0;i<bcfg3[Math.ceil(DB.date.day[0]/400)]["army"].length;i++){
                 guard.push([bcfg2[guardId]["army"],Math.ceil(bcfg3[Math.ceil(DB.date.day[0]/400)]["army"][i] * (450 + rand(100))/500 -0.5)])
                 }

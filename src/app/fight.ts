@@ -214,7 +214,8 @@ class WFight extends Widget{
         super.setProps(props);
         // this.cfg.children[1].data.text = DB.data.map.city[0] ;
     }
-
+    no(){
+    }
     added(node){
 
     }
