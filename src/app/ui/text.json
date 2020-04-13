@@ -1,0 +1,11 @@
+{
+    "type":"app-ui-button",
+    "props":{
+        "on":{"tap":{"func":"continue"}},
+        "id":"button_continue",
+        "right": 100,
+        "top": 500,
+        "text": "测试",
+        "size":35
+    }
+}
