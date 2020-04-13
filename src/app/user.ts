@@ -171,7 +171,7 @@ const loginCallback = (err?) => {
         return console.log(err);
     }
     AppEmitter.emit("intoMain");
-    Music.play("audio/main.mp3",true);
+    Music.play("audio/season0.mp3",true);
     Scene.remove(User.show);
     User.show = null;
 }
