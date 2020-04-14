@@ -79,7 +79,7 @@
         "data": {
             "id":"change",
             "text":"",
-            "left":300,
+            "left":295,
             "top": 5,
             "style":{
                 "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
