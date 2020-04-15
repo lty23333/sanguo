@@ -487,6 +487,7 @@ const unlock = (id: any, callback) => {
             DB[effect[i][0]][effect[i][1]][effect[i][2]] += effect_num[i];
             effect_end.push(DB[effect[i][0]][effect[i][1]][effect[i][2]]);
         }
+        saveDb("people",DB.people);
         saveDb("build",DB.build);
         saveDb("face",DB.face);                    
         saveDb("science",DB.science);

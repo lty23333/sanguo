@@ -185,7 +185,9 @@ class Stage {
         }
 
         for(let i = n-1;i >= j;i--){
-            Stage.shopText[type][i].text = ""
+            if(Stage.shopText[type] && Stage.shopText[type][i]){
+                Stage.shopText[type][i].text = ""
+            }
         }
     }
 
@@ -836,11 +838,11 @@ class WResdis extends Widget{
 //胜败和五行影响
         if(id < 4 ){
             if(DB.data.res.win[1] >0){
-                dis.push(["胜绩：",`总生产+${Math.floor(DB.data.people.win[2]*100)}%`,2]);
+                dis.push(["胜绩：",`总生产+${Math.floor(DB.data.people.win[2]*100 + 0.5)}%`,2]);
                 times += DB.data.people.win[2]
             }
             if(DB.data.res.fail[1] >0){
-                dis.push(["败绩：",`总生产-${Math.floor(DB.data.people.fail[2]*100)}%`,6]);
+                dis.push(["败绩：",`总生产-${Math.floor(DB.data.people.fail[2]*100 +0.5)}%`,6]);
                 times -= DB.data.people.fail[2]
             }
             let five = Math.floor(DB.data.date.day[0]/400+ (DB.data.circle.city[0] && DB.data.circle.city[0][0] >81?DB.data.circle.city[0][0]%5:0)) % 5,
