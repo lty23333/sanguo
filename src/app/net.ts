@@ -575,7 +575,6 @@ const eventtrigger = (eventId: any, callback) => {
                 saveDb("res",DB.res);
                 saveDb("date",DB.date)
                 saveDb("event",DB.event);
-                saveDb("event",DB.event);
                 saveDb("army",DB.army);
                 callback({ok:[DB.event.next[0],DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]]]});
             }else{
@@ -841,11 +840,11 @@ const guard_add = (id: any, callback) => {
                     hero = bcfg[guardId]["hero"],
                     index = 0
                 for(let i =0;i<time.length;i++){
-                if(DB.event.date[0]>=time[i]){
-                    index += 1; 
-                }else{
-                    break;
-                }
+                    if(DB.event.date[0]>=time[i]){
+                        index += 1; 
+                    }else{
+                        break;
+                    }
                 }
                 for(let i =0;i<army.length;i++){
                 guard.push([hero[index][i],army[i]])

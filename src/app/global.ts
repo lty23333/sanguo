@@ -16,8 +16,17 @@ export function rand(number){
 
 export function number(num){
     let u = "",
-        left = 2
-    if(num>=1000000){
+        left = 2,
+        symbols = 1 
+
+    if(num<0){
+        num = -num
+        symbols = -1
+    }
+    if(num>=1000000000){
+        num = num/1000000000
+        u = "b"
+    }else if(num>=1000000){
         num = num/1000000
         u = "m"
     }else if(num>=1000){
@@ -30,7 +39,7 @@ export function number(num){
     }else if(num>=10){
         left = 1
     }
-    
+    num = num * symbols
     return `${num.toFixed(left)/1}${u}`;
 };
 

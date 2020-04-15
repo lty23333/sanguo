@@ -110,7 +110,8 @@ class WCity extends Widget{
             id = props.id,
             army = DB.data.map.guard[props.index],
             str2 = "",
-            color
+            color,
+            time = 0
         //判断城市还是随机据点
         if(id<20000){
             bcfg = CfgMgr.getOne("app/cfg/city.json@city")
@@ -119,13 +120,24 @@ class WCity extends Widget{
 
         }   
 
+        //判断时间点
+        if(bcfg[id]["time"] && bcfg[id]["time"].length){
+            for(let i =bcfg[id]["time"].length;i>=0;i--){
+                if(army[2] && army[2][0] ==  bcfg[id]["hero"][i][1]){
+                    time = i
+                    break;
+                }
+            }
+        }
+
         str2 = bcfg[id]["reward_dis"];
         str2 = str2.replace("{{city_num}}",DB.data.map.city[3])
         this.cfg.children[1].data.text = `${bcfg[id]["name"]}`;
-        if(bcfg[id]["belong"]){
-            this.cfg.children[2].data.text = `（${bcfg[id]["belong"]}）`;
+
+        if(id<20000){
+            this.cfg.children[2].data.text = `（${bcfg[id]["belong"][time]}）`;
         }else{
-            this.cfg.children[2].data.text = "";
+            this.cfg.children[2].data.text = `（${bcfg[id]["belong"]}）`;
         }
         //驻守军队
         for(let i = 1;i< army.length;i++){

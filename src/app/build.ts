@@ -397,6 +397,7 @@ class Wshop extends Widget{
         Build.com_effect = this.elements.get("effect");
         Build.com_cost = this.elements.get("cost");
     }
+    no(){}
 } 
 
 
@@ -582,6 +583,7 @@ class Whotel extends Widget{
         Build.hotel_update = this.elements.get("update");
         Build.hotel_dis = this.elements.get("effect");
     }
+    no(){}
 } 
 //建筑弹窗
 class WcomWindow extends Widget{
@@ -708,6 +710,7 @@ class WcomWindow extends Widget{
         Build.com_effect = this.elements.get("effect");
         Build.com_cost = this.elements.get("cost");
     }
+    no(){}
 } 
 
 /**

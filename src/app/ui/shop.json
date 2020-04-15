@@ -9,6 +9,7 @@
     "children":[
         {
             "type": "rect",
+            "on":{"tap":{"func":"no"}},
             "data": {
                 "name": "rect600820",
                 "width": 600,
