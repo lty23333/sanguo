@@ -621,6 +621,10 @@ const hero_choose = (param: any, callback) => {
                     break;
                 }
             }
+            //如果该品质将领没有了
+            if(DB.hero.left[v].length < 1){
+                v -=1;
+            }
             let heroId =Math.floor(rand(DB.hero.left[v].length))-1           
             DB.hero.choose.push(DB.hero.left[v][heroId]);
             DB.hero.left[v].splice(heroId,1);
