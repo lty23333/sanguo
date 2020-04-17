@@ -128,7 +128,8 @@ const putout = (param: any, callback) => {
     let res = [400,50,50,50],
         shopBuild = [1000,1005,1008,1007],
         //返回的效果结果
-        effect_end =[]
+        effect_end =[],
+        build_number = 0
     for(let i =0;i<4;i++){
         if(DB.circle.temp[0][i]){
             DB.res[work_name[i+1]][0] = 1
@@ -142,6 +143,7 @@ const putout = (param: any, callback) => {
         if(DB.circle.temp[1][i]){
             DB.build[shopBuild[i]-1000][0] = 1
             DB.build[shopBuild[i]-1000][1] = DB.circle.temp[1][i]
+            build_number +=DB.circle.temp[1][i]
             //如果解锁了果园，把山路也解锁了
             if(shopBuild[i] == 1000){
                 DB.build[14][0] = 1
@@ -164,6 +166,7 @@ const putout = (param: any, callback) => {
             }
         }
     }
+    DB.map.city[2] = build_number
     let id = 0
     for(let i =0;i<DB.circle.own.length;i++){
         if(DB.circle.temp[2][i]){
@@ -179,13 +182,14 @@ const putout = (param: any, callback) => {
         DB.face.unlock[3] = 1
     }
     DB.circle.temp = [[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
-
+    
     saveDb("res",DB.res);
     saveDb("build",DB.build);
     saveDb("hero",DB.hero);
     saveDb("circle",DB.circle);
     saveDb("face",DB.face);
-    callback({ok:[JSON.parse(JSON.stringify(DB.res)),JSON.parse(JSON.stringify(DB.build)),JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(DB.circle)),DB.face.unlock[3],effect_end]});
+    saveDb("map",DB.map);
+    callback({ok:[JSON.parse(JSON.stringify(DB.res)),JSON.parse(JSON.stringify(DB.build)),JSON.parse(JSON.stringify(DB.hero.own)),JSON.parse(JSON.stringify(DB.circle)),DB.face.unlock[3],effect_end,DB.map.city[2]]});
 }
 
 const read = (param: any, callback) => {   
@@ -554,7 +558,8 @@ const eventtrigger = (eventId: any, callback) => {
 
     DB.event.next[0] += 1
     saveDb("event",DB.event);
-    if(rand(100)/100<bcfg[eventId]["PR"]){
+    //判断事件的概率
+    if(rand(100)/100<=bcfg[eventId]["PR"]){
         if(bcfg[eventId]["class"] == 1 ){
             DB.hero.enemy = bcfg[eventId].type;
             DB.date.warning[1] = 0;

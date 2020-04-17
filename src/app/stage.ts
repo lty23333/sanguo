@@ -1467,6 +1467,7 @@ const cir_start =()=> {
                   DB.data.hero.own = data.ok[2]
                   DB.data.circle = data.ok[3]
                   DB.data.face.unlock[3] = data.ok[4]
+                  DB.data.map.city[2] = data.ok[6]
                 }              
           })
           Scene.open("app-ui-result", Scene.root,null,{id:1});
