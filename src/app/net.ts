@@ -60,11 +60,12 @@ const initDB = () => {
         science:[[1,0]],
         hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[1212,1208,1200],add:[0,0,0,0]},
         hotel:{date:[0],price:[10]},
-        shop:{date:[0],price:[0,0,0,0,0,0],number:[200]},
-        army:{cur:[0],total:[0],price:[250,5,1]},
+        shop:{date:[0],price:[0.125,1,1,8,1,1],number:[200]},
+        army:{cur:[0],total:[0],price:[250,5,1],max:[1000]},
         map:{date:[1],city:[1,10000,0,15,0,100],attack:[0],guard:[]},
         event:{"next":[2001],"date":[0]},
-        circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]}
+        circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]},
+        news:[[],[]]
         }
     if(cir){
         DB.circle = cir
@@ -696,17 +697,26 @@ const army_buy = (id: any, callback) => {
     }
     let cost = DB.army.price[0] * DB.army.price[2],
         num 
-        if(cost<=DB.res.gold[1]){
-            DB.res.gold[1] = DB.res.gold[1] -cost;
-            num = Math.ceil(DB.army.price[1] * (400 + rand(200))/500 -0.5)
-            DB.army.total[0] += num;
-            DB.army.cur[0] +=num;
-            saveDb("army",DB.army);     
-            saveDb("res",DB.res);
-            callback({ok:[DB.res.gold[1],DB.army.total[0],DB.army.cur[0]]});
+        if(DB.army.cur[0] < DB.army.max[0]){
+            if(cost<=DB.res.gold[1]){
+                DB.res.gold[1] = DB.res.gold[1] -cost;
+                num = Math.ceil(DB.army.price[1] * (400 + rand(200))/500 -0.5)
+                if(DB.army.cur[0] + num > DB.army.max[0]){
+                    DB.army.total[0] += DB.army.max[0] - DB.army.cur[0]
+                    DB.army.cur[0] = DB.army.max[0]
+                }else{
+                    DB.army.total[0] += num;
+                    DB.army.cur[0] +=num;
+                }
+                saveDb("army",DB.army);     
+                saveDb("res",DB.res);
+                callback({ok:[DB.res.gold[1],DB.army.total[0],DB.army.cur[0]]});
+            }else{
+              callback({err:1}); 
+            }
         }else{
-        callback({err:1}); 
-    }
+            callback({err:2});
+        }
 }
 //添加军人
 const army_plus = (id: any, callback) => { 
@@ -1145,7 +1155,17 @@ const updateShop = (param: any, callback) => {
 }
 Connect.setTest("app/shop@buy",buy);
 Connect.setTest("app/shop@updateShop",updateShop);
-
+/****************** news ******************/
+//市场资源价格
+const addNews = (param: any, callback) => {
+    DB.news[param.id].unshift(param.news);
+    if(DB.news[param.id].length>24){
+        DB.news[param.id].splice(-1,1);
+    }
+    saveDb("news",DB.news);
+    callback({ok:[DB.news[param.id]]});
+}
+Connect.setTest("app/news@addNews",addNews);
 
 //注册页面打开事件
 AppEmitter.add("initDB",(node)=>{

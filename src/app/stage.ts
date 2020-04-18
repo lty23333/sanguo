@@ -14,18 +14,24 @@ import Music from '../libs/ni/music';
 
 /****************** 导出 ******************/
 export const addNews = (news) => {
-    DB.data.news[0].unshift(news);
-    if(DB.data.news[0].length>24){
-        DB.data.news[0].splice(-1,1);
-    }
+    Connect.request({type:"app/news@addNews",arg:{id:0,news:news}},(data) => {
+        if(data.err){
+            return console.log(data.err.reson);
+        }
+        DB.data.news[0] = data.ok[0];
+    })
     Stage.change_Newsface(0);
+    Stage.updateNews()
 }
 export const addFNews = (news) => {
-    DB.data.news[1].unshift(news);
-    if(DB.data.news[1].length>24){
-        DB.data.news[1].splice(-1,1);
-    }
+    Connect.request({type:"app/news@addNews",arg:{id:1,news:news}},(data) => {
+        if(data.err){
+            return console.log(data.err.reson);
+        }
+        DB.data.news[1] = data.ok[0];
+    })
     Stage.change_Newsface(1);
+    Stage.updateNews()
 }
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
@@ -33,7 +39,6 @@ let stageNode, // 关卡渲染节点
     circleNode, // 轮回商店界面
     circleFaceNode, //轮回购买界面
     listNode //排行榜节点
-
 
 class Stage {
     static width = 0
@@ -71,7 +76,9 @@ class Stage {
     static res_Cname = ["粮食","木材","知识","黄金","胜绩","败绩"]
     static season_Cname = ["春","夏","秋","冬"] 
     static face_name =["sceince","people","build","army","map"]
+    static dayTime0 = 1500
     static dayTime = 1500
+    static dayTimes = 2
     static nextDay = 0
     static resSprite = []
     static messageList = []
@@ -80,7 +87,6 @@ class Stage {
     static face_text = [] //界面切换文字节点
     static face_new = []
     static time 
-    static timeInterval =  500; //增加资源的时间间隔
     static newsNode =[]; //新闻节点
     static newsFace = 0   //0-新闻，1-战报
     static news_change = []
@@ -102,6 +108,9 @@ class Stage {
     static Ftext        //文字帧循环
     static nextFrame  //帧循环的下一帧时间
     static frameTime = 17 //每帧时间
+    static daytimesNode //时间倍数文字节点
+    static musicNode = [] //音乐音效开关节点
+    static bili = [0.5,0.75,1,1.5,2,3,4,5] //时速调节比例
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
         DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,800,0,0,0,0],gold:[0,0,500,0,0,0,0],win:[0,0,100,0,0,1,0],fail:[0,0,100,0,0,1,0]});
@@ -114,7 +123,7 @@ class Stage {
         //轮回币，上一局将领，最高纪录年
         DB.init("circle",{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]});
         //只在前台使用的数据
-        DB.init("fore",{pause:[1]});
+        DB.init("fore",{pause:[1],bgm:""});
     }
     //更新界面按钮文字
     static updateFace(i){
@@ -570,7 +579,7 @@ class Stage {
                     DB.data.hero.own = data.ok[0];
                 }
             })
-            Stage.time +=Stage.timeInterval;
+            Stage.time +=Stage.dayTime/3;
         }
         // //处理弹出消息
         // Stage.runMessage();
@@ -936,6 +945,8 @@ class WStage extends Widget{
     pause_button(){
        pause();
        Music.play("audio/but.mp3");
+       DB.data.fore.bgm = Music.bgm
+       Music.stop(Music.bgm);
        Stage.stillStop = 1
        Stage.pause_button.ni.right = 2000
        Stage.restart_button.ni.right= 20
@@ -943,11 +954,16 @@ class WStage extends Widget{
     restart_button(){
         Music.play("audio/but.mp3");
         Stage.stillStop = 0
+        Music.play(DB.data.fore.bgm,true);
         start();
         Stage.pause_button.ni.right = 20
         Stage.restart_button.ni.right= 2000
     }
-
+    system(){
+        AppEmitter.emit("stagePause");
+        this.backNode = Scene.open(`app-ui-back`,Scene.root);
+        Scene.open(`app-ui-system`,this.backNode);
+    }
     added(node){    
         Stage.year=  this.elements.get("year");
         Stage.fiveYear=  this.elements.get("fiveYear");
@@ -1311,6 +1327,52 @@ class WListRank extends Widget{
     }
 }
 /**
+ * @description 系统菜单界面
+ */
+class WSystem extends Widget{
+    node:any
+    setProps(props){
+        super.setProps(props);
+        this.cfg.children[13].data.text =  Stage.bili[Stage.dayTimes]
+                     
+    }
+    main(){
+        Music.play("audio/but.mp3");
+        Scene.root.removeChildren();
+        openStart();
+    }
+    music(id){
+        Music.play("audio/but.mp3");
+        Stage.musicNode[id].style.fill = "0xffffff"
+        Stage.musicNode[id +1 -2*(id % 2)].style.fill = "0xC0C0C0"
+    }
+    add(){
+        if(Stage.dayTimes < Stage.bili.length){
+            Stage.dayTimes += 1
+            Stage.dayTime = Stage.dayTime0 * Stage.bili[Stage.dayTimes]
+            Stage.daytimesNode.text = Stage.bili[Stage.dayTimes]
+        }else{
+            AppEmitter.emit("message",`已达到最高倍数！`);
+        }
+    }
+    red(){
+        if(Stage.dayTimes >0){
+            Stage.dayTimes -= 1
+            Stage.dayTime = Stage.dayTime0 * Stage.bili[Stage.dayTimes]
+            Stage.daytimesNode.text = Stage.bili[Stage.dayTimes]
+        }else{
+            AppEmitter.emit("message",`已达到最低倍数！`);
+        }
+    }
+    added(node){
+        Stage.musicNode[0] = this.elements.get("music0");
+        Stage.musicNode[1] = this.elements.get("music1");
+        Stage.musicNode[2] = this.elements.get("music2");
+        Stage.musicNode[3] = this.elements.get("music3");
+        Stage.daytimesNode = this.elements.get("number");
+    }   
+}
+/**
  * @description 开始游戏界面
  */
 class WStart extends Widget{
@@ -1432,7 +1494,7 @@ const begin = () => {
     startNode = null;
     Stage.pause = 0;  
     DB.data.fore.pause[0] = 0;
-    Stage.time = Date.now() + Stage.timeInterval;
+    Stage.time = Date.now() + Stage.dayTime/3;
     Stage.nextDay = Date.now() + Stage.dayTime;
 }    
 
@@ -1489,6 +1551,7 @@ Widget.registW("app-ui-circleFace",WCircleFace);
 Widget.registW("app-ui-circleGood",WCircleGood);
 Widget.registW("app-ui-list",WList);
 Widget.registW("app-ui-listRank",WListRank);
+Widget.registW("app-ui-system",WSystem);
 
 //注册循环
 
@@ -1567,10 +1630,10 @@ for(let i = 1; i <5; i++){
 }
 
 
-//注册新闻监听
-DB.emitter.add(`news`, () => {
-    Stage.updateNews()
-});
+// //注册新闻监听
+// DB.emitter.add(`news`, () => {
+//     Stage.updateNews()
+// });
 //注册消息监听
 AppEmitter.add(`message`, (str) => {
     Stage.updateMessage(str);

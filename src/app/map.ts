@@ -229,8 +229,8 @@ class WfightWindow extends Widget{
         //迎战界面
         if(props.index == -2){
             this.cfg.children[5].props.text = "迎战"
-            this.cfg.children[5].props.left = 150
-            this.cfg.children[6].props.left -= 1000
+            this.cfg.children[5].props.left = 450
+            this.cfg.children[6].props.left = 150
             this.cfg.children[7].data.alpha = 1
         }
 

@@ -1,0 +1,210 @@
+{   
+    "type": "container",
+    "data": {
+        "width": 400,
+        "height": 400,
+        "left": 175,
+        "top": 500
+    },
+    "children":[
+        {
+            "type": "rect",
+            "on":{"tap":{"func":"no"}},
+            "data": {
+                "name": "rect400430",
+                "width": 400,
+                "height": 480,
+                "left": 0,
+                "top": 0,
+                "background-color": "#d9c6ad",
+                "border-width":2,
+                "border-color":"0xe6e6fa",
+                "border-alpha":0.6,
+                "border-align":0.5
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"name",
+                "text":"系统",
+                "left":140,
+                "top": 20,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "center"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "name": "rect1030",
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 105,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"音乐",
+                "left":45,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"music","arg":[0]}},
+            "data": {
+                "id":"music0",
+                "text":"开",
+                "left":200,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"music","arg":[1]}},
+            "data": {
+                "id":"music1",
+                "text":"关",
+                "left":300,
+                "top": 100,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xC0C0C0", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "name": "rect1030",
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 175,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"音效",
+                "left":45,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"music","arg":[2]}},
+            "data": {
+                "id":"music2",
+                "text":"开",
+                "left":200,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"music","arg":[3]}},
+            "data": {
+                "id":"music3",
+                "text":"关",
+                "left":300,
+                "top": 170,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xC0C0C0", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "rect",
+            "data": {
+                "name": "rect1030",
+                "width": 10,
+                 "height": 30,
+                 "left": 30,
+                 "top": 245,
+                 "background-color": "0xffd700",
+                 "alpha":0.75
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "text":"时间流速",
+                "left":45,
+                "top": 240,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"red"}},
+            "data": {
+                "text":"<",
+                "left":50,
+                "top": 300,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "data": {
+                "id":"number",
+                "text":"1",
+                "left":180,
+                "top": 300,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+        {
+            "type": "text",
+            "on":{"tap":{"func":"add"}},
+            "data": {
+                "text":">",
+                "left":310,
+                "top": 300,
+                "style":{
+                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                }
+            }
+        },
+
+        {
+            "type":"app-ui-button",
+            "props":{
+                "on":{"tap":{"func":"main"}},
+                "id":"cost",
+                "left": 200,
+                "top": 410,
+                "text": "主界面",
+                "size":35,
+                "width": 200,
+                "height": 100
+            }
+        }
+    ]
+}

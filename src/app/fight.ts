@@ -276,38 +276,58 @@ class WfightAccount extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
         bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
         bcfg3 = CfgMgr.getOne("app/cfg/city.json@rand"),
-        result = [["惨胜","小胜","大捷"],["惜败","小败","大败"]],
+        result = [["惨胜","小胜","大捷","完胜"],["惜败","小败","大败","完败"]],
+        result_pd = [0.25,0.5,0.75,1],
         resultId = 0,
-        kill_all = 0,
-        die_all = 0
+        killdie_all = [0,0],
+        after_all = [0,0]
+
 
         this.cfg.data.left = Math.floor((Scene.screen.width - this.cfg.data.width)/2)
-        for(let i=0;i<kill_die[0].length-1;i++){
-            kill_die[0][4] += kill_die[0][i];
-            kill_die[1][4] += kill_die[1][i];
-        }
-        if(kill_die[Math.abs(isvic-1)][4]/kill_die[isvic][4] <1){
-            resultId = 0
-        }else if(kill_die[Math.abs(isvic-1)][4]/kill_die[isvic][4] <2){
-            resultId = 1
-        }else{
-            resultId = 2
+        for(let i=0;i<2;i++){
+            for(let j=0;j<fighter[i].length;j++){
+                after_all[i] += fighter[i][j][1]
+            }
         }
 
-        this.cfg.children[7].data.text = `${result[Math.abs(isvic-1)][resultId]}`;
+        // for(let i=0;i<kill_die[0].length-1;i++){
+        //     kill_die[0][4] += kill_die[0][i];
+        //     kill_die[1][4] += kill_die[1][i];
+        // }
+        // if(kill_die[Math.abs(isvic-1)][4]/kill_die[isvic][4] <1){
+        //     resultId = 0
+        // }else if(kill_die[Math.abs(isvic-1)][4]/kill_die[isvic][4] <2){
+        //     resultId = 1
+        // }else{
+        //     resultId = 2
+        // }
+
         for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[9+i].data.text = `${bcfg2[fighter[0][i][0]]["name"]}`;
         }
         for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[14+i].data.text = `${kill_die[0][i]}`;
-            kill_all += kill_die[0][i];
+            killdie_all[0] += kill_die[0][i];
         }
-        this.cfg.children[17].data.text = `${kill_all}`;
+        this.cfg.children[17].data.text = `${killdie_all[0]}`;
         for(let i =0;i<fighter[0].length;i++){
             this.cfg.children[19+i].data.text = `${kill_die[1][i]}`;
-            die_all += kill_die[1][i];
+            killdie_all[1] += kill_die[1][i];
         }
-        this.cfg.children[22].data.text = `${die_all}`;
+        this.cfg.children[22].data.text = `${killdie_all[1]}`;
+        //结算标题总结文字
+        for(let i=result[0].length-1;i>=0;i--){
+            if( killdie_all[isvic] /(after_all[Math.abs(isvic-1)]+killdie_all[isvic]) >= result_pd[i]){
+                resultId = i;
+                break;
+            }
+        }
+
+        this.cfg.children[7].data.text = `${result[Math.abs(isvic-1)][resultId]}`;
+        if(!isvic){
+            this.cfg.children[7].data.style.fill = "0xff6347"
+        }
+ 
         if(isvic){
             if(cityId<20000){
                 let st = bcfg[cityId]["reward_dis"].replace("{{city_num}}",DB.data.map.city[3])

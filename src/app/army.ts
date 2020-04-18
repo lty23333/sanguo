@@ -29,7 +29,7 @@ class Army {
     static initDB(){
         //初始化英雄数据库 own：[[武将ID，带兵数量，后天成长属性,位置ID,受伤]] add[统帅加成，步兵加成，骑兵加成，弓兵加成]MaxHero:[能上阵将领数量,最大招募将领数量,已带兵将领数量]
         DB.init("hero",{MaxHero:[1,1,0],own:[],enemy:[],left:leftHero,choose:[1212,1208,1200],add:[0,0,0,0]});
-        DB.init("army",{cur:[0],total:[0],price:[250,5,1]}); //price:[价格,数量]
+        DB.init("army",{cur:[0],total:[0],price:[250,5,1],max:[1000]}); //price:[价格,数量]
     }
     
     static eatGold(){
@@ -42,7 +42,7 @@ class Army {
     }
     static updateArmy(){
         if(armyNode[0]!= undefined && Global.mainFace.id == 3){
-          armyNode[0].text = `${DB.data.army.cur[0]}`;
+          armyNode[0].text = `${DB.data.army.cur[0]}/${DB.data.army.max[0]}`;
         }
     }
     static updateHero(){
@@ -209,7 +209,7 @@ class WArmy extends Widget{
 
         this.cfg.children[2].props.left = Scene.screen.width -95
         this.cfg.children[3].data.left = Scene.screen.width - 150 - (cost>9999?14:0)
-        this.cfg.children[1].data.text = `${DB.data.army.cur}`;
+        this.cfg.children[1].data.text = `${DB.data.army.cur[0]}/${DB.data.army.max[0]}`;
         this.cfg.children[3].data.text = `${cost}黄金`;
         this.cfg.children[7].data.text = `${DB.data.hero.own.length}/${DB.data.hero.MaxHero[1]}`;
         //消耗加颜色
@@ -232,6 +232,9 @@ class WArmy extends Widget{
         Connect.request({type:"app/army@army_buy",arg:[]},(data) => {
             if(data.err == 1){
                 AppEmitter.emit("message","黄金不足！");
+                return console.log(data.err.reson);
+            }else if(data.err == 2){
+                AppEmitter.emit("message","空闲士兵已达上限！");
                 return console.log(data.err.reson);
             }else{
                 DB.data.res.gold[1] = data.ok[0];
@@ -301,6 +304,10 @@ for(let i in bcfg ){
             Army.updateArmy();
             Army.updateHero(); 
     });
+
+    DB.emitter.add(`army.max.0`, () => {
+        Army.updateArmy();
+});
 
 
 DB.emitter.add(`army.total.0`, () => {

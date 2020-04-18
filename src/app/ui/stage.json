@@ -42,6 +42,7 @@
 
              {
                 "type": "rect",
+                "on":{"tap":{"func":"system"}},
                 "data": {
                 "name": "rect150150",
                  "width": 150,

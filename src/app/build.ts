@@ -760,7 +760,7 @@ const initBuild = () => {
     }
     DB.init("build", tempDB);
     DB.init("hotel",{date:[0],price:[10]});
-    DB.init("shop",{date:[0],price:[0,0,0,0,0,0],number:[200]})
+    DB.init("shop",{date:[0],price:[0.125,1,1,8,1,1],number:[200]})
 };
 
 //注册页面打开事件

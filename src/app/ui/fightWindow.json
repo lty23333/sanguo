@@ -115,7 +115,7 @@
             "props":{
                 "on":{"tap":{"func":"lose"}},
                 "id":"button_fight",
-                "left": 1450,
+                "left": 2000,
                 "top": 450,
                 "text": "割地求和",
                 "color":"0xff6347",
