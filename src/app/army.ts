@@ -32,14 +32,14 @@ class Army {
         DB.init("army",{cur:[0],total:[0],price:[250,5,1],max:[1000]}); //price:[价格,数量]
     }
     
-    static eatGold(){
-        Connect.request({type:"app/res@eatGold",arg:{}},(data) => {
-            if(data.err){
-                return console.log(data.err.reson);
-            }
-            DB.data.res.gold[5] = data.ok;
-        })
-    }
+    // static eatGold(){
+    //     Connect.request({type:"app/res@eatGold",arg:{}},(data) => {
+    //         if(data.err){
+    //             return console.log(data.err.reson);
+    //         }
+    //         DB.data.res.gold[5] = data.ok;
+    //     })
+    // }
     static updateArmy(){
         if(armyNode[0]!= undefined && Global.mainFace.id == 3){
           armyNode[0].text = `${DB.data.army.cur[0]}/${DB.data.army.max[0]}`;
@@ -310,9 +310,9 @@ for(let i in bcfg ){
 });
 
 
-DB.emitter.add(`army.total.0`, () => {
-    Army.eatGold()
-});
+// DB.emitter.add(`army.total.0`, () => {
+//     Army.eatGold()
+// });
 
 //注册页面打开事件
 AppEmitter.add("intoArmy",(node)=>{

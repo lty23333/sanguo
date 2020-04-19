@@ -10,6 +10,7 @@ import Connect from "../libs/ni/connect";
 import {table} from "./formula";
 import {Global,rand,number} from './global';
 import Music from '../libs/ni/music';
+import Emitter from "../libs/ni/emitter";
 
 
 /****************** 导出 ******************/
@@ -110,7 +111,7 @@ class Stage {
     static frameTime = 17 //每帧时间
     static daytimesNode //时间倍数文字节点
     static musicNode = [] //音乐音效开关节点
-    static bili = [0.5,0.75,1,1.5,2,3,4,5] //时速调节比例
+    static bili = [0.5,0.75,1,1.5,2] //时速调节比例
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
         DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,800,0,0,0,0],gold:[0,0,500,0,0,0,0],win:[0,0,100,0,0,1,0],fail:[0,0,100,0,0,1,0]});
@@ -121,9 +122,9 @@ class Stage {
         DB.init("event",{"next":[2001],"date":[0]});
         DB.init("news",[[],[]]);//新闻
         //轮回币，上一局将领，最高纪录年
-        DB.init("circle",{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]});
+        DB.init("circle",{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0]]});
         //只在前台使用的数据
-        DB.init("fore",{pause:[1],bgm:""});
+        DB.init("fore",{pause:[1]});
     }
     //更新界面按钮文字
     static updateFace(i){
@@ -290,10 +291,10 @@ class Stage {
     //字幕浮现循环
     static textRun(){
         if(Date.now()>Stage.nextFrame){
-            if(Stage.textNum >9 || !Stage.resultNode[Stage.textNum]){
-                Frame.delete(Stage.Ftext);
+            if(Stage.textNum >9){
                 Stage.textNum = 0
                 Stage.textTime = 0
+                Frame.delete(Stage.Ftext);
             }else{
                 Stage.textTime += 1;
                 if(Stage.textTime >= 10){
@@ -572,13 +573,6 @@ class Stage {
             for(let i = Stage.res_name.length - 1; i >= 0; i--){
                 Stage.ChangeResource(Stage.res_name[i]);
             }  
-            Connect.request({type:"app/hero@hurt",arg:[]},(data) => {
-                if(data.err){
-                    return console.log(data.err.reson);
-                }else{
-                    DB.data.hero.own = data.ok[0];
-                }
-            })
             Stage.time +=Stage.dayTime/3;
         }
         // //处理弹出消息
@@ -587,6 +581,13 @@ class Stage {
 //时间变化
         if(Date.now()>Stage.nextDay){
             let season
+            Connect.request({type:"app/hero@hurt",arg:[]},(data) => {
+                if(data.err){
+                    return console.log(data.err.reson);
+                }else{
+                    DB.data.hero.own = data.ok[0];
+                }
+            })
             Connect.request({type:"app/date@update",arg:{}},(data) => {
                 if(data.err){
                     return console.log(data.err.reson);
@@ -945,8 +946,9 @@ class WStage extends Widget{
     pause_button(){
        pause();
        Music.play("audio/but.mp3");
-       DB.data.fore.bgm = Music.bgm
-       Music.stop(Music.bgm);
+       if(Music.bgm){
+        Music.stop(Music.bgm);
+       }
        Stage.stillStop = 1
        Stage.pause_button.ni.right = 2000
        Stage.restart_button.ni.right= 20
@@ -954,7 +956,9 @@ class WStage extends Widget{
     restart_button(){
         Music.play("audio/but.mp3");
         Stage.stillStop = 0
-        Music.play(DB.data.fore.bgm,true);
+        if(Music.bgm){
+            Music.play(Music.bgm,true);
+        }
         start();
         Stage.pause_button.ni.right = 20
         Stage.restart_button.ni.right= 2000
@@ -1081,6 +1085,10 @@ class WResult extends Widget{
             }
             for(let i = 0;i<text.length;i++){
                 this.cfg.children[i+1].data.text = text[i]; 
+            }
+
+            if(Stage.Ftext){
+                Frame.delete(Stage.Ftext);
             }
             //注册循环
             Stage.nextFrame = Date.now() + Stage.frameTime;
@@ -1333,6 +1341,14 @@ class WSystem extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
+        if(!Music.status.loop){
+            this.cfg.children[4].data.style.fill = "0xC0C0C0"
+            this.cfg.children[5].data.style.fill = "0xffffff"
+        }
+        if(!Music.status.once){
+            this.cfg.children[8].data.style.fill = "0xC0C0C0"
+            this.cfg.children[9].data.style.fill = "0xffffff"
+        }
         this.cfg.children[13].data.text =  Stage.bili[Stage.dayTimes]
                      
     }
@@ -1345,11 +1361,14 @@ class WSystem extends Widget{
         Music.play("audio/but.mp3");
         Stage.musicNode[id].style.fill = "0xffffff"
         Stage.musicNode[id +1 -2*(id % 2)].style.fill = "0xC0C0C0"
+        let is = id % 2?false:true,
+            type = id<2?"loop":"once"
+        Music.setStatue(type,is);
     }
     add(){
-        if(Stage.dayTimes < Stage.bili.length){
+        if(Stage.dayTimes < Stage.bili.length-1){
             Stage.dayTimes += 1
-            Stage.dayTime = Stage.dayTime0 * Stage.bili[Stage.dayTimes]
+            Stage.dayTime = Stage.dayTime0 / Stage.bili[Stage.dayTimes]
             Stage.daytimesNode.text = Stage.bili[Stage.dayTimes]
         }else{
             AppEmitter.emit("message",`已达到最高倍数！`);
@@ -1358,7 +1377,7 @@ class WSystem extends Widget{
     red(){
         if(Stage.dayTimes >0){
             Stage.dayTimes -= 1
-            Stage.dayTime = Stage.dayTime0 * Stage.bili[Stage.dayTimes]
+            Stage.dayTime = Stage.dayTime0 / Stage.bili[Stage.dayTimes]
             Stage.daytimesNode.text = Stage.bili[Stage.dayTimes]
         }else{
             AppEmitter.emit("message",`已达到最低倍数！`);
@@ -1573,6 +1592,14 @@ AppEmitter.add("stageStart",(node)=>{
 //注册页面打开事件
 AppEmitter.add("intoMain",(node)=>{
     openStart();
+});
+//切出页面事件
+Emitter.global.add("hide",()=>{
+    pause();
+});
+//切回页面事件
+Emitter.global.add("show",()=>{
+    start();
 });
 //资源注册监听
 

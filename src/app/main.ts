@@ -38,13 +38,13 @@ export default class Main {
             resolution: 1
         },cfg);
         Loader.add(["app/ui/","app/cfg/","audio/","images/"],function(res){
-            Connect.open(cfg,()=>{
+            // Connect.open(cfg,()=>{
                 //初始化数据库
                 AppEmitter.emit("initDB");
                 User.init();
                 Process.clear();
   
-            });
+            // });
         },Process.add());
         // console.log(wx.env.USER_DATA_PATH);
     }

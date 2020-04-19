@@ -13,7 +13,7 @@
             "data": {
                 "name": "rect400430",
                 "width": 400,
-                "height": 480,
+                "height": 520,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad",
@@ -160,11 +160,11 @@
             "type": "text",
             "on":{"tap":{"func":"red"}},
             "data": {
-                "text":"<",
-                "left":50,
-                "top": 300,
+                "text":"-",
+                "left":90,
+                "top": 295,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 42, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -184,11 +184,11 @@
             "type": "text",
             "on":{"tap":{"func":"add"}},
             "data": {
-                "text":">",
-                "left":310,
-                "top": 300,
+                "text":"+",
+                "left":290,
+                "top": 295,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 42, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -199,7 +199,7 @@
                 "on":{"tap":{"func":"main"}},
                 "id":"cost",
                 "left": 200,
-                "top": 410,
+                "top": 445,
                 "text": "主界面",
                 "size":35,
                 "width": 200,

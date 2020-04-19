@@ -203,7 +203,6 @@ const encryptPassword = (ps: string): string => {
     let b64 = caclHash(ps,"B64"),
         hex = caclHash(ps,"HEX");
     ps = caclHash(blendStrig(b64.substr(0,b64.length-2), hex),"B64");
-    console.log(b64,hex,ps);
     return ps;
 }
 /**

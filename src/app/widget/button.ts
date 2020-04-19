@@ -64,18 +64,18 @@ class Button extends Widget{
         // node.ni.top = this.props.top - this.props.height/2;
         //  text.ni.left = (this.props.width - text.width)/2 - this.props.width/2;
         //  text.ni.top = (this.props.height - text.height)/2 - this.props.height/2;
-        console.log(text.width,text.height);
+        // console.log(text.width,text.height);
     }
     tapStart(){
         let btn = this.elements.get(this.props.id);
         btn.scale.x = btn.scale.y = 0.8;
-        console.log("tapStart");
+        // console.log("tapStart");
     }
     buttonTap(){
         let btn = this.elements.get(this.props.id);
         btn.scale.x = btn.scale.y = 1;
         Music.play("audio/but.mp3");
-        console.log("buttonTap");
+        // console.log("buttonTap");
         return HandlerResult.OK;
     }
 }

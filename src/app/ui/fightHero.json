@@ -44,7 +44,7 @@
                 "left":0,
                 "top": 20,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center","strokeThickness":2
                 }
             }
         },

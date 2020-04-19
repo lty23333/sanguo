@@ -64,7 +64,7 @@ const initDB = () => {
         army:{cur:[0],total:[0],price:[250,5,1],max:[1000]},
         map:{date:[1],city:[1,10000,0,15,0,100],attack:[0],guard:[]},
         event:{"next":[2001],"date":[0]},
-        circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]},
+        circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0]]},
         news:[[],[]]
         }
     if(cir){
@@ -674,7 +674,7 @@ const hero_hurt = (id: any, callback) => {
     let health = [],pd = 0
     for(let i=0;i<DB.hero.own.length;i++){
         if(DB.hero.own[i] && DB.hero.own[i][4]>0){
-            DB.hero.own[i][4] -= 0.5;
+            DB.hero.own[i][4] -= 2;
             pd = 1
         }
     }

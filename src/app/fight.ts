@@ -317,7 +317,7 @@ class WfightAccount extends Widget{
         this.cfg.children[22].data.text = `${killdie_all[1]}`;
         //结算标题总结文字
         for(let i=result[0].length-1;i>=0;i--){
-            if( killdie_all[isvic] /(after_all[Math.abs(isvic-1)]+killdie_all[isvic]) >= result_pd[i]){
+            if( after_all[Math.abs(isvic-1)] /(after_all[Math.abs(isvic-1)]+killdie_all[isvic]) >= result_pd[i]){
                 resultId = i;
                 break;
             }

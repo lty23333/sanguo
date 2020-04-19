@@ -11,6 +11,11 @@ export default class Music {
   static table = {}
   //背景音乐
   static bgm = ""
+  //音乐播放状态，true为可以播放，false不播放
+  static status = {
+    loop:true,
+    once:true
+  }
   /**
    * @description 初始化配置表
    * @param data 配置数据{"audio/xx":decodeAudioData}
@@ -27,17 +32,23 @@ export default class Music {
    * @description 播放音乐
    */
   static play(path: string,loop?: boolean){
+    let old = Music.bgm;
     if(Music.table[path] && Music.table[path].PLAYING_STATE == Music.table[path].playbackState){
       Music.table[path].stop();
     }
-    let m = createBufferSource(path);
     if(loop){
-      if(Music.table[Music.bgm]&& Music.table[Music.bgm].PLAYING_STATE == Music.table[Music.bgm].playbackState){
-        Music.table[Music.bgm].stop();
-      }
       Music.bgm = path;
-      if(!m){
-        return;
+    }
+    if(!Music.status[loop?"loop":"once"]){
+      return;
+    }
+    let m = createBufferSource(path);
+    if(!m){
+      return;
+    }
+    if(loop){
+      if(old && Music.table[old]&& Music.table[old].PLAYING_STATE == Music.table[old].playbackState){
+        Music.table[old].stop();
       }
       m.loop = loop;
     }
@@ -52,7 +63,28 @@ export default class Music {
    * @description 暂停音乐
    */
   static stop(path: string){
-    Music.table[path].stop(0);
+    if(Music.table[Music.bgm]&& Music.table[Music.bgm].PLAYING_STATE == Music.table[Music.bgm].playbackState ){
+        Music.table[path].stop(0);
+    }
+  }
+  /**
+   * @description 设置播放状态
+   * @param type "loop" || "once"
+   * @param b true || false
+   */
+  static setStatue(type: string,b: boolean):void{
+    let old = Music.status[type];
+    if(old == b){
+      return;
+    }
+    Music.status[type] = b;
+    if(type == "loop" && Music.bgm){
+      if(b == true){
+        Music.play(Music.bgm, true);
+      }else if(b == false && Music.table[Music.bgm]&& Music.table[Music.bgm].PLAYING_STATE == Music.table[Music.bgm].playbackState ){
+          Music.table[Music.bgm].stop();
+      }
+    }
   }
 }
 /****************** 本地 ******************/
@@ -139,8 +171,8 @@ const createBufferSource = (k) => {
 //绑定资源监听
 Loader.addResListener("registMusic",Music.registMusic);
 Emitter.global.add("hide",()=>{
-  if(Music.bgm){
-    Music.stop(Music.bgm);
+  if(Music.bgm && Music.table[Music.bgm]&& Music.table[Music.bgm].PLAYING_STATE == Music.table[Music.bgm].playbackState){
+    Music.table[Music.bgm].stop();
   }
 });
 Emitter.global.add("show",()=>{

@@ -39,7 +39,7 @@
     {
         "name": "browser",
         "dist": "../../go/htdocs/sanguo",
-        "ignore":["/README.md","/build.json","/config.ts","/game.json","/game.ts","/project.config.json","/pc.html","pc.js"],
+        "ignore":["/README.md","/build.json","/config.ts","/game.json","/game.ts","/project.config.json","/pc.html","pc.js","/bd/","pc","wx"],
         "plugins":{
             "ts":{
                 "mod":"ts2es5"

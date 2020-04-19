@@ -347,6 +347,10 @@ class Ni{
 	 */
 	public animate ={"ani":"","times":0,"speed":1} // times 0: 无限循环播放, [1~N]: 循环播放 N 次
 	/**
+	 * @description 事件响应时间
+	 */
+	public ontime:{[key:string]:number} = {}
+	/**
 	 * @description 创建应用层管理对象
 	 * @param show 显示对象
 	 * @param cfg 显示配置

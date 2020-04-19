@@ -33,6 +33,10 @@ export class Events {
         eventType: null, // 触发的事件类型
         time: 0 // 触发时间点
     }
+    // 事件响应时间间隔
+    static onTimeLimit = {
+        tap:200
+    }
     //是否移动端
     static mobile: boolean
     //绑定函数
@@ -128,8 +132,8 @@ export class Events {
      * @param e 
      */
     static tap(e){
-        let {o,on,func,arg} = Events.findEvent(Events.eventsType.tap);
-        if(on){
+        let {o,on,func,arg} = Events.findEvent(Events.eventsType.tap), t = Date.now();
+        if(on && t - (o.ni.ontime.tap || 0) >= Events.onTimeLimit.tap){
             Events.responseEvent(o,e,arg,func,Events.eventsType.tap);
         }else{
         // if(Events.status.eventType && Events.status.eventType != Events.eventsType.start){
@@ -144,7 +148,7 @@ export class Events {
      */
     static longTap(e){
         let t = Date.now();
-        if(Events.status.eventType || t - Events.status.time < 300 ){
+        if(Events.status.eventType || t - Events.status.time < 500 ){
             return;
         }
         let {o,on,func,arg} = Events.findEvent(Events.eventsType.longtap);
@@ -209,6 +213,7 @@ export class Events {
      */
     static responseEvent(o,e,arg,func,type){
         Events.status.eventType = type;
+        o.ni.ontime[type] = Date.now();
         arg = arg || [];
         arg.push(e);
         arg.push(o);
