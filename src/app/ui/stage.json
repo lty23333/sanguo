@@ -10,6 +10,7 @@
     "children":[ 
         {
             "type": "sprite",
+            "on":{"tap":{"func":"no"}},
             "data": {
                 "url":"images/ui/black.png",
                 "width": "100%",

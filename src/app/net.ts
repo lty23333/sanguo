@@ -56,14 +56,14 @@ const initDB = () => {
         build:[],
         date:{unlock:[0,0],day:[0],warning:[0,0]},
         people:{total:[0,0],food:[0,0,8,0],wood:[0,0,1,0],sci:[0,0,1,0],gold:[0,0,1,0],win:[0,0,0.25,0],fail:[0,0,0.25,0]},
-        face:{"unlock":[0,0,1,0,0]},
+        face:{unlock:[0,0,1,0,0]},
         science:[[1,0]],
         hero:{MaxHero:[1,1,0],own:[],enemy:[],left:[[],[],[],[],[],[]],choose:[1212,1208,1200],add:[0,0,0,0]},
         hotel:{date:[0],price:[10]},
         shop:{date:[0],price:[0.125,1,1,8,1,1],number:[200]},
         army:{cur:[0],total:[0],price:[250,5,1],max:[1000]},
         map:{date:[1],city:[1,10000,0,15,0,100],attack:[0],guard:[]},
-        event:{"next":[2001],"date":[0]},
+        event:{next:[2001],date:[0]},
         circle:{coin:[0],own:[],city:[],times:[0],temp:[[0,0,0,0],[0,0,0,0],[0,0,0,0,0]]},
         news:[[],[]]
         }
@@ -76,21 +76,30 @@ const initDB = () => {
 }
 
 
-
+//继续游戏读取数据
 const read_all = (param: any, callback) => {
     let r = "",rs;
     for (let k in DB){
         rs = localStorage[k];
         if(rs){
             DB[k] = JSON.parse(rs);
+        }else{
+            console.log(k);
         }
         r = `${r}${r?",":""}"${k}":${rs||JSON.stringify(DB[k])}`
     }
     callback({ok:`{${r}}`});
 }
-
+//储存所有数据
+const save_all = (param: any, callback) => {
+    for (let k in DB){
+        saveDb(`${k}`,DB[`${k}`])
+    }
+    callback({ok:1});
+}
 
 Connect.setTest("app/all@read",read_all);
+Connect.setTest("app/all@save",save_all);
 /****************** circle ******************/
 
 
@@ -119,6 +128,7 @@ const putin = (param: any, callback) => {
     //时间归零，游戏结束
     DB.date.day[0] = 0
     saveDb("date",DB.date);
+    console.log(localStorage.date);
     saveDb("circle",DB.circle);
     callback({ok:[JSON.parse(JSON.stringify(DB.circle)),DB.date.day[0]]});
 }
@@ -263,9 +273,11 @@ const update_date = (param: any, callback) => {
          sea = Math.floor((day % 400)/100)
      if(day %100 ==1){
          DB.res.food[4] = season[sea];
+         console.log(localStorage.res);
+         saveDb("res",DB.res);
      }
+     console.log(localStorage.date);
      saveDb("date",DB.date);
-     saveDb("res",DB.res);
      callback({ok:[DB.date.day[0],DB.res.food[4]]}); 
  }
  Connect.setTest("app/date@update",update_date);
@@ -371,10 +383,10 @@ const manadd_food = (param: any, callback) => {
      if(DB.build[0][0] <1){
         DB.build[0][0] += 0.2
         DB.build[14][0] += 0.2
+        saveDb("build",DB.build);
      }
      DB.res.food[1] = number;
      saveDb("res",DB.res);
-     saveDb("build",DB.build);
      callback({ok:[DB.res.food[1],DB.build[0][0],DB.build[14][0],ismax]}); 
  }
  const eat_food = (param: any, callback) => {
@@ -500,6 +512,7 @@ const unlock = (id: any, callback) => {
         saveDb("map",DB.map);
         saveDb("res",DB.res);
         saveDb("date",DB.date);
+        console.log(localStorage.date);
         saveDb("army",DB.army);
         callback({ok:[DB.science[id-100][1],num,effect_end]}); 
     }else{
@@ -567,7 +580,8 @@ const eventtrigger = (eventId: any, callback) => {
             DB.map.attack[0] = 1
             saveDb("map",DB.map);
             saveDb("hero",DB.hero);
-            saveDb("date",DB.date);            
+            saveDb("date",DB.date);  
+            console.log(localStorage.date);          
             callback({ok:[DB.event.next[0],JSON.parse(JSON.stringify(DB.hero.enemy))]}); 
         }else if(bcfg[eventId]["class"] == 2){
             callback({ok:[DB.event.next[0]]});
@@ -595,6 +609,7 @@ const eventtrigger = (eventId: any, callback) => {
 const warning_zero = (param: any, callback) =>{
     DB.date.warning[1] = 0;
     saveDb("date",DB.date);
+    console.log(localStorage.date);
     callback({ok:[DB.date.warning[1]]});
 }
 

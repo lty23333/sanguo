@@ -286,7 +286,7 @@ class WfightWindow extends Widget{
                 }
                 //动态调整
                 if(this.props.id == 19999){
-                    enemy[i][2] += Math.floor(DB.data.hero.add[0] /3.7)/100 *mul
+                    enemy[i][2] += Math.floor(DB.data.hero.add[0] /3.5)/100 *mul
                 }
                 enemy[i][3] = i
                 enemy[i][4] = bcfg[enemy[i][0]]["arms"]

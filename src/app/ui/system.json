@@ -13,7 +13,7 @@
             "data": {
                 "name": "rect400430",
                 "width": 400,
-                "height": 520,
+                "height": 420,
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad",
@@ -164,7 +164,7 @@
                 "left":90,
                 "top": 295,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 42, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "left"
                 }
             }
         },
@@ -173,10 +173,10 @@
             "data": {
                 "id":"number",
                 "text":"1",
-                "left":180,
+                "left":185,
                 "top": 300,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 35, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xFFFF00", "align" : "left"
                 }
             }
         },
@@ -188,22 +188,8 @@
                 "left":290,
                 "top": 295,
                 "style":{
-                    "fontFamily" : "Arial", "fontSize": 42, "fill" : "0xffffff", "align" : "left"
+                    "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xffffff", "align" : "left"
                 }
-            }
-        },
-
-        {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"main"}},
-                "id":"cost",
-                "left": 200,
-                "top": 445,
-                "text": "主界面",
-                "size":35,
-                "width": 200,
-                "height": 100
             }
         }
     ]

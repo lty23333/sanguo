@@ -20,9 +20,9 @@ export const addNews = (news) => {
             return console.log(data.err.reson);
         }
         DB.data.news[0] = data.ok[0];
+        Stage.change_Newsface(0);
+        Stage.updateNews()
     })
-    Stage.change_Newsface(0);
-    Stage.updateNews()
 }
 export const addFNews = (news) => {
     Connect.request({type:"app/news@addNews",arg:{id:1,news:news}},(data) => {
@@ -30,9 +30,9 @@ export const addFNews = (news) => {
             return console.log(data.err.reson);
         }
         DB.data.news[1] = data.ok[0];
+        Stage.change_Newsface(1);
+        Stage.updateNews()
     })
-    Stage.change_Newsface(1);
-    Stage.updateNews()
 }
 /****************** 本地 ******************/
 let stageNode, // 关卡渲染节点
@@ -488,6 +488,9 @@ class Stage {
                     DB.data.people.total[0] = data.ok[0]
                     if(data.ok[1] ==1){
                         addNews("一位流民在此定居。（空闲人口+1）")
+                        if(Global.mainFace.id != 1){
+                           DB.data.face.new[1] = 1
+                        }
                     }
                     if(data.ok[1] ==-1){
                         if(data.ok[2]>0){
@@ -561,6 +564,9 @@ class Stage {
                 return console.log(data.err.reson);
             }
             DB.data.res[typename][1] = data.ok;
+            if(DB.data.res[typename][1] && DB.data.res[typename][0] == 0){
+                DB.data.res[typename][0] == 1
+            }
         })
         
     }
@@ -583,7 +589,7 @@ class Stage {
             let season
             Connect.request({type:"app/hero@hurt",arg:[]},(data) => {
                 if(data.err){
-                    return console.log(data.err.reson);
+                    // return console.log(data.err.reson);
                 }else{
                     DB.data.hero.own = data.ok[0];
                 }
@@ -618,15 +624,15 @@ class Stage {
                 if(DB.data.date.day[0] % 100 == 1){
                     Music.play(`audio/season${Math.floor(DB.data.date.day[0]/100)% 4}.mp3`,true);
                 }
+                Stage.nextDay += Stage.dayTime; 
+                //如果上一次跳过了敌人的进攻，再次弹出
+                 if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
+                     let backNode
+                     pause();
+                     backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
+                     Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
+                 }
             })
-            Stage.nextDay += Stage.dayTime; 
-            //如果上一次跳过了敌人的进攻，再次弹出
-             if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
-                 let backNode
-                 pause();
-                 backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
-                 Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
-             }
         }
  
     }
@@ -812,6 +818,7 @@ class WConfirm extends Widget{
         start();
     }
     circle_start(){
+        Scene.root.removeChildren();
         cir_start();
     }
     remove(){
@@ -939,6 +946,8 @@ class WStage extends Widget{
     }
     start(){
         Stage.down = Date.now();
+    }
+    no(){
     }
     end(){
         Stage.up = Date.now();
@@ -1130,6 +1139,8 @@ class WResult extends Widget{
     start(){
         Music.play("audio/but.mp3");
         Scene.remove(this.node);
+        Connect.request({type:"app/all@save",arg:[]},(data) => {
+        })     
         begin();
     }
     added(node){
@@ -1173,12 +1184,15 @@ class WCircleShop extends Widget{
         }
 
     }
+    remove(){
+        Scene.root.removeChildren();
+    }
     start(){
         if(DB.data.circle.coin[0]){
             Scene.open(`app-ui-confirm`, this.node, null, {text:`还剩余了${DB.data.circle.coin[0]}个轮回币。\n确认开始吗？`,on:"circle_start",arg:[]});
         }else{
+            this.remove()
             cir_start();
-
         }
     }
     open(id){
@@ -1341,6 +1355,7 @@ class WSystem extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
+        this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2
         if(!Music.status.loop){
             this.cfg.children[4].data.style.fill = "0xC0C0C0"
             this.cfg.children[5].data.style.fill = "0xffffff"
@@ -1355,7 +1370,7 @@ class WSystem extends Widget{
     main(){
         Music.play("audio/but.mp3");
         Scene.root.removeChildren();
-        openStart();
+        // openStart();
     }
     music(id){
         Music.play("audio/but.mp3");
@@ -1405,6 +1420,7 @@ class WStart extends Widget{
 
     //重新开始
     startGame(){
+        Scene.root.removeChildren();
         if(DB.data.circle.city && DB.data.circle.city[0] &&DB.data.circle.city[0][0]){
             Scene.open("app-ui-result", Scene.root,null,{id:2});
            // circleNode =Scene.open(`app-ui-circleShop`,Scene.root, null, {});
@@ -1429,6 +1445,7 @@ class WStart extends Widget{
     
                 }
             }
+            Scene.root.removeChildren();
             begin();
         })
     }
@@ -1459,8 +1476,8 @@ const open = () => {
     Scene.open("app-ui-news",Scene.root);   
     for(let i=0;i<6;i++){
         let name = Stage.res_name[i]
-        if(DB.data.res[name][0]>0){
-            Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});
+        if(DB.data.res[name][0]>0 || DB.data.res[name][1]){
+            Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});    
         }
     }
     Stage.updateNews();
@@ -1549,9 +1566,9 @@ const cir_start =()=> {
                   DB.data.circle = data.ok[3]
                   DB.data.face.unlock[3] = data.ok[4]
                   DB.data.map.city[2] = data.ok[6]
-                }              
+                }         
+                Scene.open("app-ui-result", Scene.root,null,{id:1});     
           })
-          Scene.open("app-ui-result", Scene.root,null,{id:1});
 }
 /****************** 立即执行 ******************/
 
