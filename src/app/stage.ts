@@ -385,7 +385,7 @@ class Stage {
 
     //地图添加据点
     static guardAdd(){
-        if(DB.data.date.day[0] == DB.data.map.date[0] && DB.data.face.unlock[4] >=1){
+        if(DB.data.date.day[0] >= DB.data.map.date[0] && DB.data.face.unlock[4] >=1){
             let bcfg = CfgMgr.getOne("app/cfg/city.json@city"),
                 bcfg1 = CfgMgr.getOne("app/cfg/city.json@rand")
             Connect.request({type:"app/map@guard_add",arg:{}},(data) => {
@@ -1370,7 +1370,7 @@ class WSystem extends Widget{
     main(){
         Music.play("audio/but.mp3");
         Scene.root.removeChildren();
-        // openStart();
+        openStart();
     }
     music(id){
         Music.play("audio/but.mp3");

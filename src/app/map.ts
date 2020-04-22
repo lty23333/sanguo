@@ -282,11 +282,16 @@ class WfightWindow extends Widget{
                 if(this.props.id < 19999){
                     enemy[i][2] = 1 + bcfg[enemy[i][0]]["number"]/100 + bcfg2[this.props.id]["attribute"]
                 }else{
-                    enemy[i][2] = 1 + (bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/400)] ["attribute"])*mul
+                    enemy[i][2] = 1 + (bcfg[enemy[i][0]]["number"]/100 + bcfg4[Math.ceil(DB.data.date.day[0]/400)]["attribute"])*mul
                 }
                 //动态调整
                 if(this.props.id == 19999){
                     enemy[i][2] += Math.floor(DB.data.hero.add[0] /3.5)/100 *mul
+                }else if(this.props.id > 19999){
+                    enemy[i][2] -= Math.floor(DB.data.hero.add[0] /4)/100 *mul
+                    if(enemy[i][2] < 1 + 0.25 * mul) {
+                        enemy[i][2] = 1 + 0.25 * mul
+                    }
                 }
                 enemy[i][3] = i
                 enemy[i][4] = bcfg[enemy[i][0]]["arms"]
