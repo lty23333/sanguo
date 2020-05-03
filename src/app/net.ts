@@ -106,12 +106,13 @@ Connect.setTest("app/all@save",save_all);
 const putin = (param: any, callback) => {   
 //    DB.circle.year[0] = Math.max(Math.ceil(DB.date.day[0]/400),DB.circle.year[0])
     DB.circle.times[0] += 1;
-    DB.circle.city.push([DB.map.city[0],DB.circle.times[0]]);
+    DB.circle.city.push([DB.map.city[0],DB.circle.times[0],DB.date.day[0]]);
     //纪录排序
     if(DB.circle.city.length >1){
         for(let i =0;i<DB.circle.city.length;i++){
             for(let j =i +1;j<DB.circle.city.length;j++){
-                if(DB.circle.city[i][0] < DB.circle.city[j][0]){
+                if(DB.circle.city[i][0] < DB.circle.city[j][0] ||
+                    (DB.circle.city[i][2] &&DB.circle.city[j][2] && DB.circle.city[i][0] == DB.circle.city[j][0] && DB.circle.city[i][2] > DB.circle.city[j][2])){
                     let t = DB.circle.city[i]
                     DB.circle.city[i] = DB.circle.city[j]
                     DB.circle.city[j] = t
@@ -128,7 +129,6 @@ const putin = (param: any, callback) => {
     //时间归零，游戏结束
     DB.date.day[0] = 0
     saveDb("date",DB.date);
-    console.log(localStorage.date);
     saveDb("circle",DB.circle);
     callback({ok:[JSON.parse(JSON.stringify(DB.circle)),DB.date.day[0]]});
 }
@@ -136,7 +136,7 @@ const putin = (param: any, callback) => {
 const putout = (param: any, callback) => {   
 //    DB.circle.year[0] = Math.ceil(DB.date.day[0]/400) >DB.circle.year[0]?Math.ceil(DB.date.day[0]/400):DB.circle.year[0]
     DB.circle.coin[0] = DB.circle.city[0][0]
-    let res = [400,50,50,50],
+    let res = [2000,200,200,200],
         shopBuild = [1000,1005,1008,1007],
         //返回的效果结果
         effect_end =[],
@@ -169,10 +169,30 @@ const putout = (param: any, callback) => {
             effect_num = bcfg[id]["effect_number"]
             //判断数据表
             for(let j=0;j<effect_num.length;j++){
-                DB[effect[j][0]][effect[j][1]][effect[j][2]] += effect_num[j] * DB.circle.temp[1][i];
-                if(shopBuild[i] == 1007 && DB.circle.temp[1][i] >4){
-                    DB[effect[j][0]][effect[j][1]][effect[j][2]] = 5
+                //如果是仓库，特殊处理
+                if(id == 1005){
+                    let all = 0
+                    for(let k=1;k<=DB.circle.temp[1][i];k++){
+                        let n = effect_num[j] * k
+                        if(k>25){
+                            n  = n *1.5
+                        }else if(k>35){
+                            n = n * 2
+                        }else if(k>45){
+                            n = n * 3  
+                        } 
+                        all += n
+                    }
+                    DB[effect[j][0]][effect[j][1]][effect[j][2]] += all
+                }else{
+                    DB[effect[j][0]][effect[j][1]][effect[j][2]] += effect_num[j] * DB.circle.temp[1][i];
+                    if(shopBuild[i] == 1007 && DB.circle.temp[1][i] >4){
+                        DB[effect[j][0]][effect[j][1]][effect[j][2]] = 5
+                    }
                 }
+
+
+
                 effect_end[i].push(DB[effect[j][0]][effect[j][1]][effect[j][2]]);
             }
         }
@@ -214,7 +234,7 @@ const read = (param: any, callback) => {
 
 }
 const plus = (param: any, callback) => { 
-    let costlist = [[1,1,1,1],[1,4,4,15],[3,10,25,50,100]],
+    let costlist = [[1,1,1,1],[1,2,2,10],[3,10,25,50,100]],
         cost 
     if(param[0] == 2){
         let n = 0
@@ -238,7 +258,7 @@ const plus = (param: any, callback) => {
 }
 //轮回商店退款
 const minus = (param: any, callback) => { 
-    let costlist = [[1,1,1,1],[1,4,4,15],[3,10,25,50,100]],
+    let costlist = [[1,1,1,1],[1,2,2,10],[3,10,25,50,100]],
         cost 
     if(param[0] == 2){
         let n = 0
@@ -451,7 +471,15 @@ const levelup = (id: any, callback) => {
             //如果是仓库，额外追加
             if(id == 1005){
                 for(let i=0;i<4;i++){
-                DB.res[res_name[i]][2] += effect_num[i] * (DB.build[id-1000][1]-1)
+                  let n = effect_num[i] * (DB.build[id-1000][1]-1)
+                  if(DB.build[id-1000][1]>25){
+                     n  = n *1.5
+                  }else if(DB.build[id-1000][1]>35){
+                    n = n * 2
+                  }else if(DB.build[id-1000][1]>45){
+                    n = n * 3  
+                  } 
+                  DB.res[res_name[i]][2] += n
                 }
             }
             //判断数据表
@@ -517,8 +545,7 @@ const unlock = (id: any, callback) => {
         callback({ok:[DB.science[id-100][1],num,effect_end]}); 
     }else{
         callback({err:1}); 
-    }
-          
+    }  
 }
 
 Connect.setTest("app/science@unlock",unlock);
@@ -594,7 +621,7 @@ const eventtrigger = (eventId: any, callback) => {
                 saveDb("hero",DB.hero);
                 saveDb("map",DB.map);
                 saveDb("res",DB.res);
-                saveDb("date",DB.date)
+                saveDb("date",DB.date);
                 saveDb("event",DB.event);
                 saveDb("army",DB.army);
                 callback({ok:[DB.event.next[0],DB[bcfg[eventId].type[0]][bcfg[eventId].type[1]][bcfg[eventId].type[2]]]});
@@ -859,8 +886,8 @@ const guard_add = (id: any, callback) => {
             saveDb("map",DB.map);
             callback({err:1}); 
         }else{
-                        //随机据点
-            if(rand(3)>1){
+            //随机据点
+            if(rand(3)>1 || DB.map.guard.length ==2){
                 guardId = 20000 +rand(4);
                 for(let i=0;i<bcfg3[Math.ceil(DB.date.day[0]/400)]["army"].length;i++){
                 guard.push([bcfg2[guardId]["army"],Math.ceil(bcfg3[Math.ceil(DB.date.day[0]/400)]["army"][i] * (450 + rand(100))/500 -0.5)])
@@ -1044,15 +1071,15 @@ const fightAccount = (param: any, callback) => {
             DB.map.attack[0] = 0
         }
         //加武将能力,添加受伤状态
-        let a = [900,600,300,200,90,80,70,50,30,0],
-            b = [0.01,0.02,0.03,0.06,0.09,0.12,0.2,0.3,0.5,0.8]
+        let a = [900,600,300,200,100,95,90,80,70,50,30,0],
+            b = [0.01,0.02,0.03,0.06,0.09,0.1,0.11,0.12,0.2,0.3,0.5,0.8]
         for(let i =0;i<param.heroIndex.length;i++){
             let hero = DB.hero.own[param.heroIndex[i]], 
                 bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
                 num = bcfg[hero[0]]["number"]
             for(let j =0;j<a.length;j++){
                 if (num+hero[2]>a[j]){
-                    hero[2] +=b[j]  
+                    hero[2] +=b[j]
                     break;
                 }
             }

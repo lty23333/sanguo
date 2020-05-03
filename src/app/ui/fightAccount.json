@@ -16,7 +16,8 @@
                 "left": -200,
                 "top": -600,
                 "background-color": "#d9c6ad",
-                "background-alpha":0.3
+                "background-alpha":0.3,
+                "z":20
             }
         },
         {
@@ -31,7 +32,8 @@
                 "border-width":2,
                 "border-color":"0xe6e6fa",
                 "border-alpha":0.6,
-                "border-align":0.5
+                "border-align":0.5,
+                "z":21
             }
         },
         {
@@ -42,7 +44,8 @@
                 "height": 30,
                 "left": 55,
                 "top": 80,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "z":22
             }
         },
         {
@@ -53,7 +56,8 @@
                 "height": 30,
                 "left": 55,
                 "top": 120,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "z":23
             }
         },
         {
@@ -64,7 +68,8 @@
                 "height": 30,
                 "left": 65,
                 "top": 160,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "z":24
             }
         },
         {
@@ -75,7 +80,8 @@
                 "height": 30,
                 "left": 15,
                 "top": 170,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "z":25
             }
         },
         {
@@ -86,7 +92,8 @@
                 "height": 30,
                 "left": 55,
                 "top": 240,
-                "background-color": "#d9c6ad"
+                "background-color": "#d9c6ad",
+                "z":26
             }
         },
         {
@@ -98,7 +105,8 @@
                 "top": 20,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 40, "fill" : "0x98fb98", "align" : "center"
-                }
+                },
+                "z":27
             }
         },
         {
@@ -110,7 +118,8 @@
                 "top": 80,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":28
             }
         }, {
             "type": "text",
@@ -121,7 +130,8 @@
                 "top": 120,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":29
             }
         }, {
             "type": "text",
@@ -132,7 +142,8 @@
                 "top": 160,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":30
             }
         }, {
             "type": "text",
@@ -143,7 +154,8 @@
                 "top": 200,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":31
             }
         }, {
             "type": "text",
@@ -154,7 +166,8 @@
                 "top": 240,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xFFFF00", "align" : "left"
-                }
+                },
+                "z":32
             }
         },  {
             "type": "text",
@@ -165,7 +178,8 @@
                 "top": 80,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":33
             }
         }, {
             "type": "text",
@@ -176,7 +190,8 @@
                 "top": 120,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":34
             }
         }, {
             "type": "text",
@@ -187,7 +202,8 @@
                 "top": 160,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":35
             }
         }, {
             "type": "text",
@@ -198,7 +214,8 @@
                 "top": 200,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":36
             }
         }, {
             "type": "text",
@@ -209,7 +226,8 @@
                 "top": 240,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xFFFF00", "align" : "left"
-                }
+                },
+                "z":37
             }
         }, {
             "type": "text",
@@ -220,7 +238,8 @@
                 "top": 80,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":38
             }
         }, {
             "type": "text",
@@ -231,7 +250,8 @@
                 "top": 120,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":39
             }
         }, {
             "type": "text",
@@ -242,7 +262,8 @@
                 "top": 160,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":40
             }
         }, {
             "type": "text",
@@ -253,7 +274,8 @@
                 "top": 200,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":41
             }
         }, {
             "type": "text",
@@ -264,7 +286,8 @@
                 "top": 240,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xFFFF00", "align" : "left"
-                }
+                },
+                "z":42
             }
         },
          {
@@ -276,7 +299,8 @@
                 "top": 300,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0x98fb98", "align" : "center"
-                }
+                },
+                "z":43
             }
         }, 
         {
@@ -289,7 +313,8 @@
                 "text": "继续",
                 "size":35,
                 "width": 200,
-                "height": 100
+                "height": 100,
+                "z":44
             }
         }
     ]

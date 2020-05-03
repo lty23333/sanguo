@@ -13,19 +13,8 @@
                 "on":{"tap":{"func":"login"}},
                 "id":"button_login",
                 "left": "50%",
-                "top": "50%",
-                "text": "登陆",
-                "size":40
-            }
-        },
-        {
-            "type":"app-ui-button",
-            "props":{
-                "on":{"tap":{"func":"clear"}},
-                "id":"button_clear",
-                "left": "50%",
-                "top": 1000,
-                "text": "清理数据",
+                "top": "55%",
+                "text": "进入游戏",
                 "size":40
             }
         },

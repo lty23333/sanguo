@@ -386,7 +386,6 @@ class Wshop extends Widget{
 
                 }
             })    
-        
     } 
     remove(){
         Scene.remove(this.node);   
@@ -726,7 +725,7 @@ const open = () => {
             Build.build_sprite = Scene.open("app-ui-buildButton", Global.mainFace.node,null, {id:i+1000});
         }
     }
-    //DB.data.build[13][0] = 1;
+ //   DB.data.build[13][0] = 1;
     let num = DB.data.map.city[2],
         max = (DB.data.map.city[0] - DB.data.map.city[4])*DB.data.map.city[3]+DB.data.map.city[5]
     Build.totalNode.text = `${num}/${max}`

@@ -42,24 +42,8 @@ let stageNode, // 关卡渲染节点
     listNode //排行榜节点
 
 class Stage {
-    static width = 0
-    static height = 0
-    /**
-     * @description 自己
-     */
-    // static self: Shap
-    // //自己的默认移动速度
-
-    static svx = -7
 
 
-    static insertTimer
-    //down
-    static down = 0
-    //up
-    static up = 0
-    //shap id
-    static id = 1
     static pause = 1
     static stillStop = 0
     static  res={food:[],wood:[],sci:[],gold:[],win:[],fail:[]}// 资源节点
@@ -80,14 +64,14 @@ class Stage {
     static dayTime0 = 1500
     static dayTime = 1500
     static dayTimes = 2
-    static nextDay = 0
+    static nextDay = 99999999999999
     static resSprite = []
     static messageList = []
     static hungry = ["仓无粮。","地荒，无粮。","大荒。","饿殍满地。","大饥，人相食。"]
     static face_Cname = ["科技","人口","建筑","军队","出征"]
     static face_text = [] //界面切换文字节点
     static face_new = []
-    static time 
+    static time = 99999999999999
     static newsNode =[]; //新闻节点
     static newsFace = 0   //0-新闻，1-战报
     static news_change = []
@@ -99,9 +83,9 @@ class Stage {
     static shopNumber = []  //天时地利人和的兑换数量节点
     static shopCost = []  //轮回商店的消耗节点
     static shopBuild = [1000,1005,1008,1007]  //轮回商店卖的建筑
-    static shopRes = [400,50,50,50]  //轮回商店卖的res
+    static shopRes = [2000,200,200,200]  //轮回商店卖的res
     static coinNode    //轮回币节点
-    static cir_cost1 = [1,4,4,15]  //轮回建筑消耗
+    static cir_cost1 = [1,2,2,10]  //轮回建筑消耗
     static cir_cost2 = [3,10,25,50,100]  //轮回英雄消耗
     static resultNode = [] //字幕文字节点
     static textTime = 0     //字幕时间
@@ -111,7 +95,7 @@ class Stage {
     static frameTime = 17 //每帧时间
     static daytimesNode //时间倍数文字节点
     static musicNode = [] //音乐音效开关节点
-    static bili = [0.5,0.75,1,1.5,2] //时速调节比例
+    static bili = [0.5,0.75,1,1.5,2,3] //时速调节比例
     static initDB(){
         //初始化资源数据库表[[是否解锁，数量,最大值,增加量,增加量系数(季节),减少量，减少量系数],[]]
         DB.init("res",{food:[1,0,5000,0,0,0,0],wood:[0,0,600,0,0,0,0],sci:[0,0,800,0,0,0,0],gold:[0,0,500,0,0,0,0],win:[0,0,100,0,0,1,0],fail:[0,0,100,0,0,1,0]});
@@ -285,7 +269,7 @@ class Stage {
         }
 
         if(type && !len){
-            Stage.newsNode[0].text = "幸无战事,得以休想生息。"
+            Stage.newsNode[0].text = "幸无战事,得以休养生息。"
         }
     }
     //字幕浮现循环
@@ -318,6 +302,14 @@ class Stage {
         //解锁新资源
         if(idType ==0 && DB.data.res[name][0]>=1 && !Stage.resSprite[res_nameID] && DB.data.date.day[0]>0){
             Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+        }
+        //防错
+        if(idType == 1 && res_nameID <=3){
+            if(num){
+                if(!(Stage.resSprite[res_nameID] && Stage.resSprite[res_nameID].parent) && DB.data.date.day[0]>4){
+                    Stage.resSprite[res_nameID] = Scene.open("app-ui-res", stageNode,null,{id:res_nameID});
+                }
+            }
         }
         //胜败绩根据其资源数值显示和消失
         if(idType == 1 && res_nameID >3){
@@ -565,7 +557,7 @@ class Stage {
             }
             DB.data.res[typename][1] = data.ok;
             if(DB.data.res[typename][1] && DB.data.res[typename][0] == 0){
-                DB.data.res[typename][0] == 1
+                DB.data.res[typename][0] = 1
             }
         })
         
@@ -624,15 +616,15 @@ class Stage {
                 if(DB.data.date.day[0] % 100 == 1){
                     Music.play(`audio/season${Math.floor(DB.data.date.day[0]/100)% 4}.mp3`,true);
                 }
-                Stage.nextDay += Stage.dayTime; 
-                //如果上一次跳过了敌人的进攻，再次弹出
-                 if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
-                     let backNode
-                     pause();
-                     backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
-                     Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
-                 }
             })
+            Stage.nextDay += Stage.dayTime; 
+            //如果上一次跳过了敌人的进攻，再次弹出
+             if(DB.data.map.attack[0] == 1 && DB.data.hero.enemy.length){
+                 let backNode
+                 pause();
+                 backNode = Scene.open(`app-ui-back`,Scene.root,null,{type:1});
+                 Scene.open("app-ui-fightWindow", backNode,null,{id:19999,index:-2,backNode:backNode,name:"入侵边境"})
+             }
         }
  
     }
@@ -804,7 +796,7 @@ class WConfirm extends Widget{
         let bcfg = CfgMgr.getOne("app/cfg/hero.json@hero"),
         name = bcfg[DB.data.hero.own[id][0]]["name"]
         Connect.request({type:"app/army@hero_delete",arg:[id]},(data) => {
-            let text = ["叹主不公，积怨成疾，郁郁而终。","被贬，翌日愤懑出走，不知所踪。","听闻被贬，不发一言，拂袖而去。","怒道：“竖子不足与谋！”"]
+            let text = ["被贬，翌日愤懑出走，不知所踪。","听闻被贬，不发一言，拂袖而去。","怒道：“竖子不足与谋！”"]
 
              DB.data.hero.own = data.ok[0];
              DB.data.army.cur[0] = data.ok[1];
@@ -944,13 +936,8 @@ class WStage extends Widget{
 
         
     }
-    start(){
-        Stage.down = Date.now();
-    }
+
     no(){
-    }
-    end(){
-        Stage.up = Date.now();
     }
     pause_button(){
        pause();
@@ -1051,14 +1038,30 @@ class WWarning extends Widget{
         super.setProps(props);
         this.cfg.data.left = Math.floor(Scene.screen.width - this.cfg.data.width)/2 
         if(DB.data.date.warning[0] && DB.data.date.warning[1]){
+            let bcfg = CfgMgr.getOne("app/cfg/event.json@event"),
+                bcfg2 = CfgMgr.getOne("app/cfg/hero.json@hero"),
+                eventid = DB.data.event.next[0],
+                Cname = ["步","骑","弓"]
             this.cfg.children[1].data.text = `敌袭预警`;
             this.cfg.children[1].data.style.fill = Global.color[6];
-            this.cfg.children[2].data.text = "情报表示，不久将有敌军入侵。"
+            for(let i=0;i<100;i++){
+                if(bcfg[eventid+i]["class"] == 1){
+                    eventid +=i;
+                    break;
+                }
+            }
+            let army = bcfg[eventid]["type"],
+                str2 = ""
+            for(let i=0;i< army.length;i++){
+                str2 = `${str2}\n${bcfg2[army[i][0]]["name"]}(${army[i][1]}${Cname[bcfg2[army[i][0]]["arms"]]})`
+            }
+            this.cfg.children[2].data.text = str2
+
         }else{
+            this.cfg.children[2].data.top += 100;
             this.cfg.children[1].data.text = `和平`;
             this.cfg.children[1].data.style.fill = Global.color[5];
             this.cfg.children[2].data.text = "境内没有成气候的敌人。"
-
         }
         
     }
@@ -1089,7 +1092,7 @@ class WResult extends Widget{
                 this.cfg.children[12].data.left -= 2000
                 this.cfg.children[13].data.right -= 2000
             }else if(props.id == 3){
-                this.cfg.children[13].data.left = this.cfg.children[11].data.left
+                this.cfg.children[13].data.right = Scene.screen.width/2 -this.cfg.children[13].data.width/2
                 this.cfg.children[11].data.left += 2000
             }
             for(let i = 0;i<text.length;i++){
@@ -1216,7 +1219,9 @@ class WCircleShop extends Widget{
                 Stage.shopText[i][j] =  this.elements.get(`text${i}${j}`);
             }
         }
-    }   
+    } 
+    no(){
+    }      
 }
 /**
  * @description 轮回商店天时地利人和界面
@@ -1233,6 +1238,8 @@ class WCircleFace extends Widget{
         Scene.remove(circleFaceNode);
         Stage.shopNumber = []
     }
+    no(){
+    }    
 }
 /**
  * @description 轮回商店具体内容模板
@@ -1310,7 +1317,9 @@ class WCircleGood extends Widget{
         this.node = node;
          Stage.shopNumber[node.widget.props.index] =  this.elements.get("number");
          Stage.shopCost[node.widget.props.index] =  this.elements.get("cost");
-    }   
+    }  
+    no(){
+    }    
 }
 
 
@@ -1337,11 +1346,17 @@ class WListRank extends Widget{
     node:any
     setProps(props){
         super.setProps(props);
+        let day = DB.data.circle.city[props.id][2]
         this.cfg.data.top = 300 + props.id * 55
         this.cfg.data.left = Math.floor((Scene.screen.width -750)/2)
         this.cfg.children[0].data.text = `第${props.id+1}名`
         this.cfg.children[1].data.text = `${DB.data.circle.city[props.id][0]}座`
-        this.cfg.children[2].data.text = `（第${DB.data.circle.city[props.id][1]}次轮回）`    
+        let time = day?`${Math.ceil(day/400)}年${Math.ceil(day%400)}天`:"历时不详"
+        this.cfg.children[2].data.text = `（${time},第${DB.data.circle.city[props.id][1]}次轮回）`  
+        let n = Math.floor(Scene.screen.width - 600)/4
+        this.cfg.children[0].data.left = n
+        this.cfg.children[1].data.left = 2*n+ 90
+        this.cfg.children[2].data.left = 3*n + 180
     }
     remove(){
         Scene.root.removeChildren();
@@ -1451,6 +1466,7 @@ class WStart extends Widget{
     }
     //纪录按钮
     record(){
+        Scene.root.removeChildren();
         listNode = Scene.open("app-ui-list", Scene.root);
         for(let i =0;i<DB.data.circle.city.length;i++){
             Scene.open("app-ui-listRank", listNode,null,{id:i});
@@ -1477,7 +1493,9 @@ const open = () => {
     for(let i=0;i<6;i++){
         let name = Stage.res_name[i]
         if(DB.data.res[name][0]>0 || DB.data.res[name][1]){
-            Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});    
+            Stage.resSprite[i] = Scene.open("app-ui-res", stageNode,null,{id:i});   
+        }else{
+             Stage.resSprite[i] = undefined;
         }
     }
     Stage.updateNews();
@@ -1594,7 +1612,7 @@ Widget.registW("app-ui-system",WSystem);
 Frame.add(()=>{
     //处理弹出消息
     Stage.runMessage();
-    if(!Stage.pause){
+    if(!Stage.pause && stageNode && stageNode.parent){
         Stage.run();
     }
 });

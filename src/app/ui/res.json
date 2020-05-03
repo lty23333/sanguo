@@ -4,7 +4,8 @@
         "width": 400,
         "height": 60,
         "left": 30,
-        "top": 30
+        "top": 30,
+        "z":20
     },
     "children":[
     

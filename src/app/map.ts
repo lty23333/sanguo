@@ -263,7 +263,7 @@ class WfightWindow extends Widget{
                     own[max][0] = DB.data.hero.own[i][0]
                     own[max][1] = DB.data.hero.own[i][1]
                     own[max][4] = bcfg[own[max][0]]["arms"]
-                    own[max][2] = 1 + (Math.floor(bcfg[own[max][0]]["number"]+DB.data.hero.own[i][2]+DB.data.hero.add[own[max][4]])*mul)/100 
+                    own[max][2] = 1 + (Math.floor(bcfg[own[max][0]]["number"]+DB.data.hero.own[i][2]+DB.data.hero.add[own[max][4]+1])*mul)/100 
                     own[max][3] = DB.data.hero.own[i][3]
                     max += 1;
                     if(max == DB.data.hero.MaxHero[0]){

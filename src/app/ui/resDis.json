@@ -19,7 +19,8 @@
                 "border-width":2,
                 "border-color":"0xe6e6fa",
                 "border-alpha":0.6,
-                "border-align":0.5
+                "border-align":0.5,
+                "z":0
             }
         },
         {
@@ -31,7 +32,8 @@
                 "top": 20,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
-                }
+                },
+                "z":1
             }
         },
         {
@@ -43,7 +45,8 @@
                 "top": 80,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "center"
-                }
+                },
+                "z":2
             }
         },
         {
@@ -55,7 +58,8 @@
                 "top": 130,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":3
             }
         },
         {
@@ -67,7 +71,8 @@
                 "top": 130,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":4
             }
         },
         {
@@ -79,7 +84,8 @@
                 "top": 180,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":5
             }
         },
         {
@@ -91,7 +97,8 @@
                 "top": 180,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":6
             }
         },
         {
@@ -103,7 +110,8 @@
                 "top": 230,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":7
             }
         },
         {
@@ -115,7 +123,8 @@
                 "top": 230,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":8
             }
         },
         {
@@ -127,7 +136,8 @@
                 "top": 280,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":9
             }
         },
         {
@@ -139,7 +149,8 @@
                 "top": 280,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":10
             }
         },
         {
@@ -151,7 +162,8 @@
                 "top": 330,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":11
             }
         },
         {
@@ -163,7 +175,8 @@
                 "top": 330,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":12
             }
         },
         {
@@ -175,7 +188,8 @@
                 "top": 380,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                }
+                },
+                "z":13
             }
         },
         {
@@ -187,7 +201,8 @@
                 "top": 380,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "right"
-                }
+                },
+                "z":14
             }
         }
     ]

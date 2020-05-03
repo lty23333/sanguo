@@ -35,7 +35,7 @@ export class Events {
     }
     // 事件响应时间间隔
     static onTimeLimit = {
-        tap:200
+        tap:230
     }
     //是否移动端
     static mobile: boolean

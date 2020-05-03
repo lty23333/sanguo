@@ -16,7 +16,8 @@
                 "left": 0,
                 "top": 0,
                 "background-color": "#d9c6ad",
-                "alpha":1
+                "alpha":1,
+                "z":0
             }
         },
         {
@@ -28,7 +29,8 @@
                 "top": 160,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 50, "fill" : "0xFFFF00", "align" : "center"
-                }
+                },
+                "z":1
             }
         },
         
@@ -41,7 +43,8 @@
                 "top": 600,
                 "style":{
                     "fontFamily" : "Arial", "fontSize": 40, "fill" : "0xffffff", "align" : "center"
-                }
+                },
+                "z":2
             }
         },     
         {
@@ -52,7 +55,8 @@
                 "left": "50%",
                 "top": 1000,
                 "text": "返回",
-                "size":40
+                "size":40,
+                "z":3
             }
         }   
     ]

@@ -1,6 +1,6 @@
 {   
     "type": "container",
-    "on":{"start":{"func":"start"},"end":{"func":"end"}},
+    "on":{"tap":{"func":"no"}},
     "data": {
         "width": "100%",
         "height": "100%",
@@ -16,7 +16,8 @@
                 "width": "100%",
                 "height": "100%",
                 "left": 0,
-                "top": 0
+                "top": 0,
+                "z":0
             }
         },
         {
@@ -28,7 +29,8 @@
              "left": 0,
               "top": 0,
               "background-color": "#d9c6ad",
-              "alpha":0.8
+              "alpha":0.8,
+              "z":1
            }
         }, 
         {   
@@ -37,7 +39,8 @@
                 "width": 150,
                 "height": 200,
                 "right": 15,
-                "top": 30
+                "top": 30,
+                "z":2
             },
             "children":[     
 
@@ -67,7 +70,8 @@
                         "top": 20,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                        }
+                        },
+                        "z":0
                     }
                 },
                 {
@@ -79,7 +83,8 @@
                         "top": 60,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                        }
+                        },
+                        "z":1
                     }
                 },
                 {
@@ -91,7 +96,8 @@
                         "top": 100,
                         "style":{
                             "fontFamily" : "Arial", "fontSize": 30, "fill" : "0xffffff", "align" : "left"
-                        }
+                        },
+                        "z":2
                     }
                 }
                ]
@@ -104,7 +110,8 @@
                 "width": 150,
                 "height": 100,
                 "left": 0,
-                "top": 1234
+                "top": 1234,
+                "z":3
             },
             "children":[
                 {
@@ -114,7 +121,8 @@
                         "width": "100%",
                         "height": "100%",
                         "left": 0,
-                        "top": 0
+                        "top": 0,
+                        "z":0
                     },
                     "children": [
                         {
@@ -127,7 +135,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
-                                "alpha":1
+                                "alpha":1,
+                                "z":0
                             }
                         },
                         {
@@ -140,7 +149,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
-                                "alpha":0
+                                "alpha":0,
+                                "z":1
                             }
                         },
 
@@ -151,7 +161,8 @@
                                 "text": "科技",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
-                                "top": 35
+                                "top": 35,
+                                "z":2
                             }
                         },
                         {
@@ -164,7 +175,8 @@
                                 "left": 1115,
                                 "top": 10,
                                 "background-color": "0xff6347",
-                                "alpha":1
+                                "alpha":1,
+                                "z":3
                             },
                             "children": [
                                 {
@@ -188,7 +200,8 @@
                         "width": "100%",
                         "height": "100%",
                         "left": 150,
-                        "top": 0
+                        "top": 0,
+                        "z":1
                     },
                     "children": [
                         {
@@ -201,7 +214,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
-                                "alpha":1
+                                "alpha":1,
+                                "z":0
                             }
                         },
                         {
@@ -214,7 +228,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
-                                "alpha":0
+                                "alpha":0,
+                                "z":1
                             }
                         },
  
@@ -225,7 +240,8 @@
                                 "text": "人口",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
-                                "top": 35
+                                "top": 35,
+                                "z":2
                             }
                         },
                         {
@@ -238,7 +254,8 @@
                                 "left": 1115,
                                 "top": 10,
                                 "background-color": "0xff6347",
-                                "alpha":1
+                                "alpha":1,
+                                "z":14
                             },
                             "children": [
                                 {
@@ -262,7 +279,8 @@
                         "width": "100%",
                         "height": "100%",
                         "left": 300,
-                        "top": 0
+                        "top": 0,
+                        "z":2
                     },
                     "children": [
                         {
@@ -275,7 +293,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
-                                "alpha":1
+                                "alpha":1,
+                                "z":0
                             }
                         },
                         {
@@ -288,7 +307,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
-                                "alpha":1
+                                "alpha":1,
+                                "z":1
                             }
                         },
                         
@@ -299,7 +319,8 @@
                                 "text": "建筑",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
-                                "top": 35
+                                "top": 35,
+                                "z":2
                             }
                         },
                         {
@@ -312,7 +333,8 @@
                                 "left": 1115,
                                 "top": 10,
                                 "background-color": "0xff6347",
-                                "alpha":1
+                                "alpha":1,
+                                "z":14
                             },
                             "children": [
                                 {
@@ -336,7 +358,8 @@
                         "width": "100%",
                         "height": "100%",
                         "left": 450,
-                        "top": 0
+                        "top": 0,
+                        "z":4
                     },
                     "children": [
                         {
@@ -349,7 +372,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
-                                "alpha":1
+                                "alpha":1,
+                                "z":0
                             }
                         },
                         {
@@ -362,7 +386,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
-                                "alpha":0
+                                "alpha":0,
+                                "z":1
                             }
                         },
  
@@ -373,7 +398,8 @@
                                 "text": "军队",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
-                                "top": 35
+                                "top": 35,
+                                "z":2
                             }
                         },
                         {
@@ -386,7 +412,8 @@
                                 "left": 1115,
                                 "top": 10,
                                 "background-color": "0xff6347",
-                                "alpha":1
+                                "alpha":1,
+                                "z":14
                             },
                             "children": [
                                 {
@@ -410,7 +437,8 @@
                         "width": 150,
                         "height": 100,
                         "left": 600,
-                        "top": 0
+                        "top": 0,
+                        "z":5
                     },
                     "children": [
                         {
@@ -423,7 +451,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "#d9c6ad",
-                                "alpha":1
+                                "alpha":1,
+                                "z":0
                             }
                         },
                         {
@@ -436,7 +465,8 @@
                                 "left": 0,
                                 "top": 0,
                                 "background-color": "0x3c3c3c",
-                                "alpha":0
+                                "alpha":0,
+                                "z":1
                             }
                         },
 
@@ -447,7 +477,8 @@
                                 "text": "出征",
                                 "style": {"fontSize":30,"fill":"0xffffff","strokeThickness":2},
                                 "left": 50,
-                                "top": 35
+                                "top": 35,
+                                "z":2
                             }
                         },
                         {
@@ -460,7 +491,8 @@
                                 "left": 1115,
                                 "top": 10,
                                 "background-color": "0xff6347",
-                                "alpha":1
+                                "alpha":1,
+                                "z":14
                             },
                             "children": [
                                 {
@@ -486,7 +518,8 @@
                      "left": 150,
                       "top": 20,
                       "background-color": "0xe6e6fa",
-                      "alpha":0.5
+                      "alpha":0.5,
+                      "z":6
                    }
                 },
                 {
@@ -498,7 +531,8 @@
                      "left": 300,
                       "top": 20,
                       "background-color": "0xe6e6fa",
-                      "alpha":0.5
+                      "alpha":0.5,
+                      "z":7
                    }
                 },
                 {
@@ -510,7 +544,8 @@
                      "left": 450,
                       "top": 20,
                       "background-color": "0xe6e6fa",
-                      "alpha":0.5
+                      "alpha":0.5,
+                      "z":8
                    }
                 },
                 {
@@ -522,7 +557,8 @@
                      "left": 600,
                       "top": 20,
                       "background-color": "0xe6e6fa",
-                      "alpha":0.5
+                      "alpha":0.5,
+                      "z":9
                    }
                 }
                 
@@ -546,7 +582,8 @@
                 "border-alpha":0.6,
                 "border-align":0.5,
                 "radius":30,
-                "alpha":1
+                "alpha":1,
+                "z":4
             },
             "children": [
         
@@ -576,7 +613,8 @@
                 "border-color":"0xFFFF00",
                 "border-alpha":0.6,
                 "border-align":0.5,
-                "radius":30
+                "radius":30,
+                "z":5
             },
             "children": [
         
@@ -602,7 +640,8 @@
                 "top": 20,
                 "background-color": "#d9c6ad",
                 "background-alpha":0.8,
-                "alpha":1
+                "alpha":1,
+                "z":6
             },
             "children": [
         

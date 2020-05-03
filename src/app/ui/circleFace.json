@@ -1,6 +1,6 @@
 {   
     "type": "container",
-    "on":{"tap":{"func":"remove"}},
+    "on":{"tap":{"func":"no"}},
     "data": {
         "width": "100%",
         "height": "100%",
